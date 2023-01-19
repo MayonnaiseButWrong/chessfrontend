@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+h1 {
+   font-family: Raleway, sans-serif;
+   font-weight: bold;
+   font-size: 60pt;
+   position: center;
+}
+.grid-container1 {
+   display: grid;
+   position: relative;
+   width: auto;
+   grid-template-columns: auto 550px;
+   grid-template-rows: auto auto auto ;
+   gap: 10px;
+   padding: 0px;
+}
+
+button{
+   background: #707070;
+   border:none;
+   padding-top: 10px;
+   padding-bottom:10px;
+   max-width: 1920px;
+   min-width: 395px;
+   min-height: 80px;
+   padding-left: auto;
+   padding-right: auto;
+   border-radius: 15px;
+   color:#fff;
+   font-weight: Raleway, sans-serif;
+   cursor:pointer;
+   font-size: 0.8em;
+   align-self:center;
+   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)
+}
+button:hover{
+   background: #3e3e3e;
+   color: #fff;
+   transition-duration:0.2s ;
+}
+button:active {
+   background: #512865;
+   color: #fff;
+}

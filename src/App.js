@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{Component, useState, useEffect} from 'react';
+import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom';
+import ChessFrontEnd from './Chess.js';
+import OptionsPage from './OptionsPage.js';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+class App extends Component {
+  render (){
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path='/ChessGame' element={<ChessFrontEnd/>}/>
+          <Route path='*' element={<OptionsPage/>}/>
+        </Routes>
+      </BrowserRouter>
+    )
+  }
 }
+
 
 export default App;
