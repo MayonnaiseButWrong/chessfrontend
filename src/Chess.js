@@ -1,9 +1,13 @@
 import './Chess.css'
 import {Link} from 'react-router-dom'
+import {page} from './OptionsPage.js';
 
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
+
+
 const ChessFrontEnd = () => {
+    window.alert(page)
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
@@ -17,6 +21,6 @@ const ChessFrontEnd = () => {
         </div>
     </div>
     )
-}
+};
 
 export default ChessFrontEnd;
