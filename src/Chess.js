@@ -1,20 +1,37 @@
 import './Chess.css'
 import {Link} from 'react-router-dom'
-import {page} from './OptionsPage.js';
+import {choice} from './OptionsPage.js';
 
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
-
+const startingLayout = [
+    [],
+    [],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    [],
+    []
+    ];
 
 const ChessFrontEnd = () => {
-    window.alert(page)
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
         <div class="grid-container1">
             <div>1</div>
             <div>2</div>
-            <div>3</div>
+                <div class="grid-container2">
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
+                </div>
             <div>4</div>
             <div>5</div>
             <div>6</div>

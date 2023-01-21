@@ -10,8 +10,18 @@ h1 {
    display: grid;
    position: relative;
    width: auto;
-   grid-template-columns: auto 550px;
+   grid-template-columns: auto auto;
    grid-template-rows: auto auto auto ;
+   gap: 10px;
+   padding: 0px;
+}
+.grid-container2 {
+   display: grid;
+   position: center;
+   align-self: center;
+   width: auto;
+   grid-template-columns: 59px 59px 59px 59px 59px 59px 59px 59px;
+   grid-template-rows: 59px 59px 59px 59px 59px 59px 59px 59px;
    gap: 10px;
    padding: 0px;
 }
