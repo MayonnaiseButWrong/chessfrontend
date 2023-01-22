@@ -10,11 +10,32 @@ h1 {
    display: grid;
    position: relative;
    width: auto;
-   grid-template-columns: auto auto;
-   grid-template-rows: auto auto auto ;
+   grid-template-columns: auto auto auto auto auto auto;
+   grid-template-rows: auto auto auto auto auto auto auto;
    gap: 10px;
    padding: 0px;
 }
+
+.chessboard {
+   grid-row:1/2/3/4/5/6;
+   grid-column:2/3;
+}
+
+.last moves {
+   grid-row:1/2;
+   grid-column:4/5;
+}
+/*
+.black pieces taken {
+   grid-row:3/4;
+   grid-column:4/5;
+}
+
+.white pieces taken {
+   grid-row:5/6;
+   grid-column:4/5;
+}
+*/
 .grid-container2 {
    display: grid;
    position: center;

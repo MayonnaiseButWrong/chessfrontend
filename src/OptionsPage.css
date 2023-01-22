@@ -4,28 +4,32 @@ h1{
   font-family: Raleway, sans-serif;
   font-weight: bold;
   font-size: 60pt;
-  position: center;
 }
+
 .grid-container {
   display: grid;
   max-width: 800px;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto auto auto auto auto auto auto  ;
+  grid-template-columns: auto auto auto auto ;
+  grid-template-rows: auto auto auto auto auto auto auto auto auto ;
   gap: 10px;
   padding: 0px;
   margin-left: auto;
   margin-right: auto;
 }
-.container{
-  display: grid;
-  max-width: 800px;
-  grid-template-columns: auto;
-  grid-template-rows: auto;
-  gap: 10px;
-  padding: 0px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-bottom: 10px;
+
+.boarderleft {
+  grid-row: 1 / span 9;
+  grid-column: 1;
+}
+
+.topbutton {
+  grid-column: 2/ span 2;
+  grid-row: 1;
+}
+
+.boarderright {
+  grid-row: 1 / span 9;
+  grid-column: 4;
 }
 
 button{
@@ -33,11 +37,10 @@ button{
   border:none;
   padding-top: 10px;
   padding-bottom:10px;
-  max-width: 1920px;
-  min-width: 395px;
+  width: 100%;
+  min-width: 50px;
   min-height: 80px;
-  padding-left: auto;
-  padding-right: auto;
+  object-fit: fill;
   border-radius: 15px;
   color:#fff;
   font-weight: Raleway, sans-serif;
