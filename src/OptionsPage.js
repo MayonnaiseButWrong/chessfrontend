@@ -48,6 +48,11 @@ const OptionsPage = () => {
           <div><Link to= "/ChessGame"> <button id="button 16"> 2 Player EndGame Chess</button>                    </Link></div>
           <div><Link to= "/ChessGame"> <button id="button 17"> 1 Player EndGame Chess</button>                    </Link></div>   
           <div class= 'boarderright'></div>
+          <div class='disclaimer'>
+            <p class='disclaimer-text'>
+              asifhkjlkvm;lsfrjhgiwuqehojpkdfl
+            </p>
+          </div>
         </div>
       </div>
     );
