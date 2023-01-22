@@ -1,6 +1,7 @@
 import './Chess.css'
 import {Link} from 'react-router-dom'
-import {choice} from './OptionsPage.js';
+import { Chessboard } from "react-chessboard";
+import Chess from 'chess.js';
 
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
@@ -22,16 +23,11 @@ const ChessFrontEnd = () => {
         <div class="grid-container1">
             <div class= 'boarderleft'></div>
             <div class='chessboard'>
-                <div class="grid-container2">
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                    <div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div><div>11</div>
-                </div>
+            <Chessboard id='board1' position={'start'} />
+            </div>
+
+            <div class='selet-move-button'>
+                <button class='type2'>Select Move</button>
             </div>
 
             <div class='last-moves'>
@@ -49,12 +45,8 @@ const ChessFrontEnd = () => {
                 <p class='white-pieces-taken-text'>sghnyjukyjt</p>
             </div>
 
-            <div class='selet-move-button'>
-                <button>select move</button>
-            </div>
-
             <div class= 'boarderright'></div>
-            
+
             <div class= 'disclaimer'>
                 <p class='disclaimer-text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
             </div>

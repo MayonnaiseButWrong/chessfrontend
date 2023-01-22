@@ -6,79 +6,55 @@ h1 {
    font-size: 60pt;
    position: center;
 }
-
-.boarderleft {
-   grid-area: boarderleft;
- }
-
- .boarderright {
-   grid-area: boarderright;
- }
+.boarderleft {grid-area: boarderleft;}
+.boarderright {grid-area: boarderright;}
 
 .chessboard {
    grid-area:board;
+   width: 60vh;
+   height: 60vh;
+   border-radius: 15px;
 }
 
-.last-moves {
-   grid-area:section1;
+#board1 {
+   grid-area:board;
+   width: 60vh;
+   height: 60vh;
+   border-radius: 15px;
 }
 
-.last-moves-header {
-   font-size: 25pt;
-   position: center;
-}
-
+.last-moves {grid-area:section1;}
+.last-moves-header {font-size: 25pt;position: center;}
 .last-moves-text {
    font-size: 15pt;
    font-weight: normal;
    position: center;
 }
 
-.black-pieces-taken {
-   grid-area:section2;
-   
-}
-
-.black-pieces-taken-header {
-   font-size:20pt;
-   position: center;
-}
-
+.black-pieces-taken {grid-area:section2;  }
+.black-pieces-taken-header {font-size:20pt;position: center;}
 .black-pieces-taken-text {
    font-size: 15pt;
    font-weight: normal;
    position: center;
 }
 
-.white-pieces-taken {
-   grid-area:section3;
-}
-
-.white-pieces-taken-header {
-   font-size:20pt;
-   position: center;
-}
-
+.white-pieces-taken {grid-area:section3;}
+.white-pieces-taken-header {font-size:20pt;position: center;}
 .white-pieces-taken-text {
    font-size: 15pt;
    font-weight: normal;
    position: center;
 }
 
-.select-move-button {
-   grid-area:section4;
-}
+.select-move-button {grid-area:section4}
 
-.disclaimer {
-   grid-area:disclaimer;
- }
- 
+.disclaimer {grid-area:disclaimer;}
 .disclaimer-text {
    font-weight: lighter;
    font-size: 10pt;
    color:#a4a4a4
  }
-
 
 .grid-container1 {
    display: grid;
@@ -94,34 +70,33 @@ h1 {
    padding: 10px;
 }
 
-@media only screen and (max-width: 700px) {
+
+.type2{
+   position: center;
+   background-color: rgb(237, 186, 0);
+   color:#fff
+}
+.type2:hover{
+   background-color: rgb(242, 158, 14);
+   color:#fff
+}
+
+@media only screen and (max-width: 650px) {
    .grid-container1 {
       display: grid;
       position: relative;
-      width: auto;
+      width: 100%;
       grid-template-areas: 
-         'boarderleft board boarderright'
-         'boarderleft section4 boarderright'
-         'boarderleft section1 boarderright'
-         'boarderleft section2 boarderright'
-         'boarderleft section3 boarderright'
-         'disclaimer disclaimer disclaimer';
+         'board'
+         'section4'
+         'section1'
+         'section2'
+         'section3'
+         'disclaimer';
       gap: 10px;
       padding: 10px;
    }
 }
-
-.grid-container2 {
-   display: grid;
-   position: center;
-   align-self: center;
-   width: 100%;
-   grid-template-columns: auto auto auto auto auto auto auto auto;
-   grid-template-rows: auto auto auto auto auto auto auto auto;
-   gap: 15px;
-   padding: 0px;
-}
-
 button{
    background: #707070;
    border:none;
