@@ -55,7 +55,7 @@ button{
 }
 button:hover{
   background: #3e3e3e;
-  color: rgb(179, 179, 179);
+  color: rgb(234, 234, 234);
   transition-duration:0.2s ;
 }
 button:active {

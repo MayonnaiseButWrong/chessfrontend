@@ -6,24 +6,25 @@ h1 {
    font-size: 60pt;
    position: center;
 }
+
 .boarderleft {grid-area: boarderleft;}
 .boarderright {grid-area: boarderright;}
 
 .chessboard {
-   grid-area:board;
+   grid-row:1;
+   grid-column:1;
    width: 60vh;
    height: 60vh;
    border-radius: 15px;
 }
 
-#board1 {
-   grid-area:board;
-   width: 60vh;
-   height: 60vh;
-   border-radius: 15px;
+/*
+.last-moves {
+   grid-row:1;
+   grid-column:2;
 }
+*/
 
-.last-moves {grid-area:section1;}
 .last-moves-header {font-size: 25pt;position: center;}
 .last-moves-text {
    font-size: 15pt;
@@ -31,25 +32,46 @@ h1 {
    position: center;
 }
 
-.black-pieces-taken {grid-area:section2;  }
+/*
+.black-pieces-taken {
+   grid-row:2;
+   grid-column:2;
+}
+*/
 .black-pieces-taken-header {font-size:20pt;position: center;}
 .black-pieces-taken-text {
    font-size: 15pt;
    font-weight: normal;
    position: center;
 }
-
-.white-pieces-taken {grid-area:section3;}
+/*
+.white-pieces-taken {
+   grid-row:3;
+   grid-column: 2;
+}
+*/
 .white-pieces-taken-header {font-size:20pt;position: center;}
 .white-pieces-taken-text {
    font-size: 15pt;
    font-weight: normal;
    position: center;
 }
+/*
+.select-move-button {grid-row:4;
+grid-column:2;}
+*/
 
-.select-move-button {grid-area:section4}
+.disclaimer {
+   grid-row:2;
+   grid-column:span 2;
+}
 
-.disclaimer {grid-area:disclaimer;}
+
+.details{
+   grid-row:1;
+   grid-column:2;
+}
+
 .disclaimer-text {
    font-weight: lighter;
    font-size: 10pt;
@@ -59,17 +81,13 @@ h1 {
 .grid-container1 {
    display: grid;
    position: relative;
+   justify-items: center;
    width: auto;
-   grid-template-areas: 
-      'boarderleft board section1 boarderright'
-      'boarderleft board section2 boarderright'
-      'boarderleft board section3 boarderright'
-      'boarderleft board section4 boarderright'
-      'disclaimer disclaimer disclaimer disclaimer';
+   text-align: center;
+   grid-template: 80% 20% / 50% 50%;
    gap: 10px;
    padding: 10px;
 }
-
 
 .type2{
    position: center;
@@ -81,21 +99,22 @@ h1 {
    color:#fff
 }
 
-@media only screen and (max-width: 650px) {
+@media only screen and (max-width: 900px) {
    .grid-container1 {
       display: grid;
       position: relative;
       width: 100%;
-      grid-template-areas: 
-         'board'
-         'section4'
-         'section1'
-         'section2'
-         'section3'
-         'disclaimer';
+      grid-template: 40% 40% 20% / 50% 50%;
       gap: 10px;
       padding: 10px;
    }
+   .chessboard, .select-move-button {
+      grid-area: 1 / 1 / 1/ span 2;
+    }
+    .details {
+      grid-area : 2 / 1 / 2 / span 2;
+      padding: 50px;
+    }
 }
 button{
    background: #707070;
