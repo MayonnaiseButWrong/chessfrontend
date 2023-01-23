@@ -4,6 +4,17 @@ import { Chessboard } from "react-chessboard";
 import Chess from 'chess.js';
 
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
+//customBoardStyle={
+//    borderRadius: '15px',
+//    boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5'
+//  }
+// customDarkSquareStyle={backgroundColor: '#B58863' }
+// customLightSquareStyle={backgroundColor: '#B58863'}
+// customDropSquareStyle={ boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)' }
+// customPremoveDarkSquareStyle={ backgroundColor: '#A42323' }
+// customPreMoveLightSquareStyle={ backgroundColor: '#BD2828' }
+// 
+
 
 const startingLayout = [
     [],
@@ -17,8 +28,8 @@ const startingLayout = [
     ];
 
 let chessBoardWidth = (w=window.innerWidth,h=window.innerHeight) => {
-    if (w>h) {return round(0.6*w)}
-    else {return round(0.6*w)}
+    if (h>w) {return Math.round(0.6*w)}
+    else {return Math.round(0.6*h)}
 };
 
 const ChessFrontEnd = () => {
