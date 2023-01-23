@@ -5,27 +5,41 @@ import Chess from 'chess.js';
 
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
- 
-//const translationIndex = {
-//    
-//}
-//
-//const startingLayout = [
-//    ['BR','BH','BB','BQ','BK','BB','BH','BR'],
-//    ['BP','BP','BP','BP','BP','BP','BP','BP'],
-//    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-//    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-//    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-//    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-//    ['WP','WP','WP','WP','WP','WP','WP','WP'],
-//    ['WR','WH','WB','WQ','WK','WB','WH','WR']
-//    ];
-//
-//let startingString = (InputList=startingLayout) => {
-//    for (let i = 0; i < InputList.length; i++) {
-//        InputList[i]
-//    }
-//}
+const startingLayout = [
+    ['BR','BN','BB','BQ','BK','BB','BN','BR'],
+    ['BP','BP','BP','BP','BP','BP','BP','BP'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['WP','WP','WP','WP','WP','WP','WP','WP'],
+    ['WR','WN','WB','WQ','WK','WB','WN','WR']
+    ];
+
+let startingString = (InputList=startingLayout) => {
+    var output ='';
+    var count =0;
+    for (let j = 0; j < InputList.length; j++) {
+        for (let i = 0; i < InputList[i].length; i++) {
+            count=0
+            while (InputList[j][i+count][0]==='M') {
+                count++
+            }
+            if (InputList[j][i][0]==='W') {
+                output += InputList[j][i][1];
+            }
+            else {
+                output += InputList[j][i][1].toLowerCase();
+            };
+            if (count>0) {
+                i+=count
+                output += count
+            }
+        };
+        output += '/';
+    };
+    return output;
+};
 
 let chessBoardWidth = (w=window.innerWidth,h=window.innerHeight) => {
     if (h>w) {return Math.round(0.6*h)}
@@ -36,12 +50,12 @@ const ChessFrontEnd = () => {
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
-        <div class="grid-container1">
-            <span class= 'boarderleft'></span>
-            <div class='chessboard'>
+        <div className="grid-container1">
+            <span className= 'boarderleft'></span>
+            <div className='chessboard'>
                 <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
                  id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
-                 position={'start'} 
+                 position={startingLayout} 
                  animationDuration='300'
                  areArrowsAllowed='true'
                  arePiecesDraggable='true'
@@ -64,30 +78,30 @@ const ChessFrontEnd = () => {
                  />
             </div>
 
-            <div class='details'>
-                <span class='selet-move-button'>
-                    <button class='type2'>Select Move</button>
+            <div className='details'>
+                <span className='selet-move-button'>
+                    <button className='type2'>Select Move</button>
                 </span>
 
-                <span class='last-moves'>
-                    <h2 class='last-moves-header'>Last Moves</h2>
-                    <p class='last-moves-text'>efwasdf</p>
+                <span className='last-moves'>
+                    <h2 className='last-moves-header'>Last Moves</h2>
+                    <p className='last-moves-text'>startingString</p>
                 </span>
 
-                <span class='black-pieces-taken'>
-                    <h2 class='black-pieces-taken-header'>Black Pieces Taken</h2>
-                    <p class='black-pieces-taken-text'>dfbgdfvyjh</p>
+                <span className='black-pieces-taken'>
+                    <h2 className='black-pieces-taken-header'>Black Pieces Taken</h2>
+                    <p className='black-pieces-taken-text'>dfbgdfvyjh</p>
                 </span>
 
-                <span class='white-pieces-taken'>
-                    <h2 class='white-pieces-taken-header'>White Pieces</h2>
-                    <p class='white-pieces-taken-text'>sghnyjukyjt</p>
+                <span className='white-pieces-taken'>
+                    <h2 className='white-pieces-taken-header'>White Pieces</h2>
+                    <p className='white-pieces-taken-text'>sghnyjukyjt</p>
                 </span>
 
-                <span class= 'boarderright'></span>
+                <span className= 'boarderright'></span>
 
-                <span class= 'disclaimer'>
-                    <p class='disclaimer-text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
+                <span className= 'disclaimer'>
+                    <p className='disclaimer-text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
                 </span>
             </div>
         </div>
