@@ -16,6 +16,11 @@ const startingLayout = [
     []
     ];
 
+let chessBoardWidth = (w=window.innerWidth,h=window.innerHeight) => {
+    if (w>h) {return round(0.6*w)}
+    else {return round(0.6*w)}
+};
+
 const ChessFrontEnd = () => {
     return(
     <div className="ChessFrontEnd">
@@ -23,7 +28,18 @@ const ChessFrontEnd = () => {
         <div class="grid-container1">
             <div class= 'boarderleft'></div>
             <div class='chessboard'>
-            <Chessboard id='board1' position={'start'} />
+            <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
+            id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
+             position={'start'} 
+             animationDuration='300'
+             areArrowsAllowed='true'
+             arePiecesDraggable='true'
+             arePremovesAllowed='true'
+             boardOrientation='white'
+             boardwidth={chessBoardWidth}
+             clearPremovesOnRightClick='true'
+             customArrowColor='#eda215'
+             />
             </div>
 
             <div class='selet-move-button'>
