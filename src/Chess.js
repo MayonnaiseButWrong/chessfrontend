@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import { Chessboard } from "react-chessboard";
 import { Chess } from 'chess.js';
 import toFen from './listToFEN.js'
-import { useState } from 'react';
+
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
 var startingLayout = [
@@ -17,16 +17,31 @@ var startingLayout = [
     ['WR','WN','WB','WQ','WK','WB','WN','WR']
     ];
 
-var startingString = toFen(startingLayout);
+
 
 const ChessFrontEnd = () => {
 
-    const [game, setGame] = useState(new Chess())
-    game.move({
-      from: 'e2',
-      to: 'e4',
-    });
+    var startingString = toFen(startingLayout);
 
+    setTimeout(() => {
+        setString()
+     }, 2000);
+
+    function setString () {
+    startingString = toFen([
+        ['BR','BN','BB','BQ','BK','BB','BN','BR'],
+        ['BP','BP','BP','BP','BP','BP','BP','BP'],
+        ['MT','MT','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','MT','MT','WP','MT','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','MT','MT'],
+        ['WP','WP','WP','WP','MT','WP','WP','WP'],
+        ['WR','WN','WB','WQ','WK','WB','WN','WR']
+        ])
+        console.log(startingString)
+        return startingString
+    }
+    console.log(startingString)
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
@@ -35,24 +50,17 @@ const ChessFrontEnd = () => {
                 <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
                  id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
                  position={startingString} 
-                 animationDuration='300'
-                 areArrowsAllowed='true'
-                 arePiecesDraggable='true'
-                 arePremovesAllowed='false'
-                 boardOrientation='white'
-                 clearPremovesOnRightClick='false'
-                 snapToCursor='true'
-                 showBoardNotation='true'
                  customArrowColor='#eda215'
                  customBoardStyle={{
                      borderRadius: '15px',
-                     boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5'
+                     boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
                  }}
                  customDarkSquareStyle={{backgroundColor: '#1c1c1c'}}
                  customLightSquareStyle={{backgroundColor: '#d6d6d6'}}
                  customDropSquareStyle={{boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)' }}
                  customPremoveDarkSquareStyle={{backgroundColor: '#470a61'}}
                  customPremoveLightSquareStyle={{backgroundColor: '#6c4080'}}
+                 onPieceClick={console.log(startingString)}
                  />
             </div>
 
