@@ -36,6 +36,12 @@ h1{
   font-size: 10pt;
   color:#a4a4a4
 }
+
+@media only screen and (min-width: 700px) {
+  .boarderright {  min-width: 10vw;}
+  .boarderleft {  min-width: 10vw;}
+}
+
 button{
   background: #707070;
   border:none;
@@ -46,7 +52,7 @@ button{
   min-height: 80px;
   object-fit: fill;
   border-radius: 15px;
-  color:rgb(179, 179, 179);
+  color:rgb(250, 250, 250);
   font-weight: lighter;
   cursor:pointer;
   font-size: 0.8em;

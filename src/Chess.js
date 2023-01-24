@@ -19,8 +19,6 @@ var startingLayout = [
 
 var startingString = toFen(startingLayout);
 
-console.log(startingString)
-
 var chessBoardWidth = (window.innerWidth>window.innerHeight) ? window.innerHeight : window.innerWidth
 
 
@@ -29,11 +27,10 @@ const ChessFrontEnd = () => {
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
         <div className="grid-container1">
-            <span className= 'boarderleft'></span>
             <div className='chessboard'>
                 <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
                  id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
-                 position={{startingString}} 
+                 position={startingString} 
                  animationDuration='300'
                  areArrowsAllowed='true'
                  arePiecesDraggable='true'
@@ -63,21 +60,18 @@ const ChessFrontEnd = () => {
 
                 <span className='last-moves'>
                     <h2 className='last-moves-header'>Last Moves</h2>
-                    <p className='last-moves-text'>iuvbhlijbvgctigyh</p>
+                    <p className='last-moves-text' id='p1'>iuvbhlijbvgctigyh</p>
                 </span>
 
                 <span className='black-pieces-taken'>
                     <h2 className='black-pieces-taken-header'>Black Pieces Taken</h2>
-                    <p className='black-pieces-taken-text'>dfbgdfvyjh</p>
+                    <p className='black-pieces-taken-text' id='black-pieces-taken-text'>dfbgdfvyjh</p>
                 </span>
 
                 <span className='white-pieces-taken'>
                     <h2 className='white-pieces-taken-header'>White Pieces</h2>
-                    <p className='white-pieces-taken-text'>sghnyjukyjt</p>
+                    <p className='white-pieces-taken-text' id ='white-pieces-taken-text'>sghnyjukyjt</p>
                 </span>
-
-                <span className= 'boarderright'></span>
-
                 <span className= 'disclaimer'>
                     <p className='disclaimer-text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
                 </span>
@@ -86,5 +80,13 @@ const ChessFrontEnd = () => {
     </div>
     );
 };
+
+//const timeout = setTimeout(setString,10000);
+//
+//window.onload = setString ()
+//
+//function setString () {
+//    document.getElementById("p1").innerHTML = 'sfgdgrdthdf'
+//}
 
 export default ChessFrontEnd;

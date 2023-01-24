@@ -1,7 +1,7 @@
 import React,{Component, useState, useEffect} from 'react';
 import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom';
 import ChessFrontEnd from './Chess.js';
-import {OptionsPage} from './OptionsPage.js';
+import OptionsPage from './OptionsPage.js';
 
 
 
