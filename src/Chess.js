@@ -2,10 +2,11 @@ import './Chess.css'
 import {Link} from 'react-router-dom'
 import { Chessboard } from "react-chessboard";
 import Chess from 'chess.js';
+import toFen from './listToFEN.js'
 
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
-const startingLayout = [
+var startingLayout = [
     ['BR','BN','BB','BQ','BK','BB','BN','BR'],
     ['BP','BP','BP','BP','BP','BP','BP','BP'],
     ['MT','MT','MT','MT','MT','MT','MT','MT'],
@@ -16,35 +17,12 @@ const startingLayout = [
     ['WR','WN','WB','WQ','WK','WB','WN','WR']
     ];
 
-let startingString = (InputList=startingLayout) => {
-    var output ='';
-    var count =0;
-    for (let j = 0; j < InputList.length; j++) {
-        for (let i = 0; i < InputList[i].length; i++) {
-            count=0
-            while (InputList[j][i+count][0]==='M') {
-                count++
-            }
-            if (InputList[j][i][0]==='W') {
-                output += InputList[j][i][1];
-            }
-            else {
-                output += InputList[j][i][1].toLowerCase();
-            };
-            if (count>0) {
-                i+=count
-                output += count
-            }
-        };
-        output += '/';
-    };
-    return output;
-};
+var startingString = toFen(startingLayout);
 
-let chessBoardWidth = (w=window.innerWidth,h=window.innerHeight) => {
-    if (h>w) {return Math.round(0.6*h)}
-    else {return Math.round(0.6*w)}
-};
+console.log(startingString)
+
+var chessBoardWidth = (window.innerWidth>window.innerHeight) ? window.innerHeight : window.innerWidth
+
 
 const ChessFrontEnd = () => {
     return(
@@ -55,7 +33,7 @@ const ChessFrontEnd = () => {
             <div className='chessboard'>
                 <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
                  id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
-                 position={startingLayout} 
+                 position={{startingString}} 
                  animationDuration='300'
                  areArrowsAllowed='true'
                  arePiecesDraggable='true'
@@ -85,7 +63,7 @@ const ChessFrontEnd = () => {
 
                 <span className='last-moves'>
                     <h2 className='last-moves-header'>Last Moves</h2>
-                    <p className='last-moves-text'>startingString</p>
+                    <p className='last-moves-text'>iuvbhlijbvgctigyh</p>
                 </span>
 
                 <span className='black-pieces-taken'>
