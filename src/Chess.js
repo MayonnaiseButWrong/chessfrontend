@@ -1,9 +1,9 @@
 import './Chess.css'
 import {Link} from 'react-router-dom'
 import { Chessboard } from "react-chessboard";
-import Chess from 'chess.js';
+import { Chess } from 'chess.js';
 import toFen from './listToFEN.js'
-
+import { useState } from 'react';
 //<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
 
 var startingLayout = [
@@ -19,10 +19,14 @@ var startingLayout = [
 
 var startingString = toFen(startingLayout);
 
-var chessBoardWidth = (window.innerWidth>window.innerHeight) ? window.innerHeight : window.innerWidth
-
-
 const ChessFrontEnd = () => {
+
+    const [game, setGame] = useState(new Chess())
+    game.move({
+      from: 'e2',
+      to: 'e4',
+    });
+
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
@@ -34,10 +38,9 @@ const ChessFrontEnd = () => {
                  animationDuration='300'
                  areArrowsAllowed='true'
                  arePiecesDraggable='true'
-                 arePremovesAllowed='true'
+                 arePremovesAllowed='false'
                  boardOrientation='white'
-                 boardwidth={chessBoardWidth}
-                 clearPremovesOnRightClick='true'
+                 clearPremovesOnRightClick='false'
                  snapToCursor='true'
                  showBoardNotation='true'
                  customArrowColor='#eda215'

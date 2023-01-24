@@ -10,8 +10,8 @@ h1 {
 .chessboard {
    grid-row:1;
    grid-column:1;
-   width: 60vh;
-   height: 60vh;
+   width: 70vh;
+   height: 70vh;
    border-radius: 15px;
 }
 
@@ -78,17 +78,22 @@ h1 {
       display: grid;
       position: relative;
       width: 90vw;
-      grid-template: 40% 40% 20% / 50% 50%;
+      grid-template: 70vw 40% 20% / 50% 50%;
       gap: 10px;
       padding: 10px;
    }
-   .chessboard, .select-move-button {
+   .chessboard {
       grid-area: 1 / 1 / 1/ span 2;
-    }
-    .details {
+      width: 70vw;
+      height: 70vw;
+   }
+   .select-move-button {
+      grid-area: 1 / 1 / 1/ span 2;
+   }
+   .details {
       grid-area : 2 / 1 / 2 / span 2;
       padding: 50px;
-    }
+   }
 }
 button{
    background: #707070;

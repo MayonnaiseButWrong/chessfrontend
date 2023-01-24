@@ -38,8 +38,8 @@ h1{
 }
 
 @media only screen and (min-width: 700px) {
-  .boarderright {  min-width: 10vw;}
-  .boarderleft {  min-width: 10vw;}
+  .boarderright {  min-width: 5vw;}
+  .boarderleft {  min-width: 5vw;}
 }
 
 button{
