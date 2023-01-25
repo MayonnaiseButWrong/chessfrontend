@@ -1,5 +1,5 @@
 import './Chess.css'
-import {Link} from 'react-router-dom'
+import {Link, UNSAFE_enhanceManualRouteObjects} from 'react-router-dom'
 import { Chessboard } from "react-chessboard";
 import { Chess } from 'chess.js';
 import toFen from './listToFEN.js'
@@ -25,52 +25,186 @@ const ChessFrontEnd = () => {
 
     function generateQMoves() {
         var moves=[];
-        for (let i = 0; i < 10; i++) {
-            moves.append([i,0]);
-            moves.append([-i,0]);
-            moves.append([0,i]);
-            moves.append([0,-i]);
-            moves.append([i,i]);
-            moves.append([i,-i]);
-            moves.append([-i,i]);
-            moves.append([-i,-i]);
-        };
+        var direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([i,0]);};
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([-i,0]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([0,i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([0,-i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([i,i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([i,-i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([-i,i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([-i,-i]);}
+        moves.append(direction);
         return moves
     }
 
     function generateBMoves() {
         var moves=[];
-        for (let i = 0; i < 10; i++) {
-            moves.append([i,i]);
-            moves.append([-i,i]);
-            moves.append([-i,-i]);
-            moves.append([i,-i]);
-        };
+        var direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([i,i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([-i,i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([-i,-i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([i,-i]);}
+        moves.append(direction);
         return moves
     };
 
     function generateRMoves() {
         var moves=[];
-        for (let i = 0; i < 10; i++) {
-            moves.append([i,0]);
-            moves.append([-i,0]);
-            moves.append([0,i]);
-            moves.append([0,-i]);
-        }
+        var direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([i,0]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([-i,0]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([0,i]);}
+        moves.append(direction);
+        direction=[];
+        for (let i = 0; i < 10; i++) {direction.append([0,-i]);}
+        moves.append(direction);
         return moves
     }
 
     function toCoOrdinates(InputTuple) {
         const letters=['A','B','C','D','E','F','G','H']
-        return letters[InputTuple[0]]+InputTuple[1]
+        return letters[(InputTuple[0])]+String(7-InputTuple[1])
     }
 
     function toTuple(InputCoOrdinates) {
         const letters=['A','B','C','D','E','F','G','H']
-        return [letters.findIndex(InputCoOrdinates[0]),InputCoOrdinates[1]]
+        return [Number(letters.findIndex(InputCoOrdinates[0])),7-Number(InputCoOrdinates[1])]
     }
 
-    //setTimeout(() => {
+    function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
+        var moves=[];
+        if (turn==='B') {
+            for (let i = 0; i < 8; i++) {
+                if ((currentLayout[6][i])==='BP') {
+                    if (currentLayout[5][i]==='MT') {
+                        if (currentLayout[6][i][0]==='W'||currentLayout[6][i]==='MT') {
+                            moves.append([toCoOrdinates([i,1]),toCoOrdinates([i,3 ])]);
+                        };
+                    };
+                };
+            };
+        };
+        if (turn==='W') {
+            for (let i = 0; i < 8; i++) {
+                if ((currentLayout[6][i])==='WP') {
+                    if (currentLayout[5][i]==='MT') {
+                        if (currentLayout[6][i][0]==='B'||currentLayout[6][i]==='MT') {
+                            moves.append([toCoOrdinates([i,6]),toCoOrdinates([i,4])]);
+                        };
+                    };
+                };
+            };
+        };
+        //add en passant here
+        return moves
+    };
+
+    function checkVectors (currentLayout,turn) {
+        const moveVectors = {
+            'Q': Qmoves=generateQMoves,
+            'vectorNumber': [[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]],
+            'B': Bmoves=generateBMoves,
+            'N': [[[3,1]],[[1,3]],[[-1,3]],[[-3,1]],[[-3,-1]],[[-1,-3]],[[1,-3]],[[3,-1]]],
+            'R': Rmoves=generateRMoves,
+            'P': [[[0,1]]]
+        }
+        var moves=[];
+        var vector=[];
+        var currenDirection=[];
+        for (let j = 0; j < 8; i++) {
+            for (let i = 0; i < 8; i++) {
+                for (let direction = 0; direction < moveVectors.length(); direction++) {
+                    currenDirection= moveVectors[currentLayout[j][i][1]][direction]
+                    for (let vectorNumber = 0; vectorNumber <currenDirection.length(); vectorNumber++) {
+                        vector===moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                        if (turn==='B') {
+                            if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='B') {
+                                moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                            } else {
+                                vectorNumber=currenDirection.length()
+                            };
+                        };
+                        if (turn==='W') {
+                            if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
+                                moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                            } else {
+                                vectorNumber=currenDirection.length()
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        return moves
+    };
+
+    function castling (previosMovesList,turn) {
+        var flag = false;
+        const letters=['A','B','C','D','E','F','G','H']
+        if (turn==='W'){
+            if (previosMovesList.includes([toTuple('E1'),toTuple('E2')])||previosMovesList.includes([toTuple('E1'),toTuple('F1')])||previosMovesList.includes([toTuple('E1'),toTuple('F2')])||previosMovesList.includes([toTuple('E1'),toTuple('D1')])||previosMovesList.includes([toTuple('E1'),toTuple('D2')])) {
+                return []
+            };
+            for (let i = 1; i < 9; i++) {
+                if (previosMovesList.includes([toTuple('A1'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('A1'),toTuple(letters[i-1]+'1')])) {
+                    flag===true
+                };
+                if (previosMovesList.includes([toTuple('H1'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('H1'),toTuple(letters[i-1]+'1')])) {
+                    flag===true
+                };
+            };
+            if (flag===false){
+                return [['E1','C1'],['E1','G1']]
+            };
+        };
+        if (turn==='B'){
+            if (previosMovesList.includes([toTuple('E8'),toTuple('E7')])||previosMovesList.includes([toTuple('E8'),toTuple('F8')])||previosMovesList.includes([toTuple('E8'),toTuple('F7')])||previosMovesList.includes([toTuple('E8'),toTuple('D8')])||previosMovesList.includes([toTuple('E8'),toTuple('D7')])) {
+                return []
+            };
+            for (let i = 1; i < 9; i++) {
+                if (previosMovesList.includes([toTuple('A8'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('A8'),toTuple(letters[i-1]+'8')])) {
+                    flag===true
+                };
+                if (previosMovesList.includes([toTuple('H8'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('H8'),toTuple(letters[i-1]+'8')])) {
+                    flag===true
+                };
+            };
+            if (flag===false){
+                return [['E8','C8'],['E8','G8']]
+            };
+        };
+    };
+
+    function castlingIsPossibe(currentLayout){
+        //find out if a castle is even possible using the current board layout
+    }
+
+    ////setTimeout() => {
     //    setString()
     // }, 2000);
 //
@@ -101,33 +235,15 @@ const ChessFrontEnd = () => {
         ['WR','WN','WB','WQ','WK','WB','WN','WR']
         ];
 
-    function generatePossibleMoves (currentLayout) {
-        const moveVectors = {
-            'Q': Qmoves=generateQMoves,
-            'K': [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[0,-1]],
-            'B': Bmoves=generateBMoves,
-            'N': [[3,1],[1,3],[-1,3],[-3,1],[-3,-1],[-1,-3],[1,-3],[3,-1]],
-            'R': Rmoves=generateRMoves,
-            'P': [[0,1]]
-        }
+    function generatePossibleMoves(currentLayout,turn,previosMovesList) {
         var moves=[];
-        for (let j = 0; j < 10; i++) {
-            for (let i = 0; i < 10; i++) {
-                for (let k = 0; k < moveVectors[currentLayout[j][i][1]].length(); k++) {
-                if (currentLayout[j][i][0]==='B'){
-                    if (currentLayout[j-moveVectors[currentLayout[j][i][1]][k][1]][i+moveVectors[currentLayout[j][i][1]][k][0]]==='MT')
-                        moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+moveVectors[currentLayout[j][i][1]][k][0],j+moveVectors[currentLayout[j][i][1]][k][1]])])
-                    };
-                };
-                if (currentLayout[j][i][0]==='W'){
-                    if (currentLayout[j+moveVectors[currentLayout[j][i][1]][k][1]][i+moveVectors[currentLayout[j][i][1]][k][0]]==='MT') {
-                        moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+moveVectors[currentLayout[j][i][1]][k][0],j+moveVectors[currentLayout[j][i][1]][k][1]])])
-                    };
-                };
-            };
-        };
-    };
-
+        //check if there is a check
+        moves.concat(checkVectors(currentLayout,turn));
+        moves.concat(checkPawnSpecialMove(currentLayout,turn,previosMovesList));
+        if (castlingIsPossibe(currentLayout)==true){
+            moves.concat(calstleing(previosMovesList,turn));
+        }
+    }
 
     function OnClick (square){
         console.log('here2')
