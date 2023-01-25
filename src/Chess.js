@@ -23,12 +23,42 @@ const ChessFrontEnd = () => {
 
     var startingString = toFen(startingLayout);
 
-    setTimeout(() => {
-        setString()
-     }, 2000);
+    function generateQMoves(){
+        var moves=[];
+        for (let i = 0; i < 10; i++) {
+            moves.append([i,0]);
+            moves.append([-i,0]);
+            moves.append([0,i]);
+            moves.append([0,-i]);
+            moves.append([i,i]);
+            moves.append([i,-i]);
+            moves.append([-i,i]);
+            moves.append([-i,-i]);
+        };
+        return moves
+    }
 
-    function setString () {
-    startingString = toFen([
+    //setTimeout(() => {
+    //    setString()
+    // }, 2000);
+//
+    //function setString () {
+    //startingString = toFen([
+    //    ['BR','BN','BB','BQ','BK','BB','BN','BR'],
+    //    ['BP','BP','BP','BP','BP','BP','BP','BP'],
+    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    //    ['MT','MT','MT','MT','WP','MT','MT','MT'],
+    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    //    ['WP','WP','WP','WP','MT','WP','WP','WP'],
+    //    ['WR','WN','WB','WQ','WK','WB','WN','WR']
+    //    ])
+    //    console.log(startingString)
+    //    return startingString
+    //}
+    //console.log(startingString)
+    
+    var currentLayout=[
         ['BR','BN','BB','BQ','BK','BB','BN','BR'],
         ['BP','BP','BP','BP','BP','BP','BP','BP'],
         ['MT','MT','MT','MT','MT','MT','MT','MT'],
@@ -37,11 +67,24 @@ const ChessFrontEnd = () => {
         ['MT','MT','MT','MT','MT','MT','MT','MT'],
         ['WP','WP','WP','WP','MT','WP','WP','WP'],
         ['WR','WN','WB','WQ','WK','WB','WN','WR']
-        ])
-        console.log(startingString)
-        return startingString
+        ];
+
+    function generatePossibleMoves (currentLayout) {
+        const moveVectors = {
+            'Q': Qmoves=generateQMoves,
+            'K': [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[0,-1]],
+            'B': Bmoves=generateBMoves,
+            'N': [],
+            'R': [],
+            'P': []
+        }
     }
-    console.log(startingString)
+
+
+    function OnClick (square){
+        console.log('here2')
+    }
+
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
@@ -55,12 +98,12 @@ const ChessFrontEnd = () => {
                      borderRadius: '15px',
                      boxShadow: '0 5px 15px rgba(0, 0, 0, 0.5)'
                  }}
-                 customDarkSquareStyle={{backgroundColor: '#1c1c1c'}}
+                 customDarkSquareStyle={{backgroundColor: '#1f1f1f'}}
                  customLightSquareStyle={{backgroundColor: '#d6d6d6'}}
                  customDropSquareStyle={{boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)' }}
                  customPremoveDarkSquareStyle={{backgroundColor: '#470a61'}}
                  customPremoveLightSquareStyle={{backgroundColor: '#6c4080'}}
-                 onPieceClick={console.log(startingString)}
+                 onPieceClick={OnClick}
                  />
             </div>
 
