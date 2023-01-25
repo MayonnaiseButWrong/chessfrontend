@@ -23,7 +23,7 @@ const ChessFrontEnd = () => {
 
     var startingString = toFen(startingLayout);
 
-    function generateQMoves(){
+    function generateQMoves() {
         var moves=[];
         for (let i = 0; i < 10; i++) {
             moves.append([i,0]);
@@ -36,6 +36,38 @@ const ChessFrontEnd = () => {
             moves.append([-i,-i]);
         };
         return moves
+    }
+
+    function generateBMoves() {
+        var moves=[];
+        for (let i = 0; i < 10; i++) {
+            moves.append([i,i]);
+            moves.append([-i,i]);
+            moves.append([-i,-i]);
+            moves.append([i,-i]);
+        };
+        return moves
+    };
+
+    function generateRMoves() {
+        var moves=[];
+        for (let i = 0; i < 10; i++) {
+            moves.append([i,0]);
+            moves.append([-i,0]);
+            moves.append([0,i]);
+            moves.append([0,-i]);
+        }
+        return moves
+    }
+
+    function toCoOrdinates(InputTuple) {
+        const letters=['A','B','C','D','E','F','G','H']
+        return letters[InputTuple[0]]+InputTuple[1]
+    }
+
+    function toTuple(InputCoOrdinates) {
+        const letters=['A','B','C','D','E','F','G','H']
+        return [letters.findIndex(InputCoOrdinates[0]),InputCoOrdinates[1]]
     }
 
     //setTimeout(() => {
@@ -74,11 +106,27 @@ const ChessFrontEnd = () => {
             'Q': Qmoves=generateQMoves,
             'K': [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[0,-1]],
             'B': Bmoves=generateBMoves,
-            'N': [],
-            'R': [],
-            'P': []
+            'N': [[3,1],[1,3],[-1,3],[-3,1],[-3,-1],[-1,-3],[1,-3],[3,-1]],
+            'R': Rmoves=generateRMoves,
+            'P': [[0,1]]
         }
-    }
+        var moves=[];
+        for (let j = 0; j < 10; i++) {
+            for (let i = 0; i < 10; i++) {
+                for (let k = 0; k < moveVectors[currentLayout[j][i][1]].length(); k++) {
+                if (currentLayout[j][i][0]==='B'){
+                    if (currentLayout[j-moveVectors[currentLayout[j][i][1]][k][1]][i+moveVectors[currentLayout[j][i][1]][k][0]]==='MT')
+                        moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+moveVectors[currentLayout[j][i][1]][k][0],j+moveVectors[currentLayout[j][i][1]][k][1]])])
+                    };
+                };
+                if (currentLayout[j][i][0]==='W'){
+                    if (currentLayout[j+moveVectors[currentLayout[j][i][1]][k][1]][i+moveVectors[currentLayout[j][i][1]][k][0]]==='MT') {
+                        moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+moveVectors[currentLayout[j][i][1]][k][0],j+moveVectors[currentLayout[j][i][1]][k][1]])])
+                    };
+                };
+            };
+        };
+    };
 
 
     function OnClick (square){
