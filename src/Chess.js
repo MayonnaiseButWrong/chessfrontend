@@ -1,5 +1,5 @@
 import './Chess.css'
-import {Link, UNSAFE_enhanceManualRouteObjects} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { Chessboard } from "react-chessboard";
 import { Chess } from 'chess.js';
 import toFen from './listToFEN.js'
@@ -26,63 +26,63 @@ const ChessFrontEnd = () => {
     function generateQMoves() {
         var moves=[];
         var direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([i,0]);};
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([i,0]);};
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([-i,0]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([-i,0]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([0,i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([0,i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([0,-i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([0,-i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([i,i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([i,i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([i,-i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([i,-i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([-i,i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([-i,i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([-i,-i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([-i,-i]);}
+        moves.push(direction);
         return moves
     }
 
     function generateBMoves() {
         var moves=[];
         var direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([i,i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([i,i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([-i,i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([-i,i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([-i,-i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([-i,-i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([i,-i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([i,-i]);}
+        moves.push(direction);
         return moves
     };
 
     function generateRMoves() {
         var moves=[];
         var direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([i,0]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([i,0]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([-i,0]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([-i,0]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([0,i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([0,i]);}
+        moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.append([0,-i]);}
-        moves.append(direction);
+        for (let i = 0; i < 10; i++) {direction.push([0,-i]);}
+        moves.push(direction);
         return moves
     }
 
@@ -98,12 +98,13 @@ const ChessFrontEnd = () => {
 
     function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
         var moves=[];
+        var currentPiece='';
         if (turn==='B') {
             for (let i = 0; i < 8; i++) {
                 if ((currentLayout[6][i])==='BP') {
                     if (currentLayout[5][i]==='MT') {
                         if (currentLayout[6][i][0]==='W'||currentLayout[6][i]==='MT') {
-                            moves.append([toCoOrdinates([i,1]),toCoOrdinates([i,3 ])]);
+                            moves.push([toCoOrdinates([i,1]),toCoOrdinates([i,3 ])]);
                         };
                     };
                 };
@@ -114,7 +115,29 @@ const ChessFrontEnd = () => {
                 if ((currentLayout[6][i])==='WP') {
                     if (currentLayout[5][i]==='MT') {
                         if (currentLayout[6][i][0]==='B'||currentLayout[6][i]==='MT') {
-                            moves.append([toCoOrdinates([i,6]),toCoOrdinates([i,4])]);
+                            moves.push([toCoOrdinates([i,6]),toCoOrdinates([i,4])]);
+                        };
+                    };
+                };
+            };
+        };
+
+        for (let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
+                currentPiece=currentLayout[j][i]
+                if (currentPiece[1]==='P') {
+                    if (turn==='W'&&turn===currentPiece[0]) {
+                        if (i===0||currentLayout[j-1][1][0]==='B') {
+                            moves.push([toCoOrdinates([0,j]),toCoOrdinates([1,j-1])]);
+                        } else if (i===7||currentLayout[j-1][6][0]==='B') {
+                            moves.push([toCoOrdinates([7,j]),toCoOrdinates([6,j-1])]);
+                        };
+                    };
+                    if (turn==='B'&&turn===currentPiece[0]) {
+                        if (i===0||currentLayout[j+1][1][0]==='B') {
+                            moves.push([toCoOrdinates([0,j]),toCoOrdinates([1,j+1])]);
+                        } else if (i===7||currentLayout[j+1][6][0]==='B') {
+                            moves.push([toCoOrdinates([7,j]),toCoOrdinates([6,j+1])]);
                         };
                     };
                 };
@@ -125,35 +148,38 @@ const ChessFrontEnd = () => {
     };
 
     function checkVectors (currentLayout,turn) {
+        var Qmoves=generateQMoves();
+        var Bmoves=generateBMoves();
+        var Rmoves=generateRMoves();
         const moveVectors = {
-            'Q': Qmoves=generateQMoves,
+            'Q': Qmoves,
             'vectorNumber': [[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]],
-            'B': Bmoves=generateBMoves,
+            'B': Bmoves,
             'N': [[[3,1]],[[1,3]],[[-1,3]],[[-3,1]],[[-3,-1]],[[-1,-3]],[[1,-3]],[[3,-1]]],
-            'R': Rmoves=generateRMoves,
+            'R': Rmoves,
             'P': [[[0,1]]]
         }
         var moves=[];
         var vector=[];
         var currenDirection=[];
-        for (let j = 0; j < 8; i++) {
+        for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
-                for (let direction = 0; direction < moveVectors.length(); direction++) {
+                for (let direction = 0; direction < moveVectors.length; direction++) {
                     currenDirection= moveVectors[currentLayout[j][i][1]][direction]
-                    for (let vectorNumber = 0; vectorNumber <currenDirection.length(); vectorNumber++) {
-                        vector===moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                    for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
+                        vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
                         if (turn==='B') {
                             if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='B') {
-                                moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
                             } else {
-                                vectorNumber=currenDirection.length()
+                                vectorNumber=currenDirection.length
                             };
                         };
                         if (turn==='W') {
                             if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
-                                moves.append([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
                             } else {
-                                vectorNumber=currenDirection.length()
+                                vectorNumber=currenDirection.length
                             };
                         };
                     };
@@ -172,10 +198,10 @@ const ChessFrontEnd = () => {
             };
             for (let i = 1; i < 9; i++) {
                 if (previosMovesList.includes([toTuple('A1'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('A1'),toTuple(letters[i-1]+'1')])) {
-                    flag===true
+                    flag=true
                 };
                 if (previosMovesList.includes([toTuple('H1'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('H1'),toTuple(letters[i-1]+'1')])) {
-                    flag===true
+                    flag=true
                 };
             };
             if (flag===false){
@@ -188,10 +214,10 @@ const ChessFrontEnd = () => {
             };
             for (let i = 1; i < 9; i++) {
                 if (previosMovesList.includes([toTuple('A8'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('A8'),toTuple(letters[i-1]+'8')])) {
-                    flag===true
+                    flag=true
                 };
                 if (previosMovesList.includes([toTuple('H8'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('H8'),toTuple(letters[i-1]+'8')])) {
-                    flag===true
+                    flag=true
                 };
             };
             if (flag===false){
@@ -200,9 +226,23 @@ const ChessFrontEnd = () => {
         };
     };
 
-    function castlingIsPossibe(currentLayout){
-        //find out if a castle is even possible using the current board layout
-    }
+    function castlingIsPossibe(currentLayout,turn) {
+        if (turn === 'B' ) {
+            for (let i = 0; i < 8; i++) {
+                if (!(currentLayout[0][i]==='MT')) {
+                    return false
+                };
+            };
+        };
+        if (turn === 'W' ) {
+            for (let i = 0; i < 8; i++) {
+                if (!(currentLayout[7][i]==='MT')) {
+                    return false
+                };
+            };
+        };
+        return true
+    };
 
     ////setTimeout() => {
     //    setString()
@@ -240,10 +280,13 @@ const ChessFrontEnd = () => {
         //check if there is a check
         moves.concat(checkVectors(currentLayout,turn));
         moves.concat(checkPawnSpecialMove(currentLayout,turn,previosMovesList));
-        if (castlingIsPossibe(currentLayout)==true){
-            moves.concat(calstleing(previosMovesList,turn));
+        if (castlingIsPossibe(currentLayout,turn)===true){
+            moves.concat(castling(previosMovesList,turn));
         }
     }
+    
+    var moves = generatePossibleMoves(currentLayout,'W',[])
+    console.log(moves)
 
     function OnClick (square){
         console.log('here2')
