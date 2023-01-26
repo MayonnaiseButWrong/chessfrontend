@@ -26,28 +26,28 @@ const ChessFrontEnd = () => {
     function generateQMoves() {
         var moves=[];
         var direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([i,0]);};
+        for (let i = 0; i < 10; i++) {direction.push([Number(i),Number(0)]);};
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([-i,0]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(-i),Number(0)]);}
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([0,i]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(0),Number(i)]);}
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([0,-i]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(0),Number(-i)]);}
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([i,i]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(i),Number(i)]);}
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([i,-i]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(i),Number(-i)]);}
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([-i,i]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(-i),Number(i)]);}
         moves.push(direction);
         direction=[];
-        for (let i = 0; i < 10; i++) {direction.push([-i,-i]);}
+        for (let i = 0; i < 10; i++) {direction.push([Number(-i),Number(-i)]);}
         moves.push(direction);
         return moves
     }
@@ -159,15 +159,17 @@ const ChessFrontEnd = () => {
             'R': Rmoves,
             'P': [[[0,1]]]
         }
+        console.log('here3')
         var moves=[];
         var vector=[];
         var currenDirection=[];
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
-                for (let direction = 0; direction < moveVectors.length; direction++) {
+                for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
                     currenDirection= moveVectors[currentLayout[j][i][1]][direction]
                     for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
                         vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                        console.log(vector,currentLayout[j+vector[1]][i+vector[0]])
                         if (turn==='B') {
                             if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='B') {
                                 moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
@@ -181,6 +183,7 @@ const ChessFrontEnd = () => {
                             } else {
                                 vectorNumber=currenDirection.length
                             };
+                            console.log(i,j,i+vector[0],j-vector[1])
                         };
                     };
                 };
@@ -279,18 +282,23 @@ const ChessFrontEnd = () => {
         var moves=[];
         //check if there is a check
         moves.concat(checkVectors(currentLayout,turn));
+        console.log(checkVectors(currentLayout,turn))
         moves.concat(checkPawnSpecialMove(currentLayout,turn,previosMovesList));
-        if (castlingIsPossibe(currentLayout,turn)===true){
+        if (castlingIsPossibe(currentLayout,turn)===true) {
             moves.concat(castling(previosMovesList,turn));
         }
+        return moves
     }
     
     var moves = generatePossibleMoves(currentLayout,'W',[])
-    console.log(moves)
+    //for (let i = 0; i < moves.length; i++) {
+    //    console.log(moves.toString());
+    //};
+    //console.log(moves);
 
     function OnClick (square){
-        console.log('here2')
-    }
+        console.log('here2');
+    };
 
     return(
     <div className="ChessFrontEnd">
