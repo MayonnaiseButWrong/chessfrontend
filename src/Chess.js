@@ -88,12 +88,12 @@ const ChessFrontEnd = () => {
 
     function toCoOrdinates(InputTuple) {
         const letters=['A','B','C','D','E','F','G','H']
-        return letters[(InputTuple[0])]+String(7-InputTuple[1])
+        return letters[(InputTuple[0])]+String(8-InputTuple[1])
     }
 
     function toTuple(InputCoOrdinates) {
         const letters=['A','B','C','D','E','F','G','H']
-        return [Number(letters.findIndex(InputCoOrdinates[0])),7-Number(InputCoOrdinates[1])]
+        return [Number(letters.findIndex(InputCoOrdinates[0])),8-Number(InputCoOrdinates[1])]
     }
 
     function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
@@ -153,37 +153,46 @@ const ChessFrontEnd = () => {
         var Rmoves=generateRMoves();
         const moveVectors = {
             'Q': Qmoves,
-            'vectorNumber': [[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]],
+            'K': [[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]],
             'B': Bmoves,
-            'N': [[[3,1]],[[1,3]],[[-1,3]],[[-3,1]],[[-3,-1]],[[-1,-3]],[[1,-3]],[[3,-1]]],
+            'N': [[[2,1]],[[1,2]],[[-1,2]],[[-2,1]],[[-2,-1]],[[-1,-2]],[[1,-2]],[[2,-1]]],
             'R': Rmoves,
             'P': [[[0,1]]]
         }
-        console.log('here3')
         var moves=[];
         var vector=[];
         var currenDirection=[];
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
-                for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
-                    currenDirection= moveVectors[currentLayout[j][i][1]][direction]
-                    for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
-                        vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
-                        console.log(vector,currentLayout[j+vector[1]][i+vector[0]])
-                        if (turn==='B') {
-                            if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='B') {
-                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
-                            } else {
-                                vectorNumber=currenDirection.length
+                if (!(currentLayout[j][i]==='MT')){
+                    for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
+                        currenDirection= moveVectors[currentLayout[j][i][1]][direction]
+                        for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
+                            vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                            if (turn==='B') {
+                                if (currentLayout[j][i][0]==='B') {
+                                    if ((j+vector[1])<8&&(j+vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0){
+                                        if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
+                                            moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                                        } else {
+                                            vectorNumber=currenDirection.length;
+                                            break;
+                                        };
+                                    };
+                                };
                             };
-                        };
-                        if (turn==='W') {
-                            if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
-                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
-                            } else {
-                                vectorNumber=currenDirection.length
+                            if (turn==='W') {
+                                if (currentLayout[j][i][0]==='W') {
+                                    if ((j-vector[1])<8&&(j-vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0) {
+                                        if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j-vector[1]][i+vector[0]][0]==='B') {
+                                            moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                                        } else {
+                                            vectorNumber=currenDirection.length;
+                                            break;
+                                        };
+                                    };
+                                };
                             };
-                            console.log(i,j,i+vector[0],j-vector[1])
                         };
                     };
                 };
@@ -280,21 +289,20 @@ const ChessFrontEnd = () => {
 
     function generatePossibleMoves(currentLayout,turn,previosMovesList) {
         var moves=[];
+        var PawnSpecialMoves=[];
         //check if there is a check
-        moves.concat(checkVectors(currentLayout,turn));
-        console.log(checkVectors(currentLayout,turn))
-        moves.concat(checkPawnSpecialMove(currentLayout,turn,previosMovesList));
+        moves=checkVectors(currentLayout,turn)
+        PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList)
+        moves=moves.concat(PawnSpecialMoves);
         if (castlingIsPossibe(currentLayout,turn)===true) {
             moves.concat(castling(previosMovesList,turn));
         }
         return moves
     }
     
-    var moves = generatePossibleMoves(currentLayout,'W',[])
-    //for (let i = 0; i < moves.length; i++) {
-    //    console.log(moves.toString());
-    //};
-    //console.log(moves);
+    var moves = []
+    moves=generatePossibleMoves(currentLayout,'W',[]);
+    console.log(moves.toString());
 
     function OnClick (square){
         console.log('here2');
