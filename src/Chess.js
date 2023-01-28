@@ -4,8 +4,6 @@ import { Chessboard } from "react-chessboard";
 import { Chess } from 'chess.js';
 import toFen from './listToFEN.js'
 
-//<Link to='/'><button onClick='ChessFrontEnd(2,1)'> Quit / New game</button></Link>
-
 var startingLayout = [
     ['BR','BN','BB','BQ','BK','BB','BN','BR'],
     ['BP','BP','BP','BP','BP','BP','BP','BP'],
@@ -161,6 +159,7 @@ const ChessFrontEnd = () => {
             };
         };
         //add en passant here
+        //add promotion
         return moves
     };
 
@@ -253,6 +252,7 @@ const ChessFrontEnd = () => {
                 return [['E8','C8'],['E8','G8']]
             };
         };
+        //fix castling,if any of the squares are in check then castling isn't possible on that side
     };
 
     function castlingIsPossibe(currentLayout,turn) {
@@ -273,7 +273,7 @@ const ChessFrontEnd = () => {
         return true
     };
 
-    function findLine(currentLayout,position1,piece,position2){
+    function findLine(position1,piece,position2){
         var Qmoves=generateQMoves();
         var Bmoves=generateBMoves();
         var Rmoves=generateRMoves();
@@ -316,7 +316,7 @@ const ChessFrontEnd = () => {
         if (castlingIsPossibe(currentLayout,turn)===true) {
             opponentMoves.concat(castling(previosMovesList,turn));
         };
-        for (let Move = 0; Move < 8; Move++) {
+        for (let Move = 0; Move < opponentMoves.length; Move++) {
             position=opponentMoves[Move][1]
             if (position===KingPosition) {
                 return {'is Check':true,'position':position,'piece':currentLayout[toTuple(position)[1]][toTuple(position)[0]][1]}
@@ -375,13 +375,14 @@ const ChessFrontEnd = () => {
         if (check['is Check']===false) {
             return moves;
         } else {
-            Line=findLine(currentLayout,KingPosition,check['piece'],check['position'])
-            for (let Move = 0; Move < 8; Move++) {
+            Line=findLine(KingPosition,check['piece'],check['position'])
+            for (let Move = 0; Move < moves.length; Move++) {
                 position=moves[Move][1]
                 if (Line.includes(position)===true){
                     CheckMoves.push(moves[Move])
-                }
+                };
             };
+            return CheckMoves
         };
     };
     
@@ -389,8 +390,20 @@ const ChessFrontEnd = () => {
     moves=generatePossibleMoves(currentLayout,'W',[]);
     console.log(moves.toString());
 
-    function OnClick (square){
-        console.log('here2');
+    function MoveSuccessful (sourceSquare, targetSquare, piece) {
+        var sourceSquare = sourceSquare.toUpperCase();
+        var targetSquare = targetSquare.toUpperCase();
+        var piece = piece.toUpperCase();
+        var moves = generatePossibleMoves(currentLayout,'W',[]);
+        console.log('here2',sourceSquare, targetSquare, piece);
+        console.log(moves.toLocaleString());
+        for (let Move = 0; Move < moves.length; Move++) {
+            if (moves[Move][0]===sourceSquare&&moves[Move][1]===targetSquare) {
+                console.log('ofevnj m')
+                return true;
+            };
+        };
+        return false;
     };
 
     return(
@@ -411,7 +424,6 @@ const ChessFrontEnd = () => {
                  customDropSquareStyle={{boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)' }}
                  customPremoveDarkSquareStyle={{backgroundColor: '#470a61'}}
                  customPremoveLightSquareStyle={{backgroundColor: '#6c4080'}}
-                 onPieceClick={OnClick}
                  />
             </div>
 
