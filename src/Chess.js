@@ -182,39 +182,39 @@ const ChessFrontEnd = () => {
                         temp=i;
                         j=3;
                         i++;
-                        startSquare=toCoOrdinaes([i,j]);
-                        positionList.push(toCoOrdinaes([i+1,j]));
-                        while (i<8&&j>1&&flag===flase) {
+                        startSquare=toCoOrdinates([i,j]);
+                        positionList.push(toCoOrdinates([i+1,j]));
+                        while (i<8&&j>1&&flag===false) {
                             j--;
                             i++;
                             flag=true;
                             if (i<6&&currentLayout[j][i]==='BP') {
                                 flag=false;
-                                positionList.push(toCoOrdinaes([i,j]));
+                                positionList.push(toCoOrdinates([i,j]));
                             };
                         };
-                        endSquare=toCoOrdinaes([i,j-1]);
+                        endSquare=toCoOrdinates([i,j-1]);
                         i=temp;
-                        enPassantMoves.push([startSquare,endsquare,positionList])
+                        enPassantMoves.push([startSquare,endSquare,positionList])
                     };
                     if (i<6&&currentLayout[3][i-1]==='BP') {
                         temp=i;
                         j=3;
                         i--;
-                        startSquare=toCoOrdinaes([i,j]);
-                        positionList.push(toCoOrdinaes([i+1,j]));
-                        while (i<8&&j>1&&flag===flase) {
+                        startSquare=toCoOrdinates([i,j]);
+                        positionList.push(toCoOrdinates([i+1,j]));
+                        while (i<8&&j>1&&flag===false) {
                             j--;
                             i--;
                             flag=true;
                             if (i<6&&currentLayout[j][i]==='BP') {
                                 flag=false;
-                                positionList.push(toCoOrdinaes([i,j]));
+                                positionList.push(toCoOrdinates([i,j]));
                             };
                         };
-                        endSquare=toCoOrdinaes([i,j-1]);
+                        endSquare=toCoOrdinates([i,j-1]);
                         i=temp;
-                        enPassantMoves.push([startSquare,endsquare,positionList])
+                        enPassantMoves.push([startSquare,endSquare,positionList])
                     };
                 };
             };
@@ -224,39 +224,39 @@ const ChessFrontEnd = () => {
                         temp=i;
                         j=4;
                         i++;
-                        startSquare=toCoOrdinaes([i,j]);
-                        positionList.push(toCoOrdinaes([i+1,j]));
-                        while (i<8&&j<6&&flag===flase) {
+                        startSquare=toCoOrdinates([i,j]);
+                        positionList.push(toCoOrdinates([i+1,j]));
+                        while (i<8&&j<6&&flag===false) {
                             j++;
                             i++;
                             flag=true;
                             if (i<6&&currentLayout[j][i]==='WP') {
                                 flag=false;
-                                positionList.push(toCoOrdinaes([i,j]));
+                                positionList.push(toCoOrdinates([i,j]));
                             };
                         };
-                        endSquare=toCoOrdinaes([i,j+1]);
+                        endSquare=toCoOrdinates([i,j+1]);
                         i=temp;
-                        enPassantMoves.push([startSquare,endsquare,positionList])
+                        enPassantMoves.push([startSquare,endSquare,positionList])
                     };
                     if (i<6&&currentLayout[4][i-1]==='WP') {
                         temp=i;
                         j=4;
                         i--;
-                        startSquare=toCoOrdinaes([i,j]);
-                        positionList.push(toCoOrdinaes([i+1,j]));
-                        while (i<8&&j<6&&flag===flase) {
+                        startSquare=toCoOrdinates([i,j]);
+                        positionList.push(toCoOrdinates([i+1,j]));
+                        while (i<8&&j<6&&flag===false) {
                             j++;
                             i--;
                             flag=true;
                             if (i<6&&currentLayout[j][i]==='WP') {
                                 flag=false;
-                                positionList.push(toCoOrdinaes([i,j]));
+                                positionList.push(toCoOrdinates([i,j]));
                             };
                         };
-                        endSquare=toCoOrdinaes([i,j+1]);
+                        endSquare=toCoOrdinates([i,j+1]);
                         i=temp;
-                        enPassantMoves.push([startSquare,endsquare,positionList])
+                        enPassantMoves.push([startSquare,endSquare,positionList])
                     };//penis
                 };
             };
@@ -344,10 +344,11 @@ const ChessFrontEnd = () => {
         return moves
     };
 
-    function castling (previosMovesList,turn) {
+    function castling (previosMovesList,turn,opponentMoves) {
         var flag = false;
         var l=true;
         var r=true;
+        var position=''
         const letters=['A','B','C','D','E','F','G','H']
         if (turn==='W'){
             if (previosMovesList.includes([toTuple('E1'),toTuple('E2')])||previosMovesList.includes([toTuple('E1'),toTuple('F1')])||previosMovesList.includes([toTuple('E1'),toTuple('F2')])||previosMovesList.includes([toTuple('E1'),toTuple('D1')])||previosMovesList.includes([toTuple('E1'),toTuple('D2')])) {
@@ -362,7 +363,7 @@ const ChessFrontEnd = () => {
                 };
                 for (let Move = 0; Move < opponentMoves.length; Move++) {
                     position=opponentMoves[Move][1]
-                    if (position[1]==String(8)) {
+                    if (position[1]===String(1)) {
                         if (position[1]<5) {
                             l=true
                         } else {
@@ -372,7 +373,7 @@ const ChessFrontEnd = () => {
                     };
                 };
             };
-            if (flag===false||(l==false&&r==false)) {
+            if (flag===false||(l===false&&r===false)) {
                 return [['E1','C1'],['E1','G1']]
             };
             if (l===false) {
@@ -395,7 +396,7 @@ const ChessFrontEnd = () => {
                 };
                 for (let Move = 0; Move < opponentMoves.length; Move++) {
                     position=opponentMoves[Move][1]
-                    if (position[1]==String(8)) {
+                    if (position[1]===String(8)) {
                         if (position[1]<5) {
                             l=true
                         } else {
@@ -423,21 +424,12 @@ const ChessFrontEnd = () => {
                 if (!(currentLayout[0][i]==='MT'||currentLayout[0][i]==='BR'||currentLayout[0][i]==='BK')) {
                     return false
                 };
-                if (opponentMoves) {
+                if (opponentMoves.includes([i,0])) {
                     return false
                 };
             };
         };
-        if (turn === 'W' ) {
-            for (let i = 0; i < 8; i++) {
-                if (!(currentLayout[7][i]==='MT'||currentLayout[0][i]==='WR'||currentLayout[0][i]==='WK')) {
-                    return false
-                };
-                if (isCheck(currentLayout,turn,previosMovesList,[i,7])) {
-                    return false
-                };
-            };
-        };
+        //not finished
         return true
     };
 
@@ -487,6 +479,7 @@ const ChessFrontEnd = () => {
     function generateOpponenMovesWithoutCastling(currentLayout,turn,previosMovesList) {
         turn=(turn==='W')?'B':'W'
         var opponentMoves=[];
+        var opponentMovesWithoutCastling=[];
         var PawnSpecialMoves=[];
         opponentMoves=checkVectors(currentLayout,turn)
         PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList)
@@ -498,25 +491,23 @@ const ChessFrontEnd = () => {
         return [opponentMoves,opponentMovesWithoutCastling]
     }
 
-    ////setTimeout(() => {
-    //    setString()
-    // }, 2000);
+    //setTimeout(startingString=setString(),10000);
 //
-    //function setString () {
-    //startingString = toFen([
-    //    ['BR','BN','BB','BQ','BK','BB','BN','BR'],
-    //    ['BP','BP','BP','BP','BP','BP','BP','BP'],
-    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-    //    ['MT','MT','MT','MT','WP','MT','MT','MT'],
-    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-    //    ['WP','WP','WP','WP','MT','WP','WP','WP'],
-    //    ['WR','WN','WB','WQ','WK','WB','WN','WR']
-    //    ])
-    //    console.log(startingString)
-    //    return startingString
-    //}
-    //console.log(startingString)
+    function setString () {
+    startingString = toFen([
+        ['BR','BN','BB','BQ','BK','BB','BN','BR'],
+        ['BP','BP','BP','BP','BP','BP','BP','BP'],
+        ['MT','MT','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','MT','MT','WP','MT','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','MT','MT'],
+        ['WP','WP','WP','WP','MT','WP','WP','WP'],
+        ['WR','WN','WB','WQ','WK','WB','WN','WR']
+        ])
+        console.log(startingString)
+        return startingString
+    }
+    console.log(startingString)
     
     var currentLayout=[
         ['BR','BN','BB','BQ','BK','BB','BN','BR'],
@@ -565,9 +556,9 @@ const ChessFrontEnd = () => {
         };
     };
     
-    var moves = []
-    moves=generatePossibleMoves(currentLayout,'W',[]);
-    console.log(moves.toString());
+    //var moves = []
+    //moves=generatePossibleMoves(currentLayout,'W',[]);
+    //console.log(moves.toString());
 
     function MoveSuccessful (sourceSquare, targetSquare, piece) {
         var sourceSquare = sourceSquare.toUpperCase();
