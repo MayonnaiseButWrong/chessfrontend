@@ -498,7 +498,7 @@ const ChessFrontEnd = () => {
         return [opponentMoves,opponentMovesWithoutCastling]
     }
 
-    ////setTimeout() => {
+    ////setTimeout(() => {
     //    setString()
     // }, 2000);
 //
