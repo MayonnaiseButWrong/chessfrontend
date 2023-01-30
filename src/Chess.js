@@ -177,14 +177,14 @@ const ChessFrontEnd = () => {
         var endSquare='';
         for (let i = 0; i < 8; j++) {
             if (turn==='W') {
-                if (currentLayout[4][i]==='WP') {
-                    if (i<6&&currentLayout[4][i+1]==='BP') {
+                if (currentLayout[3][i]==='WP') {
+                    if (i<6&&currentLayout[3][i+1]==='BP') {
                         temp=i;
-                        j=4;
+                        j=3;
                         i++;
                         startSquare=toCoOrdinaes([i,j]);
                         positionList.push(toCoOrdinaes([i+1,j]));
-                        while (i<8&&j>1&&falg===flase) {
+                        while (i<8&&j>1&&flag===flase) {
                             j--;
                             i++;
                             flag=true;
@@ -197,13 +197,13 @@ const ChessFrontEnd = () => {
                         i=temp;
                         enPassantMoves.push([startSquare,endsquare,positionList])
                     };
-                    if (i<6&&currentLayout[4][i-1]==='BP') {
+                    if (i<6&&currentLayout[3][i-1]==='BP') {
                         temp=i;
-                        j=4;
+                        j=3;
                         i--;
                         startSquare=toCoOrdinaes([i,j]);
                         positionList.push(toCoOrdinaes([i+1,j]));
-                        while (i<8&&j>1&&falg===flase) {
+                        while (i<8&&j>1&&flag===flase) {
                             j--;
                             i--;
                             flag=true;
@@ -216,7 +216,48 @@ const ChessFrontEnd = () => {
                         i=temp;
                         enPassantMoves.push([startSquare,endsquare,positionList])
                     };
-                    //add the same for black
+                };
+            };
+            if (turn==='B') {
+                if (currentLayout[4][i]==='BP') {
+                    if (i<6&&currentLayout[4][i+1]==='WP') {
+                        temp=i;
+                        j=4;
+                        i++;
+                        startSquare=toCoOrdinaes([i,j]);
+                        positionList.push(toCoOrdinaes([i+1,j]));
+                        while (i<8&&j<6&&flag===flase) {
+                            j++;
+                            i++;
+                            flag=true;
+                            if (i<6&&currentLayout[j][i]==='WP') {
+                                flag=false;
+                                positionList.push(toCoOrdinaes([i,j]));
+                            };
+                        };
+                        endSquare=toCoOrdinaes([i,j+1]);
+                        i=temp;
+                        enPassantMoves.push([startSquare,endsquare,positionList])
+                    };
+                    if (i<6&&currentLayout[4][i-1]==='WP') {
+                        temp=i;
+                        j=4;
+                        i--;
+                        startSquare=toCoOrdinaes([i,j]);
+                        positionList.push(toCoOrdinaes([i+1,j]));
+                        while (i<8&&j<6&&flag===flase) {
+                            j++;
+                            i--;
+                            flag=true;
+                            if (i<6&&currentLayout[j][i]==='WP') {
+                                flag=false;
+                                positionList.push(toCoOrdinaes([i,j]));
+                            };
+                        };
+                        endSquare=toCoOrdinaes([i,j+1]);
+                        i=temp;
+                        enPassantMoves.push([startSquare,endsquare,positionList])
+                    };//penis
                 };
             };
         };
