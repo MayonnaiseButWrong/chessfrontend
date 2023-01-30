@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import { Chessboard } from "react-chessboard";
 import { Chess } from 'chess.js';
 import toFen from './listToFEN.js'
+import { useEffect } from 'react';
 
 var startingLayout = [
     ['BR','BN','BB','BQ','BK','BB','BN','BR'],
@@ -160,9 +161,9 @@ const ChessFrontEnd = () => {
                 };
             };
         };
-        enPassantMoves=enPassant(currentLayout,turn,previosMovesList)
+        //enPassantMoves=enPassant(currentLayout,turn,previosMovesList)
         promotionMoves=Promotion(currentLayout,turn)
-        moves=moves.concat(enPassantMoves)
+        //moves=moves.concat(enPassantMoves)
         moves=moves.concat(promotionMoves)
         return moves
     };
@@ -424,12 +425,25 @@ const ChessFrontEnd = () => {
                 if (!(currentLayout[0][i]==='MT'||currentLayout[0][i]==='BR'||currentLayout[0][i]==='BK')) {
                     return false
                 };
-                if (opponentMoves.includes([i,0])) {
-                    return false
+                for (let Move=0; Move<opponentMoves.length; Move++) {
+                    if (opponentMoves[Move][1]===toCoOrdinates([i,0])) {
+                        return false
+                    };
                 };
             };
         };
-        //not finished
+        if (turn === 'W' ) {
+            for (let i = 0; i < 8; i++) {
+                if (!(currentLayout[7][i]==='MT'||currentLayout[7][i]==='WR'||currentLayout[7][i]==='WK')) {
+                    return false
+                };
+                for (let Move=0; Move<opponentMoves.length; Move++) {
+                    if (opponentMoves[Move][1]===toCoOrdinates([i,7])) {
+                        return false
+                    };
+                };
+            };
+        };
         return true
     };
 
@@ -476,7 +490,7 @@ const ChessFrontEnd = () => {
         return {'is Check':false,'position':'somewhere','piece':'someone'}
     }
 
-    function generateOpponenMovesWithoutCastling(currentLayout,turn,previosMovesList) {
+    function generateOpponenMoves(currentLayout,turn,previosMovesList) {
         turn=(turn==='W')?'B':'W'
         var opponentMoves=[];
         var opponentMovesWithoutCastling=[];
@@ -491,23 +505,33 @@ const ChessFrontEnd = () => {
         return [opponentMoves,opponentMovesWithoutCastling]
     }
 
-    //setTimeout(startingString=setString(),10000);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            var movesTuple = []
+            console.log('sdvbgr')
+            movesTuple=generatePossibleMoves(currentLayout,'W',[]);
+            console.log(movesTuple[0].toString());
+            console.log(movesTuple[1].toString())
+            return movesTuple
+        }, 5000);
+        return () => clearTimeout(timer);
+      }, []);
 //
-    function setString () {
-    startingString = toFen([
-        ['BR','BN','BB','BQ','BK','BB','BN','BR'],
-        ['BP','BP','BP','BP','BP','BP','BP','BP'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','MT','MT','WP','MT','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['WP','WP','WP','WP','MT','WP','WP','WP'],
-        ['WR','WN','WB','WQ','WK','WB','WN','WR']
-        ])
-        console.log(startingString)
-        return startingString
-    }
-    console.log(startingString)
+    //function setString () {
+    //startingString = toFen([
+    //    ['BR','BN','BB','BQ','BK','BB','BN','BR'],
+    //    ['BP','BP','BP','BP','BP','BP','BP','BP'],
+    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    //    ['MT','MT','MT','MT','WP','MT','MT','MT'],
+    //    ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    //    ['WP','WP','WP','WP','MT','WP','WP','WP'],
+    //    ['WR','WN','WB','WQ','WK','WB','WN','WR']
+    //    ])
+    //    console.log(startingString)
+    //    return startingString
+    //}
+    //console.log(startingString)
     
     var currentLayout=[
         ['BR','BN','BB','BQ','BK','BB','BN','BR'],
@@ -531,50 +555,48 @@ const ChessFrontEnd = () => {
         var opponentMovesTuple=[];
         var opponentMoves=[];
         var opponentMovesWithoutCastling=[];
-        opponentMovesTuple=generateOpponenMovesWithoutCastling(currentLayout,turn,previosMovesList)
-        opponentMoves=opponentMovesTuple[0]
-        opponentMovesWithoutCastling=opponentMovesTuple[1]
+        //opponentMovesTuple=generateOpponenMoves(currentLayout,turn,previosMovesList)
+        console.log('here')
+        //opponentMoves=opponentMovesTuple[0]
+        //opponentMovesWithoutCastling=opponentMovesTuple[1]
         KingPosition=findKing(currentLayout,turn);
         moves=checkVectors(currentLayout,turn);
         PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList);
         moves=moves.concat(PawnSpecialMoves);
-        check=isCheck(currentLayout,KingPosition,opponentMoves);
-        if (castlingIsPossibe(currentLayout,turn,moves,opponentMovesWithoutCastling)===true) {
-            moves.concat(castling(previosMovesList,turn));
-        };
-        if (check['is Check']===false) {
-            return moves;
-        } else {
-            Line=findLine(KingPosition,check['piece'],check['position'])
-            for (let Move = 0; Move < moves.length; Move++) {
-                position=moves[Move][1]
-                if (Line.includes(position)===true){
-                    CheckMoves.push(moves[Move])
-                };
-            };
-            return CheckMoves
-        };
+        //check=isCheck(currentLayout,KingPosition,opponentMoves);
+        //if (castlingIsPossibe(currentLayout,turn,moves,opponentMovesWithoutCastling)===true) {
+        //    moves.concat(castling(previosMovesList,turn));
+        //};
+        //if (check['is Check']===false) {
+        //    return moves;
+        //} else {
+        //    Line=findLine(KingPosition,check['piece'],check['position'])
+        //    for (let Move = 0; Move < moves.length; Move++) {
+        //        position=moves[Move][1]
+        //        if (Line.includes(position)===true){
+        //            CheckMoves.push(moves[Move])
+        //        };
+        //    };
+        //    return CheckMoves
+        //};
+        return [moves,opponentMoves]
     };
-    
-    //var moves = []
-    //moves=generatePossibleMoves(currentLayout,'W',[]);
-    //console.log(moves.toString());
 
-    function MoveSuccessful (sourceSquare, targetSquare, piece) {
-        var sourceSquare = sourceSquare.toUpperCase();
-        var targetSquare = targetSquare.toUpperCase();
-        var piece = piece.toUpperCase();
-        var moves = generatePossibleMoves(currentLayout,'W',[]);
-        console.log('here2',sourceSquare, targetSquare, piece);
-        console.log(moves.toLocaleString());
-        for (let Move = 0; Move < moves.length; Move++) {
-            if (moves[Move][0]===sourceSquare&&moves[Move][1]===targetSquare) {
-                console.log('ofevnj m')
-                return true;
-            };
-        };
-        return false;
-    };
+    //function MoveSuccessful (sourceSquare, targetSquare, piece) {
+    //    var sourceSquare = sourceSquare.toUpperCase();
+    //    var targetSquare = targetSquare.toUpperCase();
+    //    var piece = piece.toUpperCase();
+    //    var moves = generatePossibleMoves(currentLayout,'W',[]);
+    //    console.log('here2',sourceSquare, targetSquare, piece);
+    //    console.log(moves.toLocaleString());
+    //    for (let Move = 0; Move < moves.length; Move++) {
+    //        if (moves[Move][0]===sourceSquare&&moves[Move][1]===targetSquare) {
+    //            console.log('ofevnj m')
+    //            return true;
+    //        };
+    //    };
+    //    return false;
+    //};
 
     return(
     <div className="ChessFrontEnd">
