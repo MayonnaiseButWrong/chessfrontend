@@ -168,26 +168,77 @@ const ChessFrontEnd = () => {
     };
 
     function enPassant(currentLayout,turn,previosMovesList) {
-        
+        var j = 0;
+        var flag =false;
+        var positionList=[];
+        var temp=0;
+        var enPassantMoves=[];
+        var startSquare='';
+        var endSquare='';
+        for (let i = 0; i < 8; j++) {
+            if (turn==='W') {
+                if (currentLayout[4][i]==='WP') {
+                    if (i<6&&currentLayout[4][i+1]==='BP') {
+                        temp=i;
+                        j=4;
+                        i++;
+                        startSquare=toCoOrdinaes([i,j]);
+                        positionList.push(toCoOrdinaes([i+1,j]));
+                        while (i<8&&j>1&&falg===flase) {
+                            j--;
+                            i++;
+                            flag=true;
+                            if (i<6&&currentLayout[j][i]==='BP') {
+                                flag=false;
+                                positionList.push(toCoOrdinaes([i,j]));
+                            };
+                        };
+                        endSquare=toCoOrdinaes([i,j-1]);
+                        i=temp;
+                        enPassantMoves.push([startSquare,endsquare,positionList])
+                    };
+                    if (i<6&&currentLayout[4][i-1]==='BP') {
+                        temp=i;
+                        j=4;
+                        i--;
+                        startSquare=toCoOrdinaes([i,j]);
+                        positionList.push(toCoOrdinaes([i+1,j]));
+                        while (i<8&&j>1&&falg===flase) {
+                            j--;
+                            i--;
+                            flag=true;
+                            if (i<6&&currentLayout[j][i]==='BP') {
+                                flag=false;
+                                positionList.push(toCoOrdinaes([i,j]));
+                            };
+                        };
+                        endSquare=toCoOrdinaes([i,j-1]);
+                        i=temp;
+                        enPassantMoves.push([startSquare,endsquare,positionList])
+                    };
+                    //add the same for black
+                };
+            };
+        };
     };
 
     function Promotion(currentLayout,turn) {
         var promotionMoves = [];
-        for (let j = 0; j < 8; j++) {
+        for (let i = 0; i < 8; i++) {
             if (turn==='W') {
-                if (currentLayout[j][1]==='WP') {
-                    promotionMoves.push([toCoOrdinates([1,j]),toCoOrdinates([0,j]),['WQ']])
-                    promotionMoves.push([toCoOrdinates([1,j]),toCoOrdinates([0,j]),['WB']])
-                    promotionMoves.push([toCoOrdinates([1,j]),toCoOrdinates([0,j]),['WR']])
-                    promotionMoves.push([toCoOrdinates([1,j]),toCoOrdinates([0,j]),['WK']])
+                if (currentLayout[1][i]==='WP') {
+                    promotionMoves.push([toCoOrdinates([i,1]),toCoOrdinates([i,0]),['WQ']])
+                    promotionMoves.push([toCoOrdinates([i,1]),toCoOrdinates([i,0]),['WB']])
+                    promotionMoves.push([toCoOrdinates([i,1]),toCoOrdinates([i,0]),['WR']])
+                    promotionMoves.push([toCoOrdinates([i,1]),toCoOrdinates([i,0]),['WK']])
                 };
             };
             if (turn==='B'){
-                if (currentLayout[j][6]==='BP') {
-                    promotionMoves.push([toCoOrdinates([6,j]),toCoOrdinates([7,j]),['BQ']])
-                    promotionMoves.push([toCoOrdinates([6,j]),toCoOrdinates([7,j]),['BB']])
-                    promotionMoves.push([toCoOrdinates([6,j]),toCoOrdinates([7,j]),['BR']])
-                    promotionMoves.push([toCoOrdinates([6,j]),toCoOrdinates([7,j]),['BK']])
+                if (currentLayout[6][i]==='BP') {
+                    promotionMoves.push([toCoOrdinates([i,6]),toCoOrdinates([i,7]),['BQ']])
+                    promotionMoves.push([toCoOrdinates([i,6]),toCoOrdinates([i,7]),['BB']])
+                    promotionMoves.push([toCoOrdinates([i,6]),toCoOrdinates([i,7]),['BR']])
+                    promotionMoves.push([toCoOrdinates([i,6]),toCoOrdinates([i,7]),['BK']])
                 };
             };
         };
