@@ -161,9 +161,9 @@ const ChessFrontEnd = () => {
                 };
             };
         };
-        //enPassantMoves=enPassant(currentLayout,turn,previosMovesList)
+        enPassantMoves=enPassant(currentLayout,turn,previosMovesList)
         promotionMoves=Promotion(currentLayout,turn)
-        //moves=moves.concat(enPassantMoves)
+        moves=moves.concat(enPassantMoves)
         moves=moves.concat(promotionMoves)
         return moves
     };
@@ -176,7 +176,7 @@ const ChessFrontEnd = () => {
         var enPassantMoves=[];
         var startSquare='';
         var endSquare='';
-        for (let i = 0; i < 8; j++) {
+        for (let i = 0; i < 8; i++) {
             if (turn==='W') {
                 if (currentLayout[3][i]==='WP') {
                     if (i<6&&currentLayout[3][i+1]==='BP') {
@@ -259,6 +259,7 @@ const ChessFrontEnd = () => {
                         i=temp;
                         enPassantMoves.push([startSquare,endSquare,positionList])
                     };//penis
+                    // Not finished
                 };
             };
         };
@@ -346,10 +347,11 @@ const ChessFrontEnd = () => {
     };
 
     function castling (previosMovesList,turn,opponentMoves) {
-        var flag = false;
         var l=true;
         var r=true;
         var position=''
+        var currentSquare=[];
+        var Line=[];
         const letters=['A','B','C','D','E','F','G','H']
         if (turn==='W'){
             if (previosMovesList.includes([toTuple('E1'),toTuple('E2')])||previosMovesList.includes([toTuple('E1'),toTuple('F1')])||previosMovesList.includes([toTuple('E1'),toTuple('F2')])||previosMovesList.includes([toTuple('E1'),toTuple('D1')])||previosMovesList.includes([toTuple('E1'),toTuple('D2')])) {
@@ -357,32 +359,42 @@ const ChessFrontEnd = () => {
             };
             for (let i = 1; i < 9; i++) {
                 if (previosMovesList.includes([toTuple('A1'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('A1'),toTuple(letters[i-1]+'1')])) {
-                    flag=true
+                    return []
                 };
                 if (previosMovesList.includes([toTuple('H1'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('H1'),toTuple(letters[i-1]+'1')])) {
-                    flag=true
+                    return []
                 };
-                for (let Move = 0; Move < opponentMoves.length; Move++) {
-                    position=opponentMoves[Move][1]
-                    if (position[1]===String(1)) {
-                        if (position[1]<5) {
-                            l=true
-                        } else {
-                            r=true
+            };
+            for (let j = 0; j < 8; j++) {
+                for (let i = 0; i < 8; i++) {
+                    currentSquare=currentLayout[j][i];
+                    if(!(currentSquare==='MT')&&currentSquare[0]=='B'){
+                        for (let position = 0; position < 8; position++) {
+                            Line=findLine(toCoOrdinates([i,j]),currentSquare[1],toCoOrdinates([position,7]));
+                            if (Line.length>0) {
+                                for (let positionOnLine = 0; positionOnLine < Line.length; positionOnLine++) {
+                                    if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0]==='W'&&!(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0]==='WK')) {
+                                        if (Line[positionOnLine][1]<5) {
+                                            l=false
+                                        } else if (Line[positionOnLine][1]>5) {
+                                            r=false
+                                        } else {
+                                            return []
+                                        }
+                                    };
+                                };
+                            };
                         };
-                        flag=true
                     };
                 };
             };
-            if (flag===false||(l===false&&r===false)) {
+            if (l===false&&r===false) {
                 return [['E1','C1'],['E1','G1']]
-            };
-            if (l===false) {
+            } else if (l===false) {
                 return [['E1','G1']]
-            }
-            if (r===false) {
+            } else if (r===false) {
                 return [['E1','C1']]
-            }
+            };
         };
         if (turn==='B'){
             if (previosMovesList.includes([toTuple('E8'),toTuple('E7')])||previosMovesList.includes([toTuple('E8'),toTuple('F8')])||previosMovesList.includes([toTuple('E8'),toTuple('F7')])||previosMovesList.includes([toTuple('E8'),toTuple('D8')])||previosMovesList.includes([toTuple('E8'),toTuple('D7')])) {
@@ -390,45 +402,50 @@ const ChessFrontEnd = () => {
             };
             for (let i = 1; i < 9; i++) {
                 if (previosMovesList.includes([toTuple('A8'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('A8'),toTuple(letters[i-1]+'8')])) {
-                    flag=true
+                    return []
                 };
                 if (previosMovesList.includes([toTuple('H8'),toTuple('A'+String(i))])||previosMovesList.includes([toTuple('H8'),toTuple(letters[i-1]+'8')])) {
-                    flag=true
+                    return []
                 };
-                for (let Move = 0; Move < opponentMoves.length; Move++) {
-                    position=opponentMoves[Move][1]
-                    if (position[1]===String(8)) {
-                        if (position[1]<5) {
-                            l=true
-                        } else {
-                            r=true
+            };
+            for (let j = 0; j < 8; j++) {
+                for (let i = 0; i < 8; i++) {
+                    currentSquare=currentLayout[j][i];
+                    if(!(currentSquare==='MT')&&currentSquare[0]=='W'){
+                        for (let position = 0; position < 8; position++) {
+                            Line=findLine(toCoOrdinates([i,j]),currentSquare[1],toCoOrdinates([position,0]));
+                            if (Line.length>0) {
+                                for (let positionOnLine = 0; positionOnLine < Line.length; positionOnLine++) {
+                                    if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0]==='B'&&!(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0]==='BK')) {
+                                        if (Line[positionOnLine][1]<5) {
+                                            l=false
+                                        } else if (Line[positionOnLine][1]>5) {
+                                            r=false
+                                        } else {
+                                            return []
+                                        }
+                                    };
+                                };
+                            };
                         };
-                        flag=true
                     };
                 };
             };
-            if (flag===false){
-                return [['E8','C8'],['E8','G8']]
+            if (l===false&&r===false) {
+                return [['E1','C1'],['E1','G1']]
+            } else if (l===false) {
+                return [['E1','G1']]
+            } else if (r===false) {
+                return [['E1','C1']]
             };
-            if (l===false) {
-                return [['E8','G8']]
-            }
-            if (r===false) {
-                return [['E8','C8']]
-            }
         };
     };
 
-    function castlingIsPossibe(currentLayout,turn,opponentMoves) {
+    function castlingIsPossibe(currentLayout,turn) {
         if (turn === 'B' ) {
             for (let i = 0; i < 8; i++) {
                 if (!(currentLayout[0][i]==='MT'||currentLayout[0][i]==='BR'||currentLayout[0][i]==='BK')) {
                     return false
-                };
-                for (let Move=0; Move<opponentMoves.length; Move++) {
-                    if (opponentMoves[Move][1]===toCoOrdinates([i,0])) {
-                        return false
-                    };
                 };
             };
         };
@@ -436,11 +453,6 @@ const ChessFrontEnd = () => {
             for (let i = 0; i < 8; i++) {
                 if (!(currentLayout[7][i]==='MT'||currentLayout[7][i]==='WR'||currentLayout[7][i]==='WK')) {
                     return false
-                };
-                for (let Move=0; Move<opponentMoves.length; Move++) {
-                    if (opponentMoves[Move][1]===toCoOrdinates([i,7])) {
-                        return false
-                    };
                 };
             };
         };
@@ -496,12 +508,22 @@ const ChessFrontEnd = () => {
         var opponentMovesWithoutCastling=[];
         var PawnSpecialMoves=[];
         opponentMoves=checkVectors(currentLayout,turn)
+        console.log(opponentMoves.toLocaleString())
         PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList)
         opponentMoves=opponentMoves.concat(PawnSpecialMoves);
+        console.log(PawnSpecialMoves.toLocaleString())
         opponentMovesWithoutCastling=opponentMoves
         if (castlingIsPossibe(currentLayout,turn)===true) {
             opponentMoves.concat(castling(previosMovesList,turn));
         };
+        for (let Move = 0; Move < opponentMoves.length; Move++) {
+            if (opponentMoves===undefined) {opponentMoves.splice(Move,1)}
+        }
+        for (let Move = 0; Move < opponentMovesWithoutCastling.length; Move++) {
+            if (opponentMovesWithoutCastling===undefined) {opponentMovesWithoutCastling.splice(Move,1)}
+        }
+        opponentMoves.pop()//remove these pls
+        opponentMovesWithoutCastling.pop()
         return [opponentMoves,opponentMovesWithoutCastling]
     }
 
@@ -510,10 +532,9 @@ const ChessFrontEnd = () => {
             var movesTuple = []
             console.log('sdvbgr')
             movesTuple=generatePossibleMoves(currentLayout,'W',[]);
-            console.log(movesTuple[0].toString());
-            console.log(movesTuple[1].toString())
+            console.log(movesTuple.toLocaleString())
             return movesTuple
-        }, 5000);
+        }, 3000);
         return () => clearTimeout(timer);
       }, []);
 //
@@ -555,31 +576,36 @@ const ChessFrontEnd = () => {
         var opponentMovesTuple=[];
         var opponentMoves=[];
         var opponentMovesWithoutCastling=[];
-        //opponentMovesTuple=generateOpponenMoves(currentLayout,turn,previosMovesList)
-        console.log('here')
-        //opponentMoves=opponentMovesTuple[0]
-        //opponentMovesWithoutCastling=opponentMovesTuple[1]
+        opponentMovesTuple=generateOpponenMoves(currentLayout,turn,previosMovesList)
+        opponentMoves=opponentMovesTuple[0]
+        opponentMovesWithoutCastling=opponentMovesTuple[1]
+        console.log(opponentMoves.toString(),opponentMovesWithoutCastling.toString())
         KingPosition=findKing(currentLayout,turn);
         moves=checkVectors(currentLayout,turn);
         PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList);
         moves=moves.concat(PawnSpecialMoves);
-        //check=isCheck(currentLayout,KingPosition,opponentMoves);
-        //if (castlingIsPossibe(currentLayout,turn,moves,opponentMovesWithoutCastling)===true) {
-        //    moves.concat(castling(previosMovesList,turn));
-        //};
-        //if (check['is Check']===false) {
-        //    return moves;
-        //} else {
-        //    Line=findLine(KingPosition,check['piece'],check['position'])
-        //    for (let Move = 0; Move < moves.length; Move++) {
-        //        position=moves[Move][1]
-        //        if (Line.includes(position)===true){
-        //            CheckMoves.push(moves[Move])
-        //        };
-        //    };
-        //    return CheckMoves
-        //};
-        return [moves,opponentMoves]
+        check=isCheck(currentLayout,KingPosition,opponentMoves);
+        if (castlingIsPossibe(currentLayout,turn,moves,opponentMovesWithoutCastling)===true) {
+            moves.concat(castling(previosMovesList,turn));
+        };
+        if (check['is Check']===false) {
+            for (let Move = 0; Move < moves.length; Move++) {
+                if (moves===undefined) {moves.splice(Move,1)}
+            }
+            return moves;
+        } else {
+            Line=findLine(KingPosition,check['piece'],check['position'])
+            for (let Move = 0; Move < moves.length; Move++) {
+                position=moves[Move][1]
+                if (Line.includes(position)===true){
+                    CheckMoves.push(moves[Move])
+                };
+            };
+            for (let Move = 0; Move < CheckMoves.length; Move++) {
+                if (CheckMoves===undefined) {CheckMoves.splice(Move,1)}
+            }
+            return CheckMoves
+        };
     };
 
     //function MoveSuccessful (sourceSquare, targetSquare, piece) {
@@ -646,13 +672,5 @@ const ChessFrontEnd = () => {
     </div>
     );
 };
-
-//const timeout = setTimeout(setString,10000);
-//
-//window.onload = setString ()
-//
-//function setString () {
-//    document.getElementById("p1").innerHTML = 'sfgdgrdthdf'
-//}
 
 export default ChessFrontEnd;
