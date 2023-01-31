@@ -95,6 +95,14 @@ h1 {
       padding: 50px;
    }
 }
+
+@media only screen and (max-width: 300px) {
+   .chessboard {
+      width: 90vw;
+      height: 90vw;
+   }
+}
+
 button{
    background: #707070;
    border:none;

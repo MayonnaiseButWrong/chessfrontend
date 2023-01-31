@@ -17,4 +17,4 @@ let toFEN = (InputList) => {        //this one script has to be run every time t
     return output.substring(0,output.length-1);
 };
 
-export default toFEN
+export default toFEN;
