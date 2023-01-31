@@ -263,6 +263,7 @@ const ChessFrontEnd = () => {
                 };
             };
         };
+        return enPassantMoves
     };
 
     function Promotion(currentLayout,turn) {
