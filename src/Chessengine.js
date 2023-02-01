@@ -1,3 +1,5 @@
+import {toTuple,toCoOrdinates} from './translations.js'
+
 function generateQMoves() {
     let moves=[];
     let direction=[];
@@ -78,16 +80,6 @@ function findKing(currentLayout,turn){
     };
 };
 
-function toCoOrdinates(InputTuple) {
-    const letters=['A','B','C','D','E','F','G','H']
-    return letters[(InputTuple[0])]+String(8-InputTuple[1])
-}
-
-function toTuple(InputCoOrdinates) {
-    const letters=['A','B','C','D','E','F','G','H']
-    return [Number(letters.indexOf(InputCoOrdinates[0])),8-Number(InputCoOrdinates[1])]
-}
-
 function isLetter(element,letter) {element=letter}
 
 function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
@@ -154,6 +146,7 @@ function enPassant(currentLayout,turn,previosMovesList) {
     let enPassantMoves=[];
     let startSquare='';
     let endSquare='';
+    let templist=[];
     for (let i = 0; i < 8; i++) {
         if (turn==='W') {
             if (currentLayout[3][i]==='WP') {
@@ -174,7 +167,23 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     };
                     endSquare=toCoOrdinates([i,j-1]);
                     i=temp;
-                    enPassantMoves.push([startSquare,endSquare,positionList])
+                    if (j===1){
+                        templist.push('WQ')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('WB')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('WN')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('WR')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
                 if (i<6&&currentLayout[3][i-1]==='BP') {
                     temp=i;
@@ -193,7 +202,23 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     };
                     endSquare=toCoOrdinates([i,j-1]);
                     i=temp;
-                    enPassantMoves.push([startSquare,endSquare,positionList])
+                    if (j===1){
+                        templist.push('WQ')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('WB')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('WN')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('WR')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
             };
         };
@@ -216,7 +241,23 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     };
                     endSquare=toCoOrdinates([i,j+1]);
                     i=temp;
-                    enPassantMoves.push([startSquare,endSquare,positionList])
+                    if (j===6){
+                        templist.push('BQ')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('BB')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('BN')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('BR')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
                 if (i<6&&currentLayout[4][i-1]==='WP') {
                     temp=i;
@@ -235,7 +276,23 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     };
                     endSquare=toCoOrdinates([i,j+1]);
                     i=temp;
-                    enPassantMoves.push([startSquare,endSquare,positionList])
+                    if (j===6){
+                        templist.push('BQ')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('BB')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('BN')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                        templist=[]
+                        templist.push('BR')
+                        templist.push(positionList)
+                        enPassantMoves.push([startSquare,endSquare,templist])
+                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };//penis
                 // Not finished
             };
@@ -545,17 +602,14 @@ function generatePossibleMoves(currentLayout,turn,previosMovesList) {
     };
 };
 
-function MoveSuccessful (fromSquare, toSquare,currentLayout) {
-    let moves = generatePossibleMoves(currentLayout,'W',[]);
+function MoveSuccessful (fromSquare, toSquare,currentLayout,turn,previosMoves) {
+    let moves = generatePossibleMoves(currentLayout,turn,previosMoves);
     console.log('here2',fromSquare, toSquare);
     console.log(moves.toLocaleString());
     for (let Move = 0; Move < moves.length; Move++) {
         if (moves[Move][0]===fromSquare&&moves[Move][1]===toSquare) {
             console.log('ofevnj m')
             return [true,moves[Move]];
-        } else if (moves[Move][1]===fromSquare&&moves[Move][0]===toSquare) {
-            console.log('ofevnj m')
-            return [true,['nope']];
         };
     };
     return [false,['nope']];

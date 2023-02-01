@@ -1,6 +1,6 @@
 import './Chess.css'
 import { Chessboard } from "react-chessboard";
-import toFen from './listToFEN.js'
+import {toFEN,toTuple,toDict} from './translations.js'
 import MoveSuccessful from './Chessengine';
 
 var startingLayout = [
@@ -8,58 +8,95 @@ var startingLayout = [
     ['BP','BP','BP','BP','BP','BP','BP','BP'],
     ['MT','MT','MT','MT','MT','MT','MT','MT'],
     ['MT','MT','MT','MT','MT','MT','MT','MT'],
+    ['MT','MT','MT','MT','WP','MT','MT','MT'],
     ['MT','MT','MT','MT','MT','MT','MT','MT'],
-    ['MT','MT','MT','MT','MT','MT','MT','MT'],
-    ['WP','WP','WP','WP','WP','WP','WP','WP'],
+    ['WP','WP','WP','WP','MT','WP','WP','WP'],
     ['WR','WN','WB','WQ','WK','WB','WN','WR']
     ];
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
-var currentLayout = startingLayout
-var currentString = toFen(currentLayout);
-var currentMove = []
-var targetSquare = ''
-var currentPiece = ''
+var currentLayout = startingLayout;
+var currentString = toDict(currentLayout);
+var currentMove = [];
+var turn = 'W';
+var previosMoves = [];
 
-function toTuple(InputCoOrdinates) {
-    const letters=['A','B','C','D','E','F','G','H']
-    return [Number(letters.indexOf(InputCoOrdinates[0])),8-Number(InputCoOrdinates[1])]
-}
+function selectMove() {
+    console.log('skdfjbvhfjk')
+    if (currentMove.length>1) {
+        turn=(turn==='W')? 'B':'W';
+        previosMoves.push(currentMove);
+        currentMove=[];
+    };
+};
 
 function onDrop (fromSquare, toSquare, piece) {
     console.log(fromSquare,toSquare)
     let MoveSuccesfulTuple = [];
     fromSquare = String(fromSquare).toUpperCase();
     toSquare = String(toSquare).toUpperCase();
-    MoveSuccesfulTuple=MoveSuccessful(fromSquare,toSquare,currentLayout);
+    if(currentMove.length>1) {
+        let inverseMove=[currentMove[1],currentMove[0]]
+        if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0]==turn&&fromSquare===inverseMove[0]&&toSquare===inverseMove[1]) {
+            currentPiece=piece
+            currentMove=inverseMove
+            move(currentMove)
+            console.log('bhkjvgfytuygi')
+            return true
+        };
+    };
+    MoveSuccesfulTuple=MoveSuccessful(fromSquare,toSquare,currentLayout,turn,previosMoves);
     console.log(fromSquare,toSquare)
     if (MoveSuccesfulTuple[0]===true) {
-        move(fromSquare,toSquare)
         currentPiece=piece
         currentMove=MoveSuccesfulTuple[1]
+        move(currentMove)
         console.log('bhkjvgfytuygi')
         return true
     } else {return false;};
 }
 
-function move (fromSquare,toSquare) {
+function move (currentMove) {
     let boardCopy=currentLayout
+    let currentPosition=[]
+    fromSquare=currentMove[0]
+    toSquare=currentMove[1]
     console.log(toSquare)
     console.log(fromSquare)
     console.log(toTuple(toSquare))
     console.log(toTuple(fromSquare))
-    boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]]=boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
-    boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]='MT'
+    if (currentMove.length===3) {
+        if (currentMove[3][0][1]==='Q'||currentMove[3][0][1]==='B'||currentMove[3][0][1]==='R'||currentMove[3][0][1]==='N'){
+            boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]]=currentMove[3][0]
+            boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]='MT'
+            for (let move = 1; move < currentMoves[3].length; move++) {
+                currentPosition=toTuple(currentMove[3][move])
+                boardCopy[currentPosition[1]][currentPosition[0]]='MT'
+            }
+        } else {
+            for (let move = 0; move < currentMoves[3].length; move++) {
+                currentPosition=toTuple(currentMove[3][move])
+                boardCopy[currentPosition[1]][currentPosition[0]]='MT'
+            }
+        };
+    } else {
+        boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]]=boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+        boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]='MT'
+    };
     currentLayout=boardCopy
     console.log(currentLayout.toString())
-    currentString=toFen(currentLayout)
-    console.log(currentString)
+    currentString=toDict(currentLayout)
+    console.log(currentString,'2')
+}
+
+function currentPos (currentPosition) {
+    console.log(currentPosition)
 }
 
 const ChessFrontEnd = () => {
 
-    console.log(currentString)
+    console.log(currentString,'1')
     return(
     <div className="ChessFrontEnd">
         <h1>Chess</h1>
@@ -81,12 +118,13 @@ const ChessFrontEnd = () => {
                  customPremoveDarkSquareStyle={{backgroundColor: '#470a61'}}
                  customPremoveLightSquareStyle={{backgroundColor: '#6c4080'}}
                  onPieceDrop={onDrop}
+                 getPositionObject={currentPos}
                  />
             </div>
 
             <div className='details'>
                 <span className='selet-move-button'>
-                    <button className='type2'>Select Move</button>
+                    <button className='type2' onClick={selectMove}>Select Move</button>
                 </span>
 
                 <span className='last-moves'>
