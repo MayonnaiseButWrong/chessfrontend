@@ -87,4 +87,22 @@ let toDict = (InputList) => {
     return output;
 };
 
-export {toFEN,toDict,toTuple,toCoOrdinates,toBoardLayout,toXenonnumber};
+let toUnicode = (InputString) => {
+    let translationIndex = {
+        'BK':'♔',
+        'BQ':'♕',
+        'BR':'♖',
+        'BB':'♗',
+        'BN':'♘',
+        'BP':'♙',
+        'WK':'♚',
+        'WQ':'♛',
+        'WR':'♜	',
+        'WB':'♝	',
+        'WN':'♞',
+        'WP':'♟︎'
+    }
+    return translationIndex[InputString]
+}
+
+export {toFEN,toDict,toTuple,toCoOrdinates,toBoardLayout,toXenonnumber,toUnicode};

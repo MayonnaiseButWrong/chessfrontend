@@ -1,5 +1,8 @@
 import {toTuple,toCoOrdinates} from './Translations.js'
 
+var generatedBefore = false;
+var AllMoves = [];
+
 function generateQMoves() {
     let moves=[];
     let direction=[];
@@ -79,8 +82,6 @@ function findKing(currentLayout,turn){
         };
     };
 };
-
-function isLetter(element,letter) {element=letter}
 
 function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
     let moves=[];
@@ -603,7 +604,7 @@ function generatePossibleMoves(currentLayout,turn,previosMovesList) {
 };
 
 function MoveSuccessful (fromSquare, toSquare,currentLayout,turn,previosMoves) {
-    let moves = generatePossibleMoves(currentLayout,turn,previosMoves);
+    let moves = generateMoves(currentLayout,turn,previosMoves);
     console.log('here2',fromSquare, toSquare);
     console.log(moves.toLocaleString());
     for (let Move = 0; Move < moves.length; Move++) {
@@ -615,4 +616,20 @@ function MoveSuccessful (fromSquare, toSquare,currentLayout,turn,previosMoves) {
     return [false,['nope']];
 };
 
-export default MoveSuccessful;
+function isCheckmate (currentLayout,turn,previosMoves) {
+    let moves = generateMoves(currentLayout,turn,previosMoves);
+    if (moves.length>0) {
+        return true
+    }
+    return false
+}
+
+function generateMoves(currentLayout,turn,previosMoves) {
+    if (generatedBefore===false) {
+        AllMoves = generatePossibleMoves(currentLayout,turn,previosMoves);
+        generatedBefore = true
+    }
+    return AllMoves
+}
+
+export {MoveSuccessful, isCheckmate};
