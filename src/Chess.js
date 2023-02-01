@@ -19,6 +19,8 @@ var startingLayout = [
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
 //add checkamte
+//fix king movement
+//fix moving a piece on the board in general
 
 
 
