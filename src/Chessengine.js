@@ -1,4 +1,4 @@
-import {toTuple,toCoOrdinates} from './translations.js'
+import {toTuple,toCoOrdinates} from './Translations.js'
 
 function generateQMoves() {
     let moves=[];

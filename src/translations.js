@@ -28,13 +28,13 @@ let toBoardLayout = (InputNumber) => {
     for (let i = 0; i < 64; i++) {
         n=primeNumbers[i]
         numcount=0
-        while (InputNumber%n==0) {
+        while (InputNumber%n===0) {
             numcount+=1
-            InputNumber/n
+            InputNumber/=n
         }
         piece=Pieceslist[numcount]
         direction.push(piece)
-        if (i%8==0&&i>0) {
+        if (i%8===0&&i>0) {
             outputList.push(direction)
             direction=[]
         }
@@ -72,7 +72,7 @@ let toFEN = (InputList) => {        //this one script has to be run every time t
 };
 
 let toDict = (InputList) => {
-    let output = new Object();
+    let output = {};
     let outputString = '';
     let outputCoOrdinates='';
     for (let i = 0; i < 8; i++) {

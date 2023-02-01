@@ -1,6 +1,8 @@
 import './Chess.css'
+import {Text, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
 import { Chessboard } from "react-chessboard";
-import {toFEN,toTuple,toDict} from './translations.js'
+import {toFEN,toTuple,toDict} from './Translations.js'
 import MoveSuccessful from './Chessengine';
 
 var startingLayout = [
@@ -21,19 +23,12 @@ var currentString = toDict(currentLayout);
 var currentMove = [];
 var turn = 'W';
 var previosMoves = [];
-
-function selectMove() {
-    console.log('skdfjbvhfjk')
-    if (currentMove.length>1) {
-        turn=(turn==='W')? 'B':'W';
-        previosMoves.push(currentMove);
-        currentMove=[];
-    };
-};
+var text='sfghnjhhg' //temporary
 
 function onDrop (fromSquare, toSquare, piece) {
     console.log(fromSquare,toSquare)
     let MoveSuccesfulTuple = [];
+    let currentPiece=''
     fromSquare = String(fromSquare).toUpperCase();
     toSquare = String(toSquare).toUpperCase();
     if(currentMove.length>1) {
@@ -60,8 +55,8 @@ function onDrop (fromSquare, toSquare, piece) {
 function move (currentMove) {
     let boardCopy=currentLayout
     let currentPosition=[]
-    fromSquare=currentMove[0]
-    toSquare=currentMove[1]
+    let fromSquare=currentMove[0]
+    let toSquare=currentMove[1]
     console.log(toSquare)
     console.log(fromSquare)
     console.log(toTuple(toSquare))
@@ -70,12 +65,12 @@ function move (currentMove) {
         if (currentMove[3][0][1]==='Q'||currentMove[3][0][1]==='B'||currentMove[3][0][1]==='R'||currentMove[3][0][1]==='N'){
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]]=currentMove[3][0]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]='MT'
-            for (let move = 1; move < currentMoves[3].length; move++) {
+            for (let move = 1; move < currentMove[3].length; move++) {
                 currentPosition=toTuple(currentMove[3][move])
                 boardCopy[currentPosition[1]][currentPosition[0]]='MT'
             }
         } else {
-            for (let move = 0; move < currentMoves[3].length; move++) {
+            for (let move = 0; move < currentMove[3].length; move++) {
                 currentPosition=toTuple(currentMove[3][move])
                 boardCopy[currentPosition[1]][currentPosition[0]]='MT'
             }
@@ -94,7 +89,50 @@ function currentPos (currentPosition) {
     console.log(currentPosition)
 }
 
+const styles = StyleSheet.create({
+    last_moves_text: {
+        fontFamily: 'Raleway',
+        fontSize: 25,
+        fontWeight: 'light',
+        position: 'center',
+        color:'#dddddd'
+    },
+    black_pieces_taken_text: {
+        fontFamily: 'Raleway',
+        fontSize: 25,
+        fontWeight: 'light',
+        position: 'center',
+        color:'#dddddd'
+    },
+    white_pieces_taken_text: {
+        fontFamily: 'Raleway',
+        fontSize: 25,
+        fontWeight: 'light',
+        position: 'center',
+        color:'#dddddd'
+    },
+})
+
 const ChessFrontEnd = () => {
+
+    const [last_moves_text, setlast_moves_text] = useState("Bird's Nest");
+    const changelast_moves_text = (text) => {setlast_moves_text(text);}
+
+    const [black_pieces_taken_text, setblack_pieces_taken_text] = useState("Bird's Nest");
+    //setTitleText("Bird's Nest [pressed]");
+
+    const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("Bird's Nest");
+    //setTitleText("Bird's Nest [pressed]");
+
+    function selectMove() {
+        console.log('skdfjbvhfjk')
+        if (currentMove.length>1) {
+            turn=(turn==='W')? 'B':'W';
+            previosMoves.push(currentMove);
+            currentMove=[];
+            changelast_moves_text(text)
+        };
+    };
 
     console.log(currentString,'1')
     return(
@@ -123,26 +161,26 @@ const ChessFrontEnd = () => {
             </div>
 
             <div className='details'>
-                <span className='selet-move-button'>
+                <span className='selet_move_button'>
                     <button className='type2' onClick={selectMove}>Select Move</button>
                 </span>
 
-                <span className='last-moves'>
-                    <h2 className='last-moves-header'>Last Moves</h2>
-                    <p className='last-moves-text' id='p1'>iuvbhlijbvgctigyh</p>
+                <span className='last_moves'>
+                    <h2 className='last_moves_header'>Last Moves</h2>
+                    <Text style={styles.last_moves_text} className='last_moves_text' id='p1'>{last_moves_text}</Text>
                 </span>
 
-                <span className='black-pieces-taken'>
-                    <h2 className='black-pieces-taken-header'>Black Pieces Taken</h2>
-                    <p className='black-pieces-taken-text' id='black-pieces-taken-text'>dfbgdfvyjh</p>
+                <span className='black_pieces_taken'>
+                    <h2 className='black_pieces_taken_header'>Black Pieces Taken</h2>
+                    <Text style={styles.black_pieces_taken_text} className='black_pieces_taken_text' id='black_pieces_taken_text'>{black_pieces_taken_text}</Text>
                 </span>
 
-                <span className='white-pieces-taken'>
-                    <h2 className='white-pieces-taken-header'>White Pieces</h2>
-                    <p className='white-pieces-taken-text' id ='white-pieces-taken-text'>sghnyjukyjt</p>
+                <span className='white_pieces_taken'>
+                    <h2 className='white_pieces_taken_header'>White Pieces</h2>
+                    <Text style={styles.white_pieces_taken_text} className='white_pieces_taken_text' id ='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
                 </span>
                 <span className= 'disclaimer'>
-                    <p className='disclaimer-text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
+                    <p className='disclaimer_text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
                 </span>
             </div>
         </div>
