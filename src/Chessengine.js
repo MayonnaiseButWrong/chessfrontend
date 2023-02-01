@@ -126,8 +126,9 @@ function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
                     if (i<7&&currentLayout[j+1][i+1][0]==='B'){
                         moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+1,j+1])]);
                     };
-                    if (i>0&&currentLayout[j+1][i-1][0]==='B')
+                    if (i>0&&currentLayout[j+1][i-1][0]==='B') {
                             moves.push([toCoOrdinates([i,j]),toCoOrdinates([i-1,j+1])]);
+                    };
                 };
             };
         };
