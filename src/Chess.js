@@ -132,9 +132,11 @@ const ChessFrontEnd = () => {
             if (currentMove[3][0][1]==='Q'||currentMove[3][0][1]==='B'||currentMove[3][0][1]==='R'||currentMove[3][0][1]==='N'){
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]]=currentMove[3][0]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]='MT'
-                for (let move = 1; move < currentMove[3].length; move++) {
-                    currentPosition=toTuple(currentMove[3][move])
-                    boardCopy[currentPosition[1]][currentPosition[0]]='MT'
+                if (currentMove[3].length>1) {
+                    for (let move = 1; move < currentMove[3].length; move++) {
+                        currentPosition=toTuple(currentMove[3][move])
+                        boardCopy[currentPosition[1]][currentPosition[0]]='MT'
+                    }
                 }
             } else {
                 for (let move = 0; move < currentMove[3].length; move++) {
