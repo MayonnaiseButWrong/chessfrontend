@@ -158,11 +158,11 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     i++;
                     startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
-                    while (i<8&&j>1&&flag===false) {
+                    while (i<7&&j>1&&flag===false) {
                         j--;
                         i++;
                         flag=true;
-                        if (i<6&&currentLayout[j][i]==='BP') {
+                        if (currentLayout[j][i]==='BP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
@@ -187,13 +187,13 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
-                if (i<6&&currentLayout[3][i-1]==='BP') {
+                if (i>0&&currentLayout[3][i-1]==='BP') {
                     temp=i;
                     j=3;
                     i--;
                     startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
-                    while (i<8&&j>1&&flag===false) {
+                    while (i>=0&&j>1&&flag===false) {
                         j--;
                         i--;
                         flag=true;
@@ -232,11 +232,11 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     i++;
                     startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
-                    while (i<8&&j<6&&flag===false) {
+                    while (i<7&&j<6&&flag===false) {
                         j++;
                         i++;
                         flag=true;
-                        if (i<6&&currentLayout[j][i]==='WP') {
+                        if (currentLayout[j][i]==='WP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
@@ -261,17 +261,17 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
-                if (i<6&&currentLayout[4][i-1]==='WP') {
+                if (i>0&&currentLayout[4][i-1]==='WP') {
                     temp=i;
                     j=4;
                     i--;
                     startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
-                    while (i<8&&j<6&&flag===false) {
+                    while (i>0&&j<6&&flag===false) {
                         j++;
                         i--;
                         flag=true;
-                        if (i<6&&currentLayout[j][i]==='WP') {
+                        if (currentLayout[j][i]==='WP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
@@ -296,7 +296,6 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };//penis
-                // Not finished
             };
         };
     };
