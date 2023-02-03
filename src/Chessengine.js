@@ -3,6 +3,9 @@ import {toTuple,toCoOrdinates} from './Translations.js'
 var generatedBefore = false;
 var AllMoves = [];
 
+//fix king moves
+//fix pawn moves
+
 function generateQMoves() {
     let moves=[];
     let direction=[];
