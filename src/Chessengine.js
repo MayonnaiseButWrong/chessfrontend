@@ -174,19 +174,19 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     i=temp;
                     if (j===1){
                         templist.push('WQ')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('WB')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('WN')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('WR')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
@@ -209,19 +209,19 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     i=temp;
                     if (j===1){
                         templist.push('WQ')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('WB')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('WN')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('WR')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
@@ -248,19 +248,19 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     i=temp;
                     if (j===6){
                         templist.push('BQ')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('BB')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('BN')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('BR')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
@@ -283,19 +283,19 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     i=temp;
                     if (j===6){
                         templist.push('BQ')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('BB')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('BN')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                         templist=[]
                         templist.push('BR')
-                        templist.push(positionList)
+                        templist=templist.concat(positionList)
                         enPassantMoves.push([startSquare,endSquare,templist])
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };//penis
