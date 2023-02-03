@@ -156,10 +156,10 @@ function enPassant(currentLayout,turn,previosMovesList) {
         if (turn==='W') {
             if (currentLayout[3][i]==='WP') {
                 if (i<6&&currentLayout[3][i+1]==='BP') {
+                    startSquare=toCoOrdinates([i,j]);
                     temp=i;
                     j=3;
                     i++;
-                    startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i<7&&j>1&&flag===false) {
                         j--;
@@ -191,10 +191,10 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
                 if (i>0&&currentLayout[3][i-1]==='BP') {
+                    startSquare=toCoOrdinates([i,j]);
                     temp=i;
                     j=3;
                     i--;
-                    startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i>=0&&j>1&&flag===false) {
                         j--;
@@ -230,10 +230,10 @@ function enPassant(currentLayout,turn,previosMovesList) {
         if (turn==='B') {
             if (currentLayout[4][i]==='BP') {
                 if (i<6&&currentLayout[4][i+1]==='WP') {
+                    startSquare=toCoOrdinates([i,j]);
                     temp=i;
                     j=4;
                     i++;
-                    startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i<7&&j<6&&flag===false) {
                         j++;
@@ -265,10 +265,10 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
                 if (i>0&&currentLayout[4][i-1]==='WP') {
+                    startSquare=toCoOrdinates([i,j]);
                     temp=i;
                     j=4;
                     i--;
-                    startSquare=toCoOrdinates([i,j]);
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i>0&&j<6&&flag===false) {
                         j++;
