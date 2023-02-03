@@ -155,7 +155,7 @@ function enPassant(currentLayout,turn,previosMovesList) {
     for (let i = 0; i < 8; i++) {
         if (turn==='W') {
             if (currentLayout[3][i]==='WP') {
-                if (i<6&&currentLayout[3][i+1]==='BP') {
+                if (i<7&&currentLayout[3][i+1]==='BP') {
                     temp=i;
                     j=3;
                     i++;
@@ -229,7 +229,7 @@ function enPassant(currentLayout,turn,previosMovesList) {
         };
         if (turn==='B') {
             if (currentLayout[4][i]==='BP') {
-                if (i<6&&currentLayout[4][i+1]==='WP') {
+                if (i<7&&currentLayout[4][i+1]==='WP') {
                     temp=i;
                     j=4;
                     i++;
