@@ -158,17 +158,17 @@ function enPassant(currentLayout,turn,previosMovesList) {
                 if (i<7&&currentLayout[3][i+1]==='BP') {
                     temp=i;
                     j=3;
-                    i++;
                     startSquare=toCoOrdinates([i,j]);
+                    i++;
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i<7&&j>1&&flag===false) {
-                        j--;
-                        i++;
                         flag=true;
                         if (currentLayout[j][i]==='BP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
+                        j--;
+                        i++;
                     };
                     endSquare=toCoOrdinates([i,j-1]);
                     i=temp;
@@ -193,17 +193,17 @@ function enPassant(currentLayout,turn,previosMovesList) {
                 if (i>0&&currentLayout[3][i-1]==='BP') {
                     temp=i;
                     j=3;
-                    i--;
                     startSquare=toCoOrdinates([i,j]);
+                    i--;
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i>=0&&j>1&&flag===false) {
-                        j--;
-                        i--;
                         flag=true;
                         if (i<6&&currentLayout[j][i]==='BP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
+                        j--;
+                        i--;
                     };
                     endSquare=toCoOrdinates([i,j-1]);
                     i=temp;
@@ -232,17 +232,17 @@ function enPassant(currentLayout,turn,previosMovesList) {
                 if (i<7&&currentLayout[4][i+1]==='WP') {
                     temp=i;
                     j=4;
-                    i++;
                     startSquare=toCoOrdinates([i,j]);
+                    i++;
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i<7&&j<6&&flag===false) {
-                        j++;
-                        i++;
                         flag=true;
                         if (currentLayout[j][i]==='WP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
+                        j++;
+                        i++;
                     };
                     endSquare=toCoOrdinates([i,j+1]);
                     i=temp;
@@ -267,17 +267,17 @@ function enPassant(currentLayout,turn,previosMovesList) {
                 if (i>0&&currentLayout[4][i-1]==='WP') {
                     temp=i;
                     j=4;
-                    i--;
                     startSquare=toCoOrdinates([i,j]);
+                    i--;
                     positionList.push(toCoOrdinates([i+1,j]));
                     while (i>0&&j<6&&flag===false) {
-                        j++;
-                        i--;
                         flag=true;
                         if (currentLayout[j][i]==='WP') {
                             flag=false;
                             positionList.push(toCoOrdinates([i,j]));
                         };
+                        j++;
+                        i--;
                     };
                     endSquare=toCoOrdinates([i,j+1]);
                     i=temp;
