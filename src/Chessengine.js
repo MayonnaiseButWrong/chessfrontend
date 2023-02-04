@@ -356,9 +356,9 @@ function checkVectors (currentLayout,turn) {
                                     if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
                                         if (!(currentLayout[j][i][1]==='P'&&i===6)) {
                                             moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                                            break;
                                         };
                                     } else {
-                                        vectorNumber=currenDirection.length;
                                         break;
                                     };
                                 };
@@ -370,9 +370,9 @@ function checkVectors (currentLayout,turn) {
                                     if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j-vector[1]][i+vector[0]][0]==='B') {
                                         if (!(currentLayout[j][i][1]==='P'&&i===1)) {
                                             moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                                            break;
                                         }
                                     } else {
-                                        vectorNumber=currenDirection.length;
                                         break;
                                     };
                                 };
