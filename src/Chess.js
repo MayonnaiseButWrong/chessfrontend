@@ -2,7 +2,7 @@ import './Chess.css'
 import {Text, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import { Chessboard } from "react-chessboard";
-import {toFEN,toTuple,toDict,toUnicode} from './Translations.js'
+import {toFEN,toTuple,toDict,toUnicode} from './translations.js'
 import {MoveSuccessful,isCheckmate} from './Chessengine';
 
 var startingLayout = [
@@ -57,6 +57,7 @@ const ChessFrontEnd = () => {
     var currentMove = [];
     var turn = 'W';
     var previosMoves = [];
+    var previosMove=[]
     var LastMovesText=''
     var LastMovesList=[]
     var whitePiecesTakenText=''
@@ -88,12 +89,13 @@ const ChessFrontEnd = () => {
         let MoveSuccesfulTuple = [];
         fromSquare = String(fromSquare).toUpperCase();
         toSquare = String(toSquare).toUpperCase();
+        previosMove=currentMove
+        currentMove=[fromSquare,toSquare]
         console.log('currentMove',currentMove)
-        if(currentMove.length>1) {
-            let inverseMove=[currentMove[1],currentMove[0]]
+        if(previosMove.length>1) {
+            let inverseMove=[previosMove[1],previosMove[0]]
             if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0]===turn&&fromSquare===inverseMove[0]&&toSquare===inverseMove[1]) {
                 currentPiece=piece
-                currentMove=[]
                 move(currentMove)
                 LastMovesList=LastMovesList.shift()
                 return true

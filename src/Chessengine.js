@@ -1,4 +1,4 @@
-import {toTuple,toCoOrdinates} from './Translations.js'
+import {toTuple,toCoOrdinates} from './translations.js'
 
 var generatedBefore = false;
 var AllMoves = [];
@@ -711,6 +711,7 @@ function MoveSuccessful (fromSquare, toSquare,currentLayout,turn,previosMoves) {
 };
 
 function isCheckmate (currentLayout,turn,previosMoves) {
+    generatedBefore=false
     let moves = generateMoves(currentLayout,turn,previosMoves);
     if (moves.length>0) {
         return true
