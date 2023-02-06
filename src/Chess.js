@@ -96,7 +96,7 @@ const ChessFrontEnd = () => {
             let inverseMove=[previosMove[1],previosMove[0]]
             if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0]===turn&&fromSquare===inverseMove[0]&&toSquare===inverseMove[1]) {
                 currentPiece=piece
-                move(currentMove)
+                move()
                 LastMovesList=LastMovesList.shift()
                 return true
             };
@@ -108,7 +108,7 @@ const ChessFrontEnd = () => {
         console.log(fromSquare,toSquare)
         if (MoveSuccesfulTuple[0]===true) {
             currentPiece=piece
-            currentMove=MoveSuccesfulTuple[1]
+            currentMove=[fromSquare,toSquare]
             console.log('currentMove',currentMove)
             move()
             if (editing===true) {
@@ -176,9 +176,10 @@ const ChessFrontEnd = () => {
         let currentBlackPieces=[]
         let currentWhitePieces=[]
         let temp=[]
-        console.log('skdfjbvhfjk')
+        console.log('skdfjbvhfjk',currentMove)
         if (currentMove.length>1) {
             turn=(turn==='W')? 'B':'W';
+            console.log(turn)
             previosMoves.push(currentMove);
             currentMove=[];
         };
@@ -187,15 +188,15 @@ const ChessFrontEnd = () => {
         currentWhitePieces=currentPieces[1]
         for (let blackPieces = 0; blackPieces < originalBlackPieces.length; blackPieces++) {
             for (let pieces = 0; pieces < currentBlackPieces.length; pieces++) {
-                if (currentBlackPieces[pieces]===originalBlackPieces[blackPieces]) {
-                    whitePiecesTakenList.push()
+                if (!(originalBlackPieces[blackPieces]===currentBlackPieces[pieces])) {
+                    whitePiecesTakenList.push(originalBlackPieces[blackPieces])
                 }
             }
         }
         for (let whitePieces = 0; whitePieces < originalWhitePieces.length; whitePieces++) {
             for (let pieces = 0; pieces < currentWhitePieces.length; pieces++) {
-                if (currentWhitePieces[pieces]===originalWhitePieces[whitePieces]) {
-                    blackPiecesTakenList.push()
+                if (!(originalWhitePieces[whitePieces]===currentWhitePieces[pieces])) {
+                    blackPiecesTakenList.push(originalWhitePieces[whitePieces])
                 }
             }
         }

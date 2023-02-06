@@ -713,7 +713,8 @@ function MoveSuccessful (fromSquare, toSquare,currentLayout,turn,previosMoves) {
 function isCheckmate (currentLayout,turn,previosMoves) {
     generatedBefore=false
     let moves = generateMoves(currentLayout,turn,previosMoves);
-    if (moves.length>0) {
+    console.log(moves)
+    if (moves.length<0) {
         return true
     }
     return false
