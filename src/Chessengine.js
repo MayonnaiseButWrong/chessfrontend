@@ -77,7 +77,7 @@ function findKing(currentLayout,turn){
                     return toCoOrdinates([i,j])
                 }
             }
-            if (turn==='W'){
+            if (turn==='B'){
                 if (currentLayout[j][i]==='BK') {
                     return toCoOrdinates([i,j])
                 }
@@ -328,10 +328,51 @@ function Promotion(currentLayout,turn) {
     return promotionMoves
 };
 
-function checkVectors (currentLayout,turn) {
+function opponentKingMoves (KingPosition) {
+    let moves=[]
+    let i=0
+    let j=0
+    KingPosition=toTuple(KingPosition)
+    i=KingPosition[0]
+    j=KingPosition[1]
+    const vectors=[[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]]
+    for (let vector = 0; vector < 8; vector++) {
+        if ((vectors[vector][0]+i)>=0 && (vectors[vector][0]+i)<8 && (vectors[vector][1]+j)>=0 && (vectors[vector][1]+j)<8) {
+            moves.push([vectors[vector][0]+i,vectors[vector][1]+j])
+        }
+    }
+    return moves
+}
+
+function kingMoves (KingPosition,opponentMoves) {
+    let moves=[]
+    let i=0
+    let j=0
+    KingPosition=toTuple(KingPosition)
+    i=KingPosition[0]
+    j=KingPosition[1]
+    const vectors=[[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]]
+    for (let vector = 0; vector < 8; vector++) {
+        if ((vectors[vector][0]+i)>=0 && (vectors[vector][0]+i)<8 && (vectors[vector][1]+j)>=0 && (vectors[vector][1]+j)<8) {
+            for (let move = 0; move < 8; move++) {
+                if ((opponentMoves[move][1]===[vectors[vector][0]+i,vectors[vector][1]+j])){
+                    moves.push([vectors[vector][0]+i,vectors[vector][1]+j])
+                }
+            }
+        }
+    }
+    return moves
+}
+
+function checkVectors (currentLayout,turn,KingPosition) {
     let Qmoves=generateQMoves();
     let Bmoves=generateBMoves();
     let Rmoves=generateRMoves();
+    let kingI=0
+    let kingJ=0
+    KingPosition=toTuple(KingPosition)
+    kingI=KingPosition[0]
+    kingJ=KingPosition[1]
     const moveVectors = {
         'Q': Qmoves,
         'K': [[[1,0]],[[1,1]],[[0,1]],[[-1,1]],[[-1,0]],[[-1,-1]],[[0,-1]],[[0,-1]]],
@@ -346,34 +387,46 @@ function checkVectors (currentLayout,turn) {
     for (let j = 0; j < 8; j++) {
         for (let i = 0; i < 8; i++) {
             if (!(currentLayout[j][i]==='MT')){
-                for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
-                    currenDirection= moveVectors[currentLayout[j][i][1]][direction]
-                    for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
-                        vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
-                        if (turn==='B') {
+                if (!(currentLayout[j][i][1]==='K')) {
+                    if (turn==='B') {
+                        if (!(currentLayout[j][i][1]==='P'&&i===6)) {
                             if (currentLayout[j][i][0]==='B') {
-                                if ((j+vector[1])<8&&(j+vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0){
-                                    if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
-                                        if (!(currentLayout[j][i][1]==='P'&&i===6)) {
-                                            moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
-                                            break;
+                                if (isCheckUsingVector(kingI,kingJ,i,j,currentLayout)===false) {
+                                    for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
+                                        currenDirection= moveVectors[currentLayout[j][i][1]][direction]
+                                        for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
+                                            vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                                            if ((j+vector[1])<8&&(j+vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0){
+                                                if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
+                                                        moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                                                        break;
+                                                } else {
+                                                    break;
+                                                };
+                                            };
                                         };
-                                    } else {
-                                        break;
                                     };
                                 };
                             };
                         };
-                        if (turn==='W') {
+                    };
+                    if (turn==='W') {
+                        if (!(currentLayout[j][i][1]==='P'&&i===1)) {
                             if (currentLayout[j][i][0]==='W') {
-                                if ((j-vector[1])<8&&(j-vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0) {
-                                    if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j-vector[1]][i+vector[0]][0]==='B') {
-                                        if (!(currentLayout[j][i][1]==='P'&&i===1)) {
-                                            moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
-                                            break;
-                                        }
-                                    } else {
-                                        break;
+                                if (isCheckUsingVector(kingI,kingJ,i,j,currentLayout)===false) {
+                                    for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
+                                        currenDirection= moveVectors[currentLayout[j][i][1]][direction]
+                                        for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
+                                            vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                                            if ((j-vector[1])<8&&(j-vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0) {
+                                                if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j-vector[1]][i+vector[0]][0]==='B') {
+                                                        moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                                                        break;
+                                                } else {
+                                                    break;
+                                                };
+                                            };
+                                        };
                                     };
                                 };
                             };
@@ -480,6 +533,35 @@ function castling (previosMovesList,turn,opponentMoves,currentLayout) {
     };
 };
 
+function isCheckUsingVector (kingI,kingJ,pieceI,pieceJ,boardLayout) {
+    let vector=[pieceI-kingI,pieceJ-kingJ]
+    let modulus=0
+    let unitVector=[]
+    if (vector[0]===vector[1]||vector[0]===-vector[1]||vector[0]===0||vector[1]===0){
+        if (vector[0]<0) {
+            modulus=-vector[0]
+        } else if (vector[0]>0) {
+            modulus=vector[0]
+        } else if (vector[1]<0) {
+            modulus=-vector[1]
+        } else {
+            modulus=vector[1]
+        }
+        unitVector=[vector[0]/modulus,vector[1]/modulus]
+    
+        for (let mod = 1;mod < 10; mod++){
+            if (kingI+mod*unitVector[0]>=0&&kingJ+mod*unitVector[1]>=0&&kingI+mod*unitVector[0]<8&&kingJ+mod*unitVector[1]<8) {
+                if (!(boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]===boardLayout[kingJ][kingI][0])) {
+                    if (!(boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]==='P'||boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]==='K')) {
+                        return true
+                    }
+                }
+            }
+        }
+    }
+    return false
+}
+
 function castlingIsPossibe(currentLayout,turn) {
     if (turn === 'B' ) {
         for (let i = 0; i < 8; i++) {
@@ -546,9 +628,15 @@ function generateOpponenMoves(currentLayout,turn,previosMovesList) {
     let opponentMoves=[];
     let opponentMovesWithoutCastling=[];
     let PawnSpecialMoves=[];
-    opponentMoves=checkVectors(currentLayout,turn)
+    let kMoves=[]
+    let KingPosition=[]
+    KingPosition=findKing(currentLayout,turn)
+    console.log(KingPosition)
+    opponentMoves=checkVectors(currentLayout,turn,KingPosition)
     PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList)
     opponentMoves=opponentMoves.concat(PawnSpecialMoves);
+    kMoves=opponentKingMoves(KingPosition)
+    opponentMoves=opponentMoves.concat(kMoves)
     opponentMovesWithoutCastling=opponentMoves
     if (castlingIsPossibe(currentLayout,turn)===true) {
         opponentMoves.concat(castling(previosMovesList,turn,currentLayout));
@@ -575,13 +663,16 @@ function generatePossibleMoves(currentLayout,turn,previosMovesList) {
     let opponentMovesTuple=[];
     let opponentMoves=[];
     let opponentMovesWithoutCastling=[];
+    let kMoves=[]
     opponentMovesTuple=generateOpponenMoves(currentLayout,turn,previosMovesList)
     opponentMoves=opponentMovesTuple[0]
     opponentMovesWithoutCastling=opponentMovesTuple[1]
     KingPosition=findKing(currentLayout,turn);
-    moves=checkVectors(currentLayout,turn);
+    moves=checkVectors(currentLayout,turn,KingPosition);
     PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList);
     moves=moves.concat(PawnSpecialMoves);
+    kMoves=kingMoves(KingPosition[0],KingPosition[1],opponentMoves)
+    moves=moves.concat(kMoves)
     check=isCheck(currentLayout,KingPosition,opponentMoves);
     if (castlingIsPossibe(currentLayout,turn,moves,opponentMovesWithoutCastling)===true) {
         moves.concat(castling(previosMovesList,turn,currentLayout));

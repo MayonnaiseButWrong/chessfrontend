@@ -105,4 +105,34 @@ let toUnicode = (InputString) => {
     return translationIndex[InputString]
 }
 
+let listToString = (inputList) => {
+    let outputList=[]
+    let outputString=''
+    let templist=[]
+    let s=''
+    let index=0
+    let chars=['A','B','C','D','E','F','G','H','K','Q','N','R','P','0','1','2','3','4','5','6','7',',']
+    let e=''
+    for (let i = 0; i < inputList.length; i++) {
+        s=inputList[i][0]+inputList[i][1]
+        if (inputList[i].length===3){
+            templist=inputList[3]
+            for (let count = 0; count < templist.length; count++) {
+                s+=templist[count]
+            }
+        }
+        outputList.push(s)
+    }
+
+    for (let element = 0; element < outputList.length; element++) {
+        for (let count = 0; count < outputList[element].length; count++) {
+            index=chars.indexOf(outputList[element][count])
+            if (index<10) {e='0'+String(index)}
+            else {e=String(index)}
+            outputString+=e
+        }
+    }
+    return outputString
+}
+
 export {toFEN,toDict,toTuple,toCoOrdinates,toBoardLayout,toXenonnumber,toUnicode};
