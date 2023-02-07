@@ -9,28 +9,28 @@ var AllMoves = [];
 function generateQMoves() {
     let moves=[];
     let direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(i),Number(0)]);};
+    for (let i = 1; i < 10; i++) {direction.push([Number(i),Number(0)]);};
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(-i),Number(0)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(-i),Number(0)]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(0),Number(i)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(0),Number(i)]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(0),Number(-i)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(0),Number(-i)]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(i),Number(i)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(i),Number(i)]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(i),Number(-i)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(i),Number(-i)]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(-i),Number(i)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(-i),Number(i)]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([Number(-i),Number(-i)]);}
+    for (let i = 1; i < 10; i++) {direction.push([Number(-i),Number(-i)]);}
     moves.push(direction);
     return moves
 }
@@ -38,16 +38,16 @@ function generateQMoves() {
 function generateBMoves() {
     let moves=[];
     let direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([i,i]);}
+    for (let i = 1; i < 10; i++) {direction.push([i,i]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([-i,i]);}
+    for (let i = 1; i < 10; i++) {direction.push([-i,i]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([-i,-i]);}
+    for (let i = 1; i < 10; i++) {direction.push([-i,-i]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([i,-i]);}
+    for (let i = 1; i < 10; i++) {direction.push([i,-i]);}
     moves.push(direction);
     return moves
 };
@@ -55,16 +55,16 @@ function generateBMoves() {
 function generateRMoves() {
     let moves=[];
     let direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([i,0]);}
+    for (let i = 1; i < 10; i++) {direction.push([i,0]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([-i,0]);}
+    for (let i = 1; i < 10; i++) {direction.push([-i,0]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([0,i]);}
+    for (let i = 1; i < 10; i++) {direction.push([0,i]);}
     moves.push(direction);
     direction=[];
-    for (let i = 0; i < 10; i++) {direction.push([0,-i]);}
+    for (let i = 1; i < 10; i++) {direction.push([0,-i]);}
     moves.push(direction);
     return moves
 }
@@ -119,19 +119,26 @@ function checkPawnSpecialMove(currentLayout,turn,previosMovesList) {
             currentPiece=currentLayout[j][i]
             if (currentPiece[1]==='P') {
                 if (turn==='W'&&turn===currentPiece[0]) {
-                    if (i<7&&currentLayout[j-1][i+1][0]==='B'){
+                    if (i<7&&currentLayout[j-1][i+1][0]==='B') {
                         moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+1,j-1])]);
                     };
-                    if (i>0&&currentLayout[j-1][i-1][0]==='B')
+                    if (i>0&&currentLayout[j-1][i-1][0]==='B') {
                             moves.push([toCoOrdinates([i,j]),toCoOrdinates([i-1,j-1])]);
                     };
+                    if (currentLayout[j-1][i]==='MT') {
+                        moves.push([toCoOrdinates([i,j]),toCoOrdinates([i,j-1])]);
+                    }
+                }
                 if (turn==='B'&&turn===currentPiece[0]) {
-                    if (i<7&&currentLayout[j+1][i+1][0]==='B'){
+                    if (i<7&&currentLayout[j+1][i+1][0]==='W') {
                         moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+1,j+1])]);
                     };
-                    if (i>0&&currentLayout[j+1][i-1][0]==='B') {
+                    if (i>0&&currentLayout[j+1][i-1][0]==='W') {
                             moves.push([toCoOrdinates([i,j]),toCoOrdinates([i-1,j+1])]);
                     };
+                    if (currentLayout[j+1][i]==='MT') {
+                        moves.push([toCoOrdinates([i,j]),toCoOrdinates([i,j+1])]);
+                    }
                 };
             };
         };
@@ -160,7 +167,6 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     j=3;
                     startSquare=toCoOrdinates([i,j]);
                     i++;
-                    positionList.push(toCoOrdinates([i+1,j]));
                     while (i<7&&j>1&&flag===false) {
                         flag=true;
                         if (currentLayout[j][i]==='BP') {
@@ -170,7 +176,9 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         j--;
                         i++;
                     };
-                    endSquare=toCoOrdinates([i,j-1]);
+                    i-=2
+                    j+=1
+                    endSquare=toCoOrdinates([i,j]);
                     i=temp;
                     if (j===1){
                         templist.push('WQ')
@@ -195,7 +203,6 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     j=3;
                     startSquare=toCoOrdinates([i,j]);
                     i--;
-                    positionList.push(toCoOrdinates([i+1,j]));
                     while (i>=0&&j>1&&flag===false) {
                         flag=true;
                         if (i<6&&currentLayout[j][i]==='BP') {
@@ -205,7 +212,9 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         j--;
                         i--;
                     };
-                    endSquare=toCoOrdinates([i,j-1]);
+                    i+=2
+                    j+=1
+                    endSquare=toCoOrdinates([i,j]);
                     i=temp;
                     if (j===1){
                         templist.push('WQ')
@@ -234,7 +243,6 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     j=4;
                     startSquare=toCoOrdinates([i,j]);
                     i++;
-                    positionList.push(toCoOrdinates([i+1,j]));
                     while (i<7&&j<6&&flag===false) {
                         flag=true;
                         if (currentLayout[j][i]==='WP') {
@@ -244,7 +252,9 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         j++;
                         i++;
                     };
-                    endSquare=toCoOrdinates([i,j+1]);
+                    i-=2
+                    j-=1
+                    endSquare=toCoOrdinates([i,j]);
                     i=temp;
                     if (j===6){
                         templist.push('BQ')
@@ -269,7 +279,6 @@ function enPassant(currentLayout,turn,previosMovesList) {
                     j=4;
                     startSquare=toCoOrdinates([i,j]);
                     i--;
-                    positionList.push(toCoOrdinates([i+1,j]));
                     while (i>0&&j<6&&flag===false) {
                         flag=true;
                         if (currentLayout[j][i]==='WP') {
@@ -279,7 +288,9 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         j++;
                         i--;
                     };
-                    endSquare=toCoOrdinates([i,j+1]);
+                    i+=2
+                    j-=1
+                    endSquare=toCoOrdinates([i,j]);
                     i=temp;
                     if (j===6){
                         templist.push('BQ')
@@ -379,7 +390,6 @@ function checkVectors (currentLayout,turn,KingPosition) {
         'B': Bmoves,
         'N': [[[2,1]],[[1,2]],[[-1,2]],[[-2,1]],[[-2,-1]],[[-1,-2]],[[1,-2]],[[2,-1]]],
         'R': Rmoves,
-        'P': [[[0,1]]]
     }
     let moves=[];
     let vector=[];
@@ -387,22 +397,23 @@ function checkVectors (currentLayout,turn,KingPosition) {
     for (let j = 0; j < 8; j++) {
         for (let i = 0; i < 8; i++) {
             if (!(currentLayout[j][i]==='MT')){
-                if (!(currentLayout[j][i][1]==='K')) {
+                if (!(currentLayout[j][i][1]==='K'||currentLayout[j][i][1]==='P')) {
                     if (turn==='B') {
-                        if (!(currentLayout[j][i][1]==='P'&&i===6)) {
-                            if (currentLayout[j][i][0]==='B') {
-                                if (isCheckUsingVector(kingI,kingJ,i,j,currentLayout)===false) {
-                                    for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
-                                        currenDirection= moveVectors[currentLayout[j][i][1]][direction]
-                                        for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
-                                            vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
-                                            if ((j+vector[1])<8&&(j+vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0){
-                                                if (currentLayout[j+vector[1]][i+vector[0]]==='MT'||currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
-                                                        moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
-                                                        break;
-                                                } else {
-                                                    break;
-                                                };
+                        if (currentLayout[j][i][0]==='B') {
+                            if (isCheckUsingVector(kingI,kingJ,i,j,currentLayout)===false) {
+                                console.log('here 17')
+                                for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
+                                    currenDirection= moveVectors[currentLayout[j][i][1]][direction]
+                                    for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
+                                        vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                                        if ((j+vector[1])<8&&(j+vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0){
+                                            if (currentLayout[j+vector[1]][i+vector[0]][0]==='W') {
+                                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                                                break;
+                                            } else if (currentLayout[j+vector[1]][i+vector[0]]==='MT') {
+                                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j+vector[1]])]);
+                                            } else {
+                                                break;
                                             };
                                         };
                                     };
@@ -411,20 +422,20 @@ function checkVectors (currentLayout,turn,KingPosition) {
                         };
                     };
                     if (turn==='W') {
-                        if (!(currentLayout[j][i][1]==='P'&&i===1)) {
-                            if (currentLayout[j][i][0]==='W') {
-                                if (isCheckUsingVector(kingI,kingJ,i,j,currentLayout)===false) {
-                                    for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
-                                        currenDirection= moveVectors[currentLayout[j][i][1]][direction]
-                                        for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
-                                            vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
-                                            if ((j-vector[1])<8&&(j-vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0) {
-                                                if (currentLayout[j-vector[1]][i+vector[0]]==='MT' ||currentLayout[j-vector[1]][i+vector[0]][0]==='B') {
-                                                        moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
-                                                        break;
-                                                } else {
-                                                    break;
-                                                };
+                        if (currentLayout[j][i][0]==='W') {
+                            if (isCheckUsingVector(kingI,kingJ,i,j,currentLayout)===false) {
+                                for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
+                                    currenDirection= moveVectors[currentLayout[j][i][1]][direction]
+                                    for (let vectorNumber = 0; vectorNumber <currenDirection.length; vectorNumber++) {
+                                        vector=moveVectors[currentLayout[j][i][1]][direction][vectorNumber]
+                                        if ((j-vector[1])<8&&(j-vector[1])>=0&&(i+vector[0])<8&&(i+vector[0])>=0) {
+                                            if (currentLayout[j-vector[1]][i+vector[0]][0]==='B') {
+                                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                                                break;
+                                            } else if (currentLayout[j-vector[1]][i+vector[0]]==='MT') {
+                                                moves.push([toCoOrdinates([i,j]),toCoOrdinates([i+vector[0],j-vector[1]])]);
+                                            } else {
+                                                break;
                                             };
                                         };
                                     };
@@ -551,8 +562,8 @@ function isCheckUsingVector (kingI,kingJ,pieceI,pieceJ,boardLayout) {
     
         for (let mod = 1;mod < 10; mod++){
             if (kingI+mod*unitVector[0]>=0&&kingJ+mod*unitVector[1]>=0&&kingI+mod*unitVector[0]<8&&kingJ+mod*unitVector[1]<8) {
-                if (!(boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]===boardLayout[kingJ][kingI][0])) {
-                    if (!(boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]==='P'||boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]==='K')) {
+                if (!(boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]][0]===boardLayout[kingJ][kingI][0])) {
+                    if (!(boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]][1]==='P'||boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]][1]==='K'||boardLayout[kingJ+mod*unitVector[1]][kingI+mod*unitVector[0]]==='MT')) {
                         return true
                     }
                 }
@@ -669,6 +680,7 @@ function generatePossibleMoves(currentLayout,turn,previosMovesList) {
     opponentMovesWithoutCastling=opponentMovesTuple[1]
     KingPosition=findKing(currentLayout,turn);
     moves=checkVectors(currentLayout,turn,KingPosition);
+    console.log('here 17',moves.toLocaleString())
     PawnSpecialMoves=checkPawnSpecialMove(currentLayout,turn,previosMovesList);
     moves=moves.concat(PawnSpecialMoves);
     kMoves=kingMoves(KingPosition[0],KingPosition[1],opponentMoves)
@@ -721,10 +733,7 @@ function isCheckmate (currentLayout,turn,previosMoves) {
 }
 
 function generateMoves(currentLayout,turn,previosMoves) {
-    if (generatedBefore===false) {
         AllMoves = generatePossibleMoves(currentLayout,turn,previosMoves);
-        generatedBefore = true
-    }
     return AllMoves
 }
 
