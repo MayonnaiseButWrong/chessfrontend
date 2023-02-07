@@ -22,7 +22,40 @@ var startingLayout = [
 //fix king movement
 //fix moving a piece on the board in general
 
+var originalPieces=FindPieces(startingLayout)
+const originalBlackPieces=originalPieces[0]
+const originalWhitePieces=originalPieces[1]
+var currentLayout = startingLayout;
+var currentString = toDict(currentLayout);
+var currentMove = [];
+var turn = 'W';
+var previosMoves = [];
+var previosMove=[]
+var LastMovesText=''
+var LastMovesList=[]
+var whitePiecesTakenText=''
+var whitePiecesTakenList=[]
+var blackPiecesTakenText=''
+var blackPiecesTakenList=[]
+var currentPiece=''
+var editing=false
 
+function FindPieces (currentLayout) {
+    let blackPieces=[]
+    let whitePieces=[]
+    for (let j = 0; j < 8; j++) {
+        for (let i = 0; i < 8; i++) {
+            if (!(currentLayout[j][i]==='MT')) {
+                if (currentLayout[j][i][0]==='B') {
+                    blackPieces.push(currentLayout[j][i])
+                } else {
+                    whitePieces.push(currentLayout[j][i])
+                }
+            }
+        }
+    }
+    return [blackPieces,whitePieces]
+}
 
 const styles = StyleSheet.create({
     last_moves_text: {
@@ -49,40 +82,6 @@ const styles = StyleSheet.create({
 })
 
 const ChessFrontEnd = () => {
-    var originalPieces=FindPieces(startingLayout)
-    const originalBlackPieces=originalPieces[0]
-    const originalWhitePieces=originalPieces[1]
-    var currentLayout = startingLayout;
-    var currentString = toDict(currentLayout);
-    var currentMove = [];
-    var turn = 'W';
-    var previosMoves = [];
-    var previosMove=[]
-    var LastMovesText=''
-    var LastMovesList=[]
-    var whitePiecesTakenText=''
-    var whitePiecesTakenList=[]
-    var blackPiecesTakenText=''
-    var blackPiecesTakenList=[]
-    var currentPiece=''
-    var editing=false
-    
-    function FindPieces (currentLayout) {
-        let blackPieces=[]
-        let whitePieces=[]
-        for (let j = 0; j < 8; j++) {
-            for (let i = 0; i < 8; i++) {
-                if (!(currentLayout[j][i]==='MT')) {
-                    if (currentLayout[j][i][0]==='B') {
-                        blackPieces.push(currentLayout[j][i])
-                    } else {
-                        whitePieces.push(currentLayout[j][i])
-                    }
-                }
-            }
-        }
-        return [blackPieces,whitePieces]
-    }
     
     function onDrop (fromSquare, toSquare, piece) {
         console.log(fromSquare,toSquare)
@@ -111,6 +110,7 @@ const ChessFrontEnd = () => {
             currentMove=[fromSquare,toSquare]
             console.log('currentMove',currentMove)
             move()
+            console.log('here wpifhlj')
             if (editing===true) {
                 LastMovesList[0]=toUnicode(currentPiece)+' => '+currentMove[1]
             } else {
@@ -119,6 +119,7 @@ const ChessFrontEnd = () => {
             }
             LastMovesText=LastMovesList.toString()
             changelast_moves_text(LastMovesText)
+            console.log(currentMove)
             return true
         } else {return false;};
     }
@@ -158,8 +159,8 @@ const ChessFrontEnd = () => {
         console.log(currentString,'2')
     }
     
-    function currentPos (currentPosition) {
-        console.log(currentPosition)
+    function currentPos (currentPosx) {
+        console.log(currentPosx)
     }
 
     const [last_moves_text, setlast_moves_text] = useState("Bird's Nest");
