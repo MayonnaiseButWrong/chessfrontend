@@ -40,6 +40,7 @@ var blackPiecesTakenList = []
 var currentPiece = ''
 var editing = false
 var moveDone=false
+var buttonpressed=true
 
 function FindPieces (currentLayout) {
     let blackPieces={'P':0,'K':0,'Q':0,'R':0,'B':0,'N':0}
@@ -126,7 +127,9 @@ const ChessFrontEnd = () => {
             whitePiecesTakenText=whitePiecesTakenList.toString()
             blackPiecesTakenText=blackPiecesTakenList.toString()
 
-            LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase())+' 🠢 '+currentMove[1])
+            console.log(currentPiece,currentMove[1])
+            if (LastMovesList===undefined) {LastMovesList=[]}
+            LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase())+' > '+currentMove[1])
             if (LastMovesList.length>3) {LastMovesList.shift()}
             LastMovesList.reverse()
             LastMovesText=LastMovesList.toString()
@@ -140,6 +143,8 @@ const ChessFrontEnd = () => {
             console.log(turn)
             previosMoves.push(currentMove);
             currentMove=[];
+            buttonpressed=true
+            moveDone=false
 
             console.log(previosMoves)
 
@@ -157,12 +162,14 @@ const ChessFrontEnd = () => {
         previosMove=currentMove
         currentMove=[fromSquare,toSquare]
         console.log('currentMove',currentMove)
-        if(previosMove.length>1) {
+        if(buttonpressed===false) {
             let inverseMove=[previosMove[1],previosMove[0]]     //must depend on the button being pressed
             if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0]===turn&&fromSquare===inverseMove[0]&&toSquare===inverseMove[1]) {
                 currentPiece=piece
                 moveDone=move()
+                currentMove=[]
                 moveDone=false
+                buttonpressed=true
                 LastMovesList=LastMovesList.shift()
                 return true
             };
@@ -170,19 +177,26 @@ const ChessFrontEnd = () => {
                 fromSquare=currentMove[0]
             }
         };
-        MoveSuccesfulTuple=MoveSuccessful(fromSquare,toSquare,currentLayout,turn,previosMoves);
-        console.log(fromSquare,toSquare)
-        if (MoveSuccesfulTuple[0]===true) {
-            currentPiece=piece
-            currentMove=MoveSuccesfulTuple[1]
-            console.log('currentMove',currentMove)
-            moveDone=move()
-            console.log('here wpifhlj')
-            console.log(currentLayout)
-            changelast_moves_text(LastMovesText)
-            console.log(currentMove)
-            return true
-        } else {return false;};
+        if (moveDone===false) {
+            MoveSuccesfulTuple=MoveSuccessful(fromSquare,toSquare,currentLayout,turn,previosMoves);
+            console.log(fromSquare,toSquare)
+            if (MoveSuccesfulTuple[0]===true) {
+                currentPiece=piece
+                currentMove=MoveSuccesfulTuple[1]
+                console.log('currentMove',currentMove)
+                moveDone=move()
+                console.log('here wpifhlj')
+                console.log(currentLayout)
+                changelast_moves_text(LastMovesText)
+                console.log(currentMove)
+                buttonpressed=false
+                return true
+            } else {
+                currentMove=[]
+                moveDone=false
+                return false;
+            };
+        }
     }
     
     function move () {

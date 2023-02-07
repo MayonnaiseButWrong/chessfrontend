@@ -175,28 +175,28 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         };
                         j--;
                         i++;
+                        endi=i-2
+                        endj=j+1
+                        endSquare=toCoOrdinates([endi,endj]);
+                        if (endj===1){
+                            templist.push('WQ')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('WB')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('WN')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('WR')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                        } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
+                        i=temp;
                     };
-                    i-=2
-                    j+=1
-                    endSquare=toCoOrdinates([i,j]);
-                    i=temp;
-                    if (j===1){
-                        templist.push('WQ')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('WB')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('WN')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('WR')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
                 if (i>0&&currentLayout[3][i-1]==='BP') {
                     temp=i;
@@ -211,28 +211,28 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         };
                         j--;
                         i--;
+                        endi=i+2
+                        endj=j+1
+                        endSquare=toCoOrdinates([endi,endj]);
+                        if (endj===1){
+                            templist.push('WQ')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('WB')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('WN')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('WR')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                        } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
+                        i=temp;
                     };
-                    i+=2
-                    j+=1
-                    endSquare=toCoOrdinates([i,j]);
-                    i=temp;
-                    if (j===1){
-                        templist.push('WQ')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('WB')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('WN')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('WR')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
             };
         };
@@ -251,28 +251,28 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         };
                         j++;
                         i++;
+                        endi=i-2
+                        endj=j-1
+                        endSquare=toCoOrdinates([endi,endj]);
+                        if (endj===6){
+                            templist.push('BQ')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('BB')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('BN')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('BR')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                        } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
+                        i=temp;
                     };
-                    i-=2
-                    j-=1
-                    endSquare=toCoOrdinates([i,j]);
-                    i=temp;
-                    if (j===6){
-                        templist.push('BQ')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('BB')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('BN')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('BR')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };
                 if (i>0&&currentLayout[4][i-1]==='WP') {
                     temp=i;
@@ -287,32 +287,33 @@ function enPassant(currentLayout,turn,previosMovesList) {
                         };
                         j++;
                         i--;
+                        endi=i+2
+                        endj=j-1
+                        endSquare=toCoOrdinates([endi,endj]);
+                        if (endj===6){
+                            templist.push('BQ')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('BB')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('BN')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                            templist=[]
+                            templist.push('BR')
+                            templist=templist.concat(positionList)
+                            enPassantMoves.push([startSquare,endSquare,templist])
+                        } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
+                        i=temp;
                     };
-                    i+=2
-                    j-=1
-                    endSquare=toCoOrdinates([i,j]);
-                    i=temp;
-                    if (j===6){
-                        templist.push('BQ')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('BB')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('BN')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                        templist=[]
-                        templist.push('BR')
-                        templist=templist.concat(positionList)
-                        enPassantMoves.push([startSquare,endSquare,templist])
-                    } else {enPassantMoves.push([startSquare,endSquare,positionList]);};
                 };//penis
             };
         };
     };
+    console.log(enPassantMoves)
     return enPassantMoves
 };
 
