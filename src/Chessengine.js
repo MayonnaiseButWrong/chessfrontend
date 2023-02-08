@@ -1,10 +1,6 @@
 import { toTuple, toCoOrdinates } from './translations.js'
 
-var generatedBefore = false;
 var AllMoves = [];
-
-//fix king moves
-//fix pawn moves
 
 function generateQMoves() {
     let moves = [];
@@ -491,10 +487,12 @@ function findLine(position1, piece, position2) {
     let currentVector=[]
 
     if (piece=='N') {
-        return position2
+        return [position2]
     }
 
+    console.log(position1,position2)
     vector=[toTuple(position2)[0] - toTuple(position1)[0], toTuple(position2)[1] - toTuple(position1)[1]]
+    console.log('vector',vector)
     if (vector[0] === vector[1] || vector[0] === -vector[1] || vector[0] === 0 || vector[1] === 0) {
         if (vector[0] < 0) {
             modulus = -vector[0]
@@ -507,6 +505,7 @@ function findLine(position1, piece, position2) {
         }
         unitVector = [vector[0] / modulus, vector[1] / modulus]
         currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
+        console.log('currentVector',currentVector, 'unitVector', unitVector)
         console.log(toTuple(position1)[0])
         while (!(toCoOrdinates(currentVector)===position2)&&mod<10) {
             console.log(toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1],position1,position2)
@@ -514,6 +513,8 @@ function findLine(position1, piece, position2) {
             mod++
             currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
         }
+        console.log(toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1],position1,position2)
+        Line.push(toCoOrdinates(currentVector))
     }
     return Line
 };
@@ -523,7 +524,7 @@ function isCheck(currentLayout, KingPosition, opponentMoves) {
     for (let Move = 0; Move < opponentMoves.length; Move++) {
         position = opponentMoves[Move][1]
         if (position === KingPosition) {
-            return { 'is Check': true, 'position': position, 'piece': currentLayout[toTuple(position)[1]][toTuple(position)[0]][1] }
+            return { 'is Check': true, 'position': opponentMoves[Move][0], 'piece': currentLayout[toTuple(position)[1]][toTuple(position)[0]][1] }
         }
     };
     return { 'is Check': false, 'position': 'somewhere', 'piece': 'someone' }
