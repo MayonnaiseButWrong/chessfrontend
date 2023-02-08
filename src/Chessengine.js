@@ -506,9 +506,9 @@ function findLine(position1, piece, position2) {
             modulus = vector[1]
         }
         unitVector = [vector[0] / modulus, vector[1] / modulus]
-
         currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
-        while (!(toCoOrdinates(currentVector)===position2)) {
+        while (!(toCoOrdinates(currentVector)===position2)&&mod<10) {
+            console.log(toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1],position1,position2)
             Line.push(toCoOrdinates(currentVector))
             mod++
             currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
