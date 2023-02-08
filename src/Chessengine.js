@@ -449,6 +449,7 @@ function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout) {
         for (let mod = 1; mod < 10; mod++) {
             if (kingI + mod * unitVector[0] >= 0 && kingJ + mod * unitVector[1] >= 0 && kingI + mod * unitVector[0] < 8 && kingJ + mod * unitVector[1] < 8) {
                 if (!(boardLayout[kingJ + mod * unitVector[1]][kingI + mod * unitVector[0]][0] === boardLayout[kingJ][kingI][0])) {
+                    console.log(boardLayout[kingJ + mod * unitVector[1]][kingI + mod * unitVector[0]])
                     if (!(boardLayout[kingJ + mod * unitVector[1]][kingI + mod * unitVector[0]][1] === 'P' || boardLayout[kingJ + mod * unitVector[1]][kingI + mod * unitVector[0]][1] === 'K' || boardLayout[kingJ + mod * unitVector[1]][kingI + mod * unitVector[0]] === 'MT')) {
                         return true
                     }
@@ -456,6 +457,7 @@ function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout) {
             }
         }
     }
+    console.log('it would be check',kingI,kingJ)
     return false
 }
 
@@ -478,9 +480,6 @@ function castlingIsPossibe(currentLayout, turn) {
 };
 
 function findLine(position1, piece, position2) {
-    let Qmoves = generateQMoves();
-    let Bmoves = generateBMoves();
-    let Rmoves = generateRMoves();
     let vector = [];
     let Line = [];
     let modulus = 0
@@ -488,13 +487,11 @@ function findLine(position1, piece, position2) {
     let mod = 1
     let currentVector=[]
 
-    if (piece=='N') {
+    if (piece==='N') {
         return [position2]
     }
 
-    console.log(position1,position2)
     vector=[toTuple(position2)[0] - toTuple(position1)[0], toTuple(position2)[1] - toTuple(position1)[1]]
-    console.log('vector',vector)
     if (vector[0] === vector[1] || vector[0] === -vector[1] || vector[0] === 0 || vector[1] === 0) {
         if (vector[0] < 0) {
             modulus = -vector[0]
@@ -507,15 +504,11 @@ function findLine(position1, piece, position2) {
         }
         unitVector = [vector[0] / modulus, vector[1] / modulus]
         currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
-        console.log('currentVector',currentVector, 'unitVector', unitVector)
-        console.log(toTuple(position1)[0])
         while (!(toCoOrdinates(currentVector)===position2)&&mod<10) {
-            console.log(toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1],position1,position2)
             Line.push(toCoOrdinates(currentVector))
             mod++
             currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
         }
-        console.log(toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1],position1,position2)
         Line.push(toCoOrdinates(currentVector))
     }
     return Line
@@ -560,7 +553,6 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
     opponentMoves = generateOpponenMoves(currentLayout, turn)
     KingPosition = findKing(currentLayout, turn);
     moves = checkVectors(currentLayout, turn, KingPosition);
-    console.log('here 17', moves.toLocaleString())
     PawnSpecialMoves = checkPawnSpecialMove(currentLayout, turn, previosMovesList);
     moves = moves.concat(PawnSpecialMoves);
     kMoves = kingMoves(KingPosition, opponentMoves,currentLayout)
@@ -598,9 +590,7 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves)
     console.log('here2', fromSquare, toSquare);
     console.log(moves);
     for (let Move = 0; Move < moves.length; Move++) {
-        console.log(moves[Move],[fromSquare,toSquare])
         if (moves[Move][0] === fromSquare && moves[Move][1] === toSquare) {
-            console.log('ofevnj m')
             return [true, moves[Move]];
         };
     };

@@ -337,4 +337,4 @@ const ChessFrontEnd = () => {
     );
 };
 
-export default ChessFrontEnd;
+export {ChessFrontEnd};
