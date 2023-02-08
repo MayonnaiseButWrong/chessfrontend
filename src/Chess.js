@@ -193,56 +193,58 @@ const ChessFrontEnd = () => {
         previosMove = currentMove
         currentMove = [fromSquare, toSquare]
         console.log('currentMove', currentMove)
-        if (buttonpressed === false) {
-            let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
-            if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
-                currentPiece = piece
-                moveDone = move()
-                currentMove = []
-                moveDone = false
-                LastMovesText='--'+LastMovesText
-                changelast_moves_text(LastMovesText)
-                LastMovesText=LastMovesText.slice(2,LastMovesText.length)
-                buttonpressed = true
-                console.log('returned true')
-                return true
-            } else {
-                currentMove = inverseMove
-                console.log('currentMove',inverseMove)
-                moveDone = move()
-                console.log(currentLayout)
-                LastMovesText='--'+LastMovesText
-                changelast_moves_text(LastMovesText)
-                LastMovesText=LastMovesText.slice(2,LastMovesText.length)
-                fromSquare = previosMove[0]
-                currentMove = []
-                moveDone = false
-                console.log(fromSquare,toSquare,moveDone)
-            }
-        };
-        if (moveDone === false) {
-            console.log('previos moves list', previosMoves)
-            MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves);
-            console.log(MoveSuccesfulTuple)
-            if (MoveSuccesfulTuple[0] === true) {
-                currentPiece = piece
-                currentMove = MoveSuccesfulTuple[1]
-                console.log('currentMove', currentMove)
-                moveDone = move()
-                console.log('here wpifhlj', currentLayout)
-                if (LastMovesText.length<1) {LastMovesText='---'}
-                console.log(LastMovesText)
-                changelast_moves_text(LastMovesText)
-                LastMovesText=LastMovesText.slice(1,LastMovesText.length)
-                console.log(currentMove)
-                buttonpressed = false
-                console.log('returned true')
-                return true
-            } else {
-                currentMove = []
-                moveDone = false
-                console.log('returned false')
-                return false;
+        if (currentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]===turn){
+            if (buttonpressed === false) {
+                let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
+                if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
+                    currentPiece = piece
+                    moveDone = move()
+                    currentMove = []
+                    moveDone = false
+                    LastMovesText='--'+LastMovesText
+                    changelast_moves_text(LastMovesText)
+                    LastMovesText=LastMovesText.slice(2,LastMovesText.length)
+                    buttonpressed = true
+                    console.log('returned true')
+                    return true
+                } else {
+                    currentMove = inverseMove
+                    console.log('currentMove',inverseMove)
+                    moveDone = move()
+                    console.log(currentLayout)
+                    LastMovesText='--'+LastMovesText
+                    changelast_moves_text(LastMovesText)
+                    LastMovesText=LastMovesText.slice(2,LastMovesText.length)
+                    fromSquare = previosMove[0]
+                    currentMove = []
+                    moveDone = false
+                    console.log(fromSquare,toSquare,moveDone)
+                }
+            };
+            if (moveDone === false) {
+                console.log('previos moves list', previosMoves)
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves);
+                console.log(MoveSuccesfulTuple)
+                if (MoveSuccesfulTuple[0] === true) {
+                    currentPiece = piece
+                    currentMove = MoveSuccesfulTuple[1]
+                    console.log('currentMove', currentMove)
+                    moveDone = move()
+                    console.log('here wpifhlj', currentLayout)
+                    if (LastMovesText.length<1) {LastMovesText='---'}
+                    console.log(LastMovesText)
+                    changelast_moves_text(LastMovesText)
+                    LastMovesText=LastMovesText.slice(1,LastMovesText.length)
+                    console.log(currentMove)
+                    buttonpressed = false
+                    console.log('returned true')
+                    return true
+                } else {
+                    currentMove = []
+                    moveDone = false
+                    console.log('returned false')
+                    return false;
+                }
             };
         }
     }
