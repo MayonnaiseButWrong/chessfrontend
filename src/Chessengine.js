@@ -2,6 +2,8 @@ import { toTuple, toCoOrdinates } from './translations.js'
 
 var AllMoves = [];
 
+//https://www.geeksforgeeks.org/how-to-connect-reactjs-with-flask-api/
+
 function generateQMoves() {
     let moves = [];
     let direction = [];
@@ -581,6 +583,8 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
             if (Line.includes(position) === true) {
                 CheckMoves.push(moves[Move])
             };
+            kMoves = kingMoves(KingPosition, opponentMoves,currentLayout)
+            CheckMoves = CheckMoves.concat(kMoves)
         };
         for (let Move = 0; Move < CheckMoves.length; Move++) {
             if (CheckMoves === undefined) { CheckMoves.splice(Move, 1) }
@@ -604,7 +608,6 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves)
 };
 
 function isCheckmate(currentLayout, turn, previosMoves) {
-    generatedBefore = false
     let moves = generateMoves(currentLayout, turn, previosMoves);
     console.log(moves)
     if (moves.length < 0) {
