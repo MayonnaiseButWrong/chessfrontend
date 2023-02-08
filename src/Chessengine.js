@@ -233,7 +233,7 @@ function opponentKingMoves(KingPosition) {
     const vectors = [[[1, 0]], [[1, 1]], [[0, 1]], [[-1, 1]], [[-1, 0]], [[-1, -1]], [[0, -1]], [[1, -1]]]
     for (let vector = 0; vector < 8; vector++) {
         if ((vectors[vector][0][0] + i) >= 0 && (vectors[vector][0][0] + i) < 8 && (vectors[vector][0][1] + j) >= 0 && (vectors[vector][0][1] + j) < 8) {
-            moves.push(toCoOrdinates([i,j]),toCoOrdinates([vectors[vector][0][0] + i, vectors[vector][0][1] + j]))
+            moves.push([toCoOrdinates([i,j]),toCoOrdinates([vectors[vector][0][0] + i, vectors[vector][0][1] + j])])
         }
     }
     return moves
@@ -257,11 +257,10 @@ function kingMoves(KingPosition, opponentMoves,boardLayout) {
                 }
             }
             if (flag===false&&!(boardLayout[ vectors[vector][0][1] + j][vectors[vector][0][0] + i][0]===boardLayout[j][i][0])) {
-                moves.push(toCoOrdinates([i,j]),toCoOrdinates([vectors[vector][0][0] + i, vectors[vector][0][1] + j]))
+                moves.push([toCoOrdinates([i,j]),toCoOrdinates([vectors[vector][0][0] + i, vectors[vector][0][1] + j])])
             }
         }
     }
-    console.log('king moves',moves)
     return moves
 }
 
@@ -291,7 +290,6 @@ function checkVectors(currentLayout, turn, KingPosition) {
                     if (turn === 'B') {
                         if (currentLayout[j][i][0] === 'B') {
                             if (isCheckUsingVector(kingI, kingJ, i, j, currentLayout) === false) {
-                                console.log('here 17')
                                 for (let direction = 0; direction < moveVectors[currentLayout[j][i][1]].length; direction++) {
                                     currenDirection = moveVectors[currentLayout[j][i][1]][direction]
                                     for (let vectorNumber = 0; vectorNumber < currenDirection.length; vectorNumber++) {
@@ -485,32 +483,38 @@ function findLine(position1, piece, position2) {
     let Qmoves = generateQMoves();
     let Bmoves = generateBMoves();
     let Rmoves = generateRMoves();
-    let vectors = [];
-    let currentDirection = [];
     let vector = [];
     let Line = [];
-    const moveVectors = {
-        'Q': Qmoves,
-        'K': [[[1, 0]], [[1, 1]], [[0, 1]], [[-1, 1]], [[-1, 0]], [[-1, -1]], [[0, -1]], [[0, -1]]],
-        'B': Bmoves,
-        'N': [[[2, 1]], [[1, 2]], [[-1, 2]], [[-2, 1]], [[-2, -1]], [[-1, -2]], [[1, -2]], [[2, -1]]],
-        'R': Rmoves,
-        'P': [[[0, 1]]]
+    let modulus = 0
+    let unitVector=[]
+    let mod = 1
+    let currentVector=[]
+
+    if (piece=='N') {
+        return position2
     }
-    vectors = moveVectors[piece]
-    for (let direction = 0; direction < vectors.length; direction++) {
-        currentDirection = vectors[direction]
-        for (let vectorNumber = 0; vectorNumber < currentDirection.length; vectorNumber++) {
-            vector = currentDirection[vectorNumber]
-            if ((toTuple(position1)[0] + vector[0]) === (toTuple(position2)[0]) && (toTuple(position1)[1] + vector[1]) === (toTuple(position2)[1])) {
-                for (let x = 0; x < vectorNumber; x++) {
-                    vector = currentDirection[vectorNumber]
-                    Line.push(toCoOrdinates([(toTuple(position1)[0] + vector[0]), (toTuple(position1)[1] + vector[1])]))
-                };
-                return Line
-            };
-        };
-    };
+
+    vector=[toTuple(position2)[0] - toTuple(position1)[0], toTuple(position2)[1] - toTuple(position1)[1]]
+    if (vector[0] === vector[1] || vector[0] === -vector[1] || vector[0] === 0 || vector[1] === 0) {
+        if (vector[0] < 0) {
+            modulus = -vector[0]
+        } else if (vector[0] > 0) {
+            modulus = vector[0]
+        } else if (vector[1] < 0) {
+            modulus = -vector[1]
+        } else {
+            modulus = vector[1]
+        }
+        unitVector = [vector[0] / modulus, vector[1] / modulus]
+
+        currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
+        while (!(toCoOrdinates(currentVector)===position2)) {
+            Line.push(toCoOrdinates(currentVector))
+            mod++
+            currentVector=[toTuple(position1)[0]+mod*unitVector[0],toTuple(position1)[1]+mod*unitVector[1]]
+        }
+    }
+    return Line
 };
 
 function isCheck(currentLayout, KingPosition, opponentMoves) {
@@ -531,7 +535,6 @@ function generateOpponenMoves(currentLayout, turn) {
     let kMoves = []
     let KingPosition = []
     KingPosition = findKing(currentLayout, turn)
-    console.log(KingPosition)
     opponentMoves = checkVectors(currentLayout, turn, KingPosition)
     PawnMoves = pawnNormal(currentLayout, turn)
     opponentMoves = opponentMoves.concat(PawnMoves);
@@ -568,7 +571,9 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
         }
         return moves;
     } else {
+        console.log('check["is Check"]',check['is Check'])
         Line = findLine(KingPosition, check['piece'], check['position'])
+        console.log('Line',Line)
         for (let Move = 0; Move < moves.length; Move++) {
             position = moves[Move][1]
             if (Line.includes(position) === true) {
@@ -585,7 +590,7 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
 function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves) {
     let moves = generateMoves(currentLayout, turn, previosMoves);
     console.log('here2', fromSquare, toSquare);
-    console.log(moves.toLocaleString());
+    console.log(moves);
     for (let Move = 0; Move < moves.length; Move++) {
         console.log(moves[Move],[fromSquare,toSquare])
         if (moves[Move][0] === fromSquare && moves[Move][1] === toSquare) {
