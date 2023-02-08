@@ -88,13 +88,13 @@ const ChessFrontEnd = () => {
         console.log(currentPosx)
     }
 
-    const [last_moves_text, setlast_moves_text] = useState(" ");
+    const [last_moves_text, setlast_moves_text] = useState("--");
     const changelast_moves_text = (text) => { setlast_moves_text(text); }
 
-    const [black_pieces_taken_text, setblack_pieces_taken_text] = useState(" ");
+    const [black_pieces_taken_text, setblack_pieces_taken_text] = useState("--");
     const changeblack_pieces_taken_text = (text) => { setblack_pieces_taken_text(text); }
 
-    const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState(" ");
+    const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
 
 
@@ -122,55 +122,53 @@ const ChessFrontEnd = () => {
         console.log('skdfjbvhfjk', currentMove)
         if (moveDone === true) {
 
-            //whitePiecesTakenList = []
-            //blackPiecesTakenList = []
-            //currentPieces = FindPieces(currentLayout)
-            //currentBlackPieces = currentPieces[0]
-            //currentWhitePieces = currentPieces[1]
-//
-            //if (currentBlackPieces['P'] < originalBlackPieces['P']) { blackPiecesTakenList.push('WP') }
-            //if (currentBlackPieces['Q'] < originalBlackPieces['Q']) { blackPiecesTakenList.push('WQ') }
-            //if (currentBlackPieces['K'] < originalBlackPieces['K']) { blackPiecesTakenList.push('WK') }
-            //if (currentBlackPieces['R'] < originalBlackPieces['R']) { blackPiecesTakenList.push('WR') }
-            //if (currentBlackPieces['B'] < originalBlackPieces['B']) { blackPiecesTakenList.push('WB') }
-            //if (currentBlackPieces['N'] < originalBlackPieces['N']) { blackPiecesTakenList.push('WN') }
-//
-            //if (currentWhitePieces['P'] < originalWhitePieces['P']) { whitePiecesTakenList.push('BP') }
-            //if (currentWhitePieces['Q'] < originalWhitePieces['Q']) { whitePiecesTakenList.push('BQ') }
-            //if (currentWhitePieces['K'] < originalWhitePieces['K']) { whitePiecesTakenList.push('BK') }
-            //if (currentWhitePieces['R'] < originalWhitePieces['R']) { whitePiecesTakenList.push('BR') }
-            //if (currentWhitePieces['B'] < originalWhitePieces['B']) { whitePiecesTakenList.push('BB') }
-            //if (currentWhitePieces['N'] < originalWhitePieces['N']) { whitePiecesTakenList.push('BN') }
-//
-            //whitePiecesTakenList.sort()
-            //blackPiecesTakenList.sort()
-            //for (let elements = 0; elements < whitePiecesTakenList.length; elements++) {
-            //    temp.push(toUnicode(whitePiecesTakenList[elements]))
-            //}
-            //whitePiecesTakenList = temp
-            //temp = []
-            //for (let elements = 0; elements < blackPiecesTakenList.length; elements++) {
-            //    temp.push(toUnicode(blackPiecesTakenList[elements]))
-            //}
-            //blackPiecesTakenList = temp
-            //whitePiecesTakenText = (whitePiecesTakenList.length > 0) ? whitePiecesTakenList.toString() : ' '
-            //blackPiecesTakenText = (blackPiecesTakenList.length > 0) ? blackPiecesTakenList.toString() : ' '
-//
-            //console.log(currentPiece, currentMove[1])
-            //if (LastMovesList === undefined) { LastMovesList = [] }
-            //LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase()) + ' > ' + currentMove[1])
-            //if (LastMovesList.length > 3) { LastMovesList.shift() }
-            //LastMovesList.reverse()
-            //LastMovesText = (LastMovesList.length > 0) ? LastMovesList.toString() : ' '
-            //LastMovesList.reverse()
-//
-            //changewhite_pieces_taken_text(whitePiecesTakenText)
-            //changeblack_pieces_taken_text(blackPiecesTakenText)
-            //changelast_moves_text(LastMovesText)
+            whitePiecesTakenList = []
+            blackPiecesTakenList = []
+            currentPieces = FindPieces(currentLayout)
+            currentBlackPieces = currentPieces[0]
+            currentWhitePieces = currentPieces[1]
 
-            changewhite_pieces_taken_text('whitePiecesTakenText')
-            changeblack_pieces_taken_text('blackPiecesTakenText')
-            changelast_moves_text('LastMovesText')
+            if (currentBlackPieces['P'] < originalBlackPieces['P']) { blackPiecesTakenList.push('WP') }
+            if (currentBlackPieces['Q'] < originalBlackPieces['Q']) { blackPiecesTakenList.push('WQ') }
+            if (currentBlackPieces['K'] < originalBlackPieces['K']) { blackPiecesTakenList.push('WK') }
+            if (currentBlackPieces['R'] < originalBlackPieces['R']) { blackPiecesTakenList.push('WR') }
+            if (currentBlackPieces['B'] < originalBlackPieces['B']) { blackPiecesTakenList.push('WB') }
+            if (currentBlackPieces['N'] < originalBlackPieces['N']) { blackPiecesTakenList.push('WN') }
+
+            if (currentWhitePieces['P'] < originalWhitePieces['P']) { whitePiecesTakenList.push('BP') }
+            if (currentWhitePieces['Q'] < originalWhitePieces['Q']) { whitePiecesTakenList.push('BQ') }
+            if (currentWhitePieces['K'] < originalWhitePieces['K']) { whitePiecesTakenList.push('BK') }
+            if (currentWhitePieces['R'] < originalWhitePieces['R']) { whitePiecesTakenList.push('BR') }
+            if (currentWhitePieces['B'] < originalWhitePieces['B']) { whitePiecesTakenList.push('BB') }
+            if (currentWhitePieces['N'] < originalWhitePieces['N']) { whitePiecesTakenList.push('BN') }
+
+            whitePiecesTakenList.sort()
+            blackPiecesTakenList.sort()
+            for (let elements = 0; elements < whitePiecesTakenList.length; elements++) {
+                temp.push(toUnicode(whitePiecesTakenList[elements]))
+            }
+            whitePiecesTakenList = temp
+            temp = []
+            for (let elements = 0; elements < blackPiecesTakenList.length; elements++) {
+                temp.push(toUnicode(blackPiecesTakenList[elements]))
+            }
+            blackPiecesTakenList = temp
+            whitePiecesTakenText = (whitePiecesTakenList.length > 0) ? whitePiecesTakenList.toString() : ' '
+            blackPiecesTakenText = (blackPiecesTakenList.length > 0) ? blackPiecesTakenList.toString() : ' '
+
+            console.log(currentPiece, currentMove[1])
+            if (LastMovesList === undefined) { LastMovesList = [] }
+            LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase()) + ' > ' + currentMove[1])
+            if (LastMovesList.length > 3) { LastMovesList.shift() }
+            LastMovesList.reverse()
+            LastMovesText = (LastMovesList.length > 0) ? LastMovesList.toString() : ' '
+            LastMovesList.reverse()
+
+            changewhite_pieces_taken_text(whitePiecesTakenText)
+            changeblack_pieces_taken_text(blackPiecesTakenText)
+            changelast_moves_text(LastMovesText)
+
+            LastMovesText=','+LastMovesText
 
             turn = (turn === 'W') ? 'B' : 'W';
             console.log(turn)
@@ -202,7 +200,9 @@ const ChessFrontEnd = () => {
                 moveDone = move()
                 currentMove = []
                 moveDone = false
+                LastMovesText='--'+LastMovesText
                 changelast_moves_text(LastMovesText)
+                LastMovesText=LastMovesText.slice(2,LastMovesText.length)
                 buttonpressed = true
                 console.log('returned true')
                 return true
@@ -211,6 +211,9 @@ const ChessFrontEnd = () => {
                 console.log('currentMove',inverseMove)
                 moveDone = move()
                 console.log(currentLayout)
+                LastMovesText='--'+LastMovesText
+                changelast_moves_text(LastMovesText)
+                LastMovesText=LastMovesText.slice(2,LastMovesText.length)
                 fromSquare = previosMove[0]
                 currentMove = []
                 moveDone = false
@@ -227,7 +230,10 @@ const ChessFrontEnd = () => {
                 console.log('currentMove', currentMove)
                 moveDone = move()
                 console.log('here wpifhlj', currentLayout)
+                if (LastMovesText.length<1) {LastMovesText='---'}
+                console.log(LastMovesText)
                 changelast_moves_text(LastMovesText)
+                LastMovesText=LastMovesText.slice(1,LastMovesText.length)
                 console.log(currentMove)
                 buttonpressed = false
                 console.log('returned true')
