@@ -179,9 +179,9 @@ const ChessFrontEnd = () => {
 
             console.log(previosMoves)
 
-            //if (isCheckmate(currentLayout, turn, previosMoves) === true) {
-            //    console.log('checkamte')
-            //}
+            if (isCheckmate(currentLayout, turn, previosMoves) === true) {
+                console.log('checkamte')
+            }
         }
     };
 
@@ -271,28 +271,34 @@ const ChessFrontEnd = () => {
                 console.log(boardCopy)
             }
             console.log('here 01923')
-        } else if (curentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1]==='K') {
+        } else if (boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1]==='K') {
             if (fromSquare==='E8'&&toSquare==='G8') {
-                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
-                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
                 boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
                 boardCopy[toTuple('H8')[1]][toTuple('H8')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
             } else if (fromSquare==='E8'&&toSquare==='C8') {
+                boardCopy[toTuple('D8')[1]][toTuple('D8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('A8')[1]][toTuple('A8')[0]] = 'MT'
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-                boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
-                boardCopy[toTuple('H8')[1]][toTuple('H8')[0]] = 'MT'
             } else if (fromSquare==='E1'&&toSquare==='G1') {
-
+                boardCopy[toTuple('F1')[1]][toTuple('F1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('H1')[1]][toTuple('H1')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
             } else if (fromSquare==='E1'&&toSquare==='C1') {
-
+                boardCopy[toTuple('D1')[1]][toTuple('D1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('A1')[1]][toTuple('A1')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
             }
         } else {
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
         currentLayout = boardCopy
-        console.log(currentLayout.toString())
+        console.log(currentLayout)
         currentString = toDict(currentLayout)
         console.log(currentString, '2')
         upadteCurrentString()
