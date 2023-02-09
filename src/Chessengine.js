@@ -497,7 +497,10 @@ function findLine(position1, piece, position2) {
     let mod = 1
     let currentVector = []
 
-    if (piece === 'N') {
+    console.log(position1,piece,position2)
+    piece=String(piece)
+    if (piece === 'N'||piece === 'P') {
+        console.log('return position 2')
         return [position2]
     }
 
@@ -521,6 +524,7 @@ function findLine(position1, piece, position2) {
         }
         Line.push(toCoOrdinates(currentVector))
     }
+    console.log(Line)
     return Line
 };
 
@@ -529,7 +533,9 @@ function isCheck(currentLayout, KingPosition, opponentMoves) {
     for (let Move = 0; Move < opponentMoves.length; Move++) {
         position = opponentMoves[Move][1]
         if (position === KingPosition) {
-            return { 'is Check': true, 'position': opponentMoves[Move][0], 'piece': currentLayout[toTuple(position)[1]][toTuple(position)[0]][1] }
+            console.log(currentLayout)
+            console.log(currentLayout[toTuple(position)[0]][toTuple(position)[0]][1])
+            return { 'is Check': true, 'position': opponentMoves[Move][0], 'piece': currentLayout[toTuple(position)[0]][toTuple(position)[0]][1] }
         }
     };
     return { 'is Check': false, 'position': 'somewhere', 'piece': 'someone' }

@@ -271,6 +271,22 @@ const ChessFrontEnd = () => {
                 console.log(boardCopy)
             }
             console.log('here 01923')
+        } else if (curentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1]==='K') {
+            if (fromSquare==='E8'&&toSquare==='G8') {
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+                boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('H8')[1]][toTuple('H8')[0]] = 'MT'
+            } else if (fromSquare==='E8'&&toSquare==='C8') {
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+                boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('H8')[1]][toTuple('H8')[0]] = 'MT'
+            } else if (fromSquare==='E1'&&toSquare==='G1') {
+
+            } else if (fromSquare==='E1'&&toSquare==='C1') {
+
+            }
         } else {
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
