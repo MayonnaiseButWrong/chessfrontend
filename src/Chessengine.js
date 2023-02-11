@@ -347,7 +347,6 @@ function castling(previosMovesList, turn, currentLayout) {
     let currentSquare = [];
     let Line = [];
     const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    console.log('made it')
     if (turn === 'W') {
         if (previosMovesList.includes([toTuple('E1'), toTuple('E2')]) || previosMovesList.includes([toTuple('E1'), toTuple('F1')]) || previosMovesList.includes([toTuple('E1'), toTuple('F2')]) || previosMovesList.includes([toTuple('E1'), toTuple('D1')]) || previosMovesList.includes([toTuple('E1'), toTuple('D2')])) {
             return []
@@ -360,25 +359,28 @@ function castling(previosMovesList, turn, currentLayout) {
                 return []
             };
         };
-        console.log('made it through stage 1')
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
                 currentSquare = currentLayout[j][i];
-                if (!(currentSquare === 'MT') && currentSquare[0] === 'B') {
+                if (!(currentSquare === 'MT' || currentSquare[1] === 'K') && currentSquare[0] === 'B') {
                     for (let position = 0; position < 8; position++) {
                         Line = findLine(toCoOrdinates([i, j]), currentSquare[1], toCoOrdinates([position, 7]));
-                        console.log(toCoOrdinates([i, j]), currentSquare[1], toCoOrdinates([position, 7]))
-                        console.log(Line)
                         if (Line.length > 0) {
                             for (let positionOnLine = 0; positionOnLine < Line.length; positionOnLine++) {
-                                if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'W' && !(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'WK')) {
-                                    if (Line[positionOnLine][1] < 5) {
-                                        l = false
-                                    } else if (Line[positionOnLine][1] > 5) {
-                                        r = false
-                                    } else {
-                                        return []
-                                    }
+                                if (!(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0]=='B')) {
+                                    if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]] === 'MT' && !(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'WK')) {
+                                        if (toTuple(Line[positionOnLine])[0] === 7){
+                                            if (toTuple(Line[positionOnLine])[0] < 5) {
+                                                l = false
+                                            } else if (toTuple(Line[positionOnLine])[0] > 5) {
+                                                r = false
+                                            } else {
+                                                return []
+                                            }
+                                        }
+                                    };
+                                } else {
+                                    break
                                 };
                             };
                         };
@@ -386,7 +388,7 @@ function castling(previosMovesList, turn, currentLayout) {
                 };
             };
         };
-        if (l === false && r === false) {
+        if (l === true && r === true) {
             return [['E1', 'C1'], ['E1', 'G1']]
         } else if (l === false) {
             return [['E1', 'G1']]
@@ -409,34 +411,41 @@ function castling(previosMovesList, turn, currentLayout) {
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
                 currentSquare = currentLayout[j][i];
-                if (!(currentSquare === 'MT') && currentSquare[0] === 'W') {
+                if (!(currentSquare === 'MT' || currentSquare[1] === 'K') && currentSquare[0] === 'W') {
                     for (let position = 0; position < 8; position++) {
                         Line = findLine(toCoOrdinates([i, j]), currentSquare[1], toCoOrdinates([position, 0]));
                         if (Line.length > 0) {
                             for (let positionOnLine = 0; positionOnLine < Line.length; positionOnLine++) {
-                                if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'B' && !(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'BK')) {
-                                    if (Line[positionOnLine][1] < 5) {
-                                        l = false
-                                    } else if (Line[positionOnLine][1] > 5) {
-                                        r = false
-                                    } else {
-                                        return []
-                                    }
-                                };
+                                if (!(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0]=='W')) {
+                                    if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]] === 'MT' && !(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'BK')) {
+                                        if (toTuple(Line[positionOnLine])[0] === 0){
+                                            if (toTuple(Line[positionOnLine])[0] < 5) {
+                                                l = false
+                                            } else if (toTuple(Line[positionOnLine])[0] > 5) {
+                                                r = false
+                                            } else {
+                                                return []
+                                            }
+                                        }
+                                    };
+                                } else {
+                                    break
+                                };;
                             };
                         };
                     };
                 };
             };
         };
-        if (l === false && r === false) {
-            return [['E1', 'C1'], ['E1', 'G1']]
+        if (l === true && r === true) {
+            return [['E8', 'C8'], ['E8', 'G8']]
         } else if (l === false) {
-            return [['E1', 'G1']]
+            return [['E8', 'G8']]
         } else if (r === false) {
-            return [['E1', 'C1']]
+            return [['E8', 'C8']]
         };
     };
+    return []
 };
 
 function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare) {
@@ -455,7 +464,6 @@ function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare
             modulus = vector[1]
         }
         unitVector = [vector[0] / modulus, vector[1] / modulus]
-
         for (let mod = 1; mod < 10; mod++) {
             if (kingI + mod * unitVector[0] >= 0 && kingJ + mod * unitVector[1] >= 0 && kingI + mod * unitVector[0] < 8 && kingJ + mod * unitVector[1] < 8) {
                 if (kingI + mod * unitVector[0] === endSquare[0] && kingJ + mod * unitVector[1] === endSquare[1]) { return false }
@@ -477,14 +485,22 @@ function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare
 
 function findLine(position1, piece, position2) {
     let vector = [];
+    let Qmoves = generateQMoves();
+    let Bmoves = generateBMoves();
+    let Rmoves = generateRMoves();
     let Line = [];
     let modulus = 0
     let unitVector = []
     let mod = 1
     let currentVector = []
+    let vectors = {
+        'Q': Qmoves,
+        'B': Bmoves,
+        'R': Rmoves,
+    }
     piece=String(piece)
     if (piece === 'N'||piece === 'P') {
-        return [position2]
+        return [position1]
     }
 
     vector = [toTuple(position2)[0] - toTuple(position1)[0], toTuple(position2)[1] - toTuple(position1)[1]]
@@ -499,13 +515,19 @@ function findLine(position1, piece, position2) {
             modulus = vector[1]
         }
         unitVector = [vector[0] / modulus, vector[1] / modulus]
-        currentVector = [toTuple(position1)[0] + mod * unitVector[0], toTuple(position1)[1] + mod * unitVector[1]]
-        while (!(toCoOrdinates(currentVector) === position2) && mod < 10) {
-            Line.push(toCoOrdinates(currentVector))
-            mod++
-            currentVector = [toTuple(position1)[0] + mod * unitVector[0], toTuple(position1)[1] + mod * unitVector[1]]
+        for (let direction = 0; direction < vectors[piece].length; direction++) {
+            for (let directionVector = 0; directionVector < vectors[piece][direction].length; directionVector++) {
+                if (toCoOrdinates(vectors[piece][direction][directionVector])===toCoOrdinates(unitVector)) {
+                    currentVector = [toTuple(position1)[0] + mod * unitVector[0], toTuple(position1)[1] + mod * unitVector[1]]
+                    while (!(toCoOrdinates(currentVector) === position2) && mod < 10) {
+                        Line.push(toCoOrdinates(currentVector))
+                        mod++
+                        currentVector = [toTuple(position1)[0] + mod * unitVector[0], toTuple(position1)[1] + mod * unitVector[1]]
+                    }
+                    Line.push(toCoOrdinates(currentVector))
+                }
+            }
         }
-        Line.push(toCoOrdinates(currentVector))
     }
     console.log(Line)
     return Line
@@ -549,6 +571,7 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
     let position = '';
     let opponentMoves = [];
     let kMoves = []
+    let castlingMoves = []
     opponentMoves = generateOpponenMoves(currentLayout, turn)
     KingPosition = findKing(currentLayout, turn);
     moves = checkVectors(currentLayout, turn, KingPosition);
@@ -557,9 +580,8 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
     kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
     moves = moves.concat(kMoves)
     check = isCheck(currentLayout, KingPosition, opponentMoves);
-    console.log(moves)
-    moves.concat(castling(previosMovesList, turn, currentLayout));
-    console.log(moves)
+    castlingMoves = castling(previosMovesList, turn, currentLayout)
+    moves = moves.concat(castlingMoves);
     if (check['is Check'] === false) {
         for (let Move = 0; Move < moves.length; Move++) {
             if (moves === undefined) { moves.splice(Move, 1) }
