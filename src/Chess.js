@@ -119,6 +119,7 @@ const ChessFrontEnd = () => {
         let currentBlackPieces = []
         let currentWhitePieces = []
         let temp = []
+        let checkmate = false
         console.log('skdfjbvhfjk', currentMove)
         if (moveDone === true) {
 
@@ -156,7 +157,6 @@ const ChessFrontEnd = () => {
             whitePiecesTakenText = (whitePiecesTakenList.length > 0) ? whitePiecesTakenList.toString() : ' '
             blackPiecesTakenText = (blackPiecesTakenList.length > 0) ? blackPiecesTakenList.toString() : ' '
 
-            console.log(currentPiece, currentMove[1])
             if (LastMovesList === undefined) { LastMovesList = [] }
             LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase()) + ' > ' + currentMove[1])
             if (LastMovesList.length > 3) { LastMovesList.shift() }
@@ -179,20 +179,20 @@ const ChessFrontEnd = () => {
 
             console.log(previosMoves)
 
-            if (isCheckmate(currentLayout, turn, previosMoves) === true) {
+            checkmate = isCheckmate(currentLayout, turn, previosMoves)
+            console.log(checkmate)
+            if (checkmate === true) {
                 console.log('checkamte')
             }
         }
     };
 
     function onDrop(fromSquare, toSquare, piece) {
-        console.log(fromSquare, toSquare)
         let MoveSuccesfulTuple = [];
         fromSquare = String(fromSquare).toUpperCase();
         toSquare = String(toSquare).toUpperCase();
         previosMove = currentMove
         currentMove = [fromSquare, toSquare]
-        console.log('currentMove', currentMove)
         if (currentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] === turn) {
             if (buttonpressed === false) {
                 let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
@@ -205,44 +205,32 @@ const ChessFrontEnd = () => {
                     changelast_moves_text(LastMovesText)
                     LastMovesText = LastMovesText.slice(2, LastMovesText.length)
                     buttonpressed = true
-                    console.log('returned true')
                     return true
                 } else {
                     currentMove = inverseMove
-                    console.log('currentMove', inverseMove)
                     moveDone = move()
-                    console.log(currentLayout)
                     LastMovesText = '--' + LastMovesText
                     changelast_moves_text(LastMovesText)
                     LastMovesText = LastMovesText.slice(2, LastMovesText.length)
                     fromSquare = previosMove[0]
                     currentMove = []
                     moveDone = false
-                    console.log(fromSquare, toSquare, moveDone)
                 }
             };
             if (moveDone === false) {
-                console.log('previos moves list', previosMoves)
                 MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves);
-                console.log(MoveSuccesfulTuple)
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]
-                    console.log('currentMove', currentMove)
                     moveDone = move()
-                    console.log('here wpifhlj', currentLayout)
                     if (LastMovesText.length < 1) { LastMovesText = '---' }
-                    console.log(LastMovesText)
                     changelast_moves_text(LastMovesText)
                     LastMovesText = LastMovesText.slice(1, LastMovesText.length)
-                    console.log(currentMove)
                     buttonpressed = false
-                    console.log('returned true')
                     return true
                 } else {
                     currentMove = []
                     moveDone = false
-                    console.log('returned false')
                     return false;
                 }
             };
@@ -253,24 +241,15 @@ const ChessFrontEnd = () => {
         let boardCopy = currentLayout
         let fromSquare = currentMove[0]
         let toSquare = currentMove[1]
-        console.log(toSquare)
-        console.log(fromSquare)
-        console.log(toTuple(toSquare))
-        console.log(toTuple(fromSquare))
         if (currentMove.length === 3) {
-            console.log('here 32048', currentMove.toLocaleString(), currentMove[2][0][1])
             if (currentMove[2][0][1] === 'Q' || currentMove[2][0][1] === 'B' || currentMove[2][0][1] === 'R' || currentMove[2][0][1] === 'N') {
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = currentMove[2][0]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-                console.log('here 04378291923')
             } else {
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-                console.log(boardCopy)
                 boardCopy[toTuple(currentMove[2][0])[1]][toTuple(currentMove[2][0])[0]] = 'MT'
-                console.log(boardCopy)
             }
-            console.log('here 01923')
         } else if (boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1]==='K') {
             if (fromSquare==='E8'&&toSquare==='G8') {
                 boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
@@ -298,14 +277,11 @@ const ChessFrontEnd = () => {
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
         currentLayout = boardCopy
-        console.log(currentLayout)
         currentString = toDict(currentLayout)
-        console.log(currentString, '2')
         upadteCurrentString()
         return true
     }
 
-    console.log(currentString, '1', currentMove)
     return (
         <div className="ChessFrontEnd">
             <h1>Chess</h1>

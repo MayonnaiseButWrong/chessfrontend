@@ -502,7 +502,6 @@ function findLine(position1, piece, position2) {
     if (piece === 'N'||piece === 'P') {
         return [position1]
     }
-
     vector = [toTuple(position2)[0] - toTuple(position1)[0], toTuple(position2)[1] - toTuple(position1)[1]]
     if (vector[0] === vector[1] || vector[0] === -vector[1] || vector[0] === 0 || vector[1] === 0) {
         if (vector[0] < 0) {
@@ -529,7 +528,6 @@ function findLine(position1, piece, position2) {
             }
         }
     }
-    console.log(Line)
     return Line
 };
 
@@ -538,9 +536,7 @@ function isCheck(currentLayout, KingPosition, opponentMoves) {
     for (let Move = 0; Move < opponentMoves.length; Move++) {
         position = opponentMoves[Move][1]
         if (position === KingPosition) {
-            console.log(currentLayout)
-            console.log(currentLayout[toTuple(position)[0]][toTuple(position)[0]][1])
-            return { 'is Check': true, 'position': opponentMoves[Move][0], 'piece': currentLayout[toTuple(position)[0]][toTuple(position)[0]][1] }
+            return { 'is Check': true, 'position': opponentMoves[Move][0], 'piece': currentLayout[toTuple(opponentMoves[Move][0])[1]][toTuple(opponentMoves[Move][0])[0]][1] }
         }
     };
     return { 'is Check': false, 'position': 'somewhere', 'piece': 'someone' }
@@ -588,28 +584,34 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
         }
         return moves;
     } else {
-        console.log('check["is Check"]', check['is Check'])
         Line = findLine(KingPosition, check['piece'], check['position'])
-        console.log('Line', Line)
         for (let Move = 0; Move < moves.length; Move++) {
             position = moves[Move][1]
-            if (Line.includes(position) === true) {
+            console.log('here')
+            console.log(currentLayout[toTuple(moves[Move][0])[1]][toTuple(moves[Move][0])[0]])
+            if (currentLayout[toTuple(moves[Move][0])[1]][toTuple(moves[Move][0])[0]][1]==='K') {
+                console.log('hereeeeeeeeeeeeeeeeeee')
+                kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
+                console.log(kMoves,'kmoves')
+                if (!(Line.includes(moves[Move][1]))) {
+                    console.log(moves[Move],currentLayout[toTuple(moves[Move][1])[1]][toTuple(moves[Move][1])[0]])
+                    CheckMoves = CheckMoves.concat(kMoves)
+                }
+            } else if (Line.includes(position) === true) {
+                console.log(moves[Move])
                 CheckMoves.push(moves[Move])
             };
-            kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
-            CheckMoves = CheckMoves.concat(kMoves)
         };
         for (let Move = 0; Move < CheckMoves.length; Move++) {
             if (CheckMoves === undefined) { CheckMoves.splice(Move, 1) }
         }
+        console.log(CheckMoves)
         return CheckMoves
     };
 };
 
 function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves) {
     let moves = generateMoves(currentLayout, turn, previosMoves);
-    console.log('here2', fromSquare, toSquare);
-    console.log(moves);
     for (let Move = 0; Move < moves.length; Move++) {
         if (moves[Move][0] === fromSquare && moves[Move][1] === toSquare) {
             return [true, moves[Move]];
@@ -620,8 +622,7 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves)
 
 function isCheckmate(currentLayout, turn, previosMoves) {
     let moves = generateMoves(currentLayout, turn, previosMoves);
-    console.log(moves)
-    if (moves.length < 0) {
+    if (moves.length < 1) {
         return true
     }
     return false
