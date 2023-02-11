@@ -341,12 +341,13 @@ function checkVectors(currentLayout, turn, KingPosition) {
     return moves
 };
 
-function castling(previosMovesList, turn, opponentMoves, currentLayout) {
+function castling(previosMovesList, turn, currentLayout) {
     let l = true;
     let r = true;
     let currentSquare = [];
     let Line = [];
     const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    console.log('made it')
     if (turn === 'W') {
         if (previosMovesList.includes([toTuple('E1'), toTuple('E2')]) || previosMovesList.includes([toTuple('E1'), toTuple('F1')]) || previosMovesList.includes([toTuple('E1'), toTuple('F2')]) || previosMovesList.includes([toTuple('E1'), toTuple('D1')]) || previosMovesList.includes([toTuple('E1'), toTuple('D2')])) {
             return []
@@ -359,12 +360,15 @@ function castling(previosMovesList, turn, opponentMoves, currentLayout) {
                 return []
             };
         };
+        console.log('made it through stage 1')
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
                 currentSquare = currentLayout[j][i];
                 if (!(currentSquare === 'MT') && currentSquare[0] === 'B') {
                     for (let position = 0; position < 8; position++) {
                         Line = findLine(toCoOrdinates([i, j]), currentSquare[1], toCoOrdinates([position, 7]));
+                        console.log(toCoOrdinates([i, j]), currentSquare[1], toCoOrdinates([position, 7]))
+                        console.log(Line)
                         if (Line.length > 0) {
                             for (let positionOnLine = 0; positionOnLine < Line.length; positionOnLine++) {
                                 if (currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'W' && !(currentLayout[toTuple(Line[positionOnLine])[1]][toTuple(Line[positionOnLine])[0]][0] === 'WK')) {
@@ -471,24 +475,6 @@ function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare
     return false
 }
 
-function castlingIsPossibe(currentLayout, turn) {
-    if (turn === 'B') {
-        for (let i = 0; i < 8; i++) {
-            if (!(currentLayout[0][i] === 'MT' || currentLayout[0][i] === 'BR' || currentLayout[0][i] === 'BK')) {
-                return false
-            };
-        };
-    };
-    if (turn === 'W') {
-        for (let i = 0; i < 8; i++) {
-            if (!(currentLayout[7][i] === 'MT' || currentLayout[7][i] === 'WR' || currentLayout[7][i] === 'WK')) {
-                return false
-            };
-        };
-    };
-    return true
-};
-
 function findLine(position1, piece, position2) {
     let vector = [];
     let Line = [];
@@ -496,11 +482,8 @@ function findLine(position1, piece, position2) {
     let unitVector = []
     let mod = 1
     let currentVector = []
-
-    console.log(position1,piece,position2)
     piece=String(piece)
     if (piece === 'N'||piece === 'P') {
-        console.log('return position 2')
         return [position2]
     }
 
@@ -574,9 +557,9 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
     kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
     moves = moves.concat(kMoves)
     check = isCheck(currentLayout, KingPosition, opponentMoves);
-    if (castlingIsPossibe(currentLayout, turn, moves, opponentMoves) === true) {
-        moves.concat(castling(previosMovesList, turn, currentLayout));
-    };
+    console.log(moves)
+    moves.concat(castling(previosMovesList, turn, currentLayout));
+    console.log(moves)
     if (check['is Check'] === false) {
         for (let Move = 0; Move < moves.length; Move++) {
             if (moves === undefined) { moves.splice(Move, 1) }
