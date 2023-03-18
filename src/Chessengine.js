@@ -165,7 +165,6 @@ function enPassant(currentLayout, turn, previosMovesList) {
         if (turn === 'W') {
             if (currentLayout[3][i] === 'WP') {
                 if (i < 7 && currentLayout[3][i + 1] === 'BP') {
-                    ;
                     startSquare = toCoOrdinates([i, 3]);
                     positionList = []
                     positionList.push(toCoOrdinates([i + 1, 3]));
