@@ -8,8 +8,8 @@ const OptionsPage = () => {
       <h1>Chess</h1>
       <div className="grid-container">
         <div className='boarderleft'></div>
-        <div className='topbutton'><Link to="/ChessGame"><button id="button 1"> Daily Chess</button>              </Link></div>
-        <div><Link to="/ChessGame"> <button id="button 2"> 2 Player Normal Chess</button>                      </Link></div>
+        <div className='topbutton'><Link to="/DailyChess"><button id="button 1"> Daily Chess</button>              </Link></div>
+        <div><Link to="/TwoPlayerNormalChess"> <button id="button 2"> 2 Player Normal Chess</button>                      </Link></div>
         <div><Link to="/ChessGame"> <button id="button 3"> 1 Player Normal Chess</button>                      </Link></div>
         <div><Link to="/ChessGame"> <button id="button 4"> 2 Player Fischer Random Chess</button>              </Link></div>
         <div><Link to="/ChessGame"> <button id="button 5"> 1 Player Fischer Random Chess</button>              </Link></div>

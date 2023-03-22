@@ -1,4 +1,4 @@
-import './Chess.css'
+import './TwoPlayerNormalChess.css'
 import { Text, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import { Chessboard } from "react-chessboard";
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const ChessFrontEnd = () => {
+const TwoPlayerNormalChess = () => {
 
     function currentPos(currentPosx) {
         console.log(currentPosx)
@@ -335,4 +335,4 @@ const ChessFrontEnd = () => {
     );
 };
 
-export { ChessFrontEnd };
+export { TwoPlayerNormalChess };
