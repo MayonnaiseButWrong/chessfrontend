@@ -33,7 +33,7 @@ def findImportantPieces(boardLayout):
     wImportantPieces=[]
     bImportantPieces=[]
     wCount,bCount,pieces=0,0,0
-    while (wCount+bCount)<17:
+    while (wCount+bCount)<18:
         if boardLayout[sortedList[pieces][1]][sortedList[pieces][0]][0]=='W'and wCount<9:
             wImportantPieces.append(sortedList[pieces])
             wCount+=1

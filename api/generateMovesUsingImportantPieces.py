@@ -3,12 +3,19 @@ VectorsOfPieces={'Q':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[
 def generateOpponentMoves(boardLayout,importantPieces):
     moves=[]
     for piece in importantPieces:
+        print(boardLayout[piece[1]][piece[0]][1])
         if boardLayout[piece[1]][piece[0]][1]=='K':
             continue
         if boardLayout[piece[1]][piece[0]][1]=='P':
-            if (piece[1]==1 and boardLayout[piece[1]][piece[0]][1]=='W') or (piece[1]==6 and boardLayout[piece[1]][piece[0]][1]=='B'):
-                moves.append(piece,[piece[0]+1,piece[1]+1])
-                moves.append(piece,[piece[0]-1,piece[1]+1])
+            print('here',piece[1],boardLayout[piece[1]][piece[0]][0])
+            if (boardLayout[piece[1]][piece[0]][0]=='W'):
+                moves.append([piece,[piece[0]+1,piece[1]+1]])
+                moves.append([piece,[piece[0]-1,piece[1]+1]])
+                print(moves)
+            elif (boardLayout[piece[1]][piece[0]][0]=='B'):
+                moves.append([piece,[piece[0]+1,piece[1]-1]])
+                moves.append([piece,[piece[0]-1,piece[1]-1]])
+                print(moves)
         else:
             vectors=VectorsOfPieces[boardLayout[piece[1]][piece[0]][1]]
             for direction in vectors:
@@ -164,8 +171,9 @@ def isCheckUsingVectors(kingI,kingJ,pieceI,pieceJ,boardLayout):
         
 def generateMoves(boardLayout,importantPieces,opponentImportantPieces):
     moves=[]
+    print('boardLayout',boardLayout,'importantPieces',importantPieces,'opponentImportantPieces',opponentImportantPieces)
     opponentMoves=generateOpponentMoves(boardLayout,opponentImportantPieces)
-    
+    print('opponentMoves',opponentMoves)
     found=False
     for j in range(8):
         if found==True:
@@ -233,13 +241,15 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces):
                     if move[1] in checkList:    
                             checkMoves.append(move)
         moves=checkMoves
-    print('output',moves)
+    #print('output',moves)
     return moves
 
 def generateBoardLayout(move,boardLayout):
     if len(move)==2:
+        print(boardLayout[move[1][0]][move[1][1]],boardLayout[move[0][0]][move[0][1]])
         boardLayout[move[1][0]][move[1][1]]=boardLayout[move[0][0]][move[0][1]]
         boardLayout[move[0][0]][move[0][1]]='MT'
+        #print(boardLayout[move[1][0]][move[1][1]],boardLayout[move[0][0]][move[0][1]])
     elif move[2][0][1]=='B' or move[2][0][1]=='R' or move[2][0][1]=='Q' or move[2][0][1]=='N' :
         boardLayout[move[1][0]][move[1][1]]=move[2][0]
         boardLayout[move[0][0]][move[0][1]]='MT'
@@ -254,8 +264,13 @@ def generateBoardLayout(move,boardLayout):
 
 def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces):
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces)
+    #
+    # for piece in importantPieces:
+    #    print(boardLayout[piece[1]][piece[0]])
+    #print('here',moves)
     outputList=[]
     if len(moves)>0:
+        #outputList=map(generateBoardLayout,moves,boardLayout)
         for move in moves:
             newLayout=generateBoardLayout(move,boardLayout)
             outputList.append(newLayout)

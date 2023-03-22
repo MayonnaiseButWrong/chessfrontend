@@ -6,7 +6,7 @@ from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from createBoardLayout import createBoardLayout
 from translations import *
 
-pool=ThreadPoolExecutor(2)
+pool=ThreadPoolExecutor(100)
 
 def typeOfMove(layout1,layout2):    #0 is a mormal move, 1 is castling, 2 is enpassant
     if layout1[0][4]=='K' and layout2[0][4]=='MT':
@@ -54,38 +54,34 @@ def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
         return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
-    boardLayout=createBoardLayout(boardLayout, previosMovesList)
     wImportantPieces1,bImportantPieces1=findImportantPieces(boardLayout)
     m=pool.submit(generateMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1)
     pValues=[]
     moves=m.result()
-    time.sleep(1)
-    print(m.done())
-    if m.done():
-        for a in moves:
-            print('moves',toFEN(a))
-        print(wImportantPieces1)
-        print(bImportantPieces1)
-        for move in moves:
-            p,q=rateMoveBasedOnWinProbability(move,0)
-            pValues.append(p*100000/q)
-        moves=bubbleSort(moves,pValues)
-        flag=True
-        count=0
-        for count in range(len(moves)):
-            moveType,i=typeOfMove(boardLayout,move[count])
-            if moveType==1:
-                if castlingAllowed(previosMovesList)==True:
-                    return move[count]
-                else:
-                    count+=1
-            elif moveType==2:
-                if enPassantAllowed(previosMovesList,i)==True:
-                    return move[count]
-                else:
-                    count+=1
-            else:
+    for a in moves:
+        print('moves',toFEN(a))
+    print(wImportantPieces1)
+    print(bImportantPieces1)
+    for move in moves:
+        p,q=rateMoveBasedOnWinProbability(move,0)
+        pValues.append(p*100000/q)
+    moves=bubbleSort(moves,pValues)
+    flag=True
+    count=0
+    for count in range(len(moves)):
+        moveType,i=typeOfMove(boardLayout,move[count])
+        if moveType==1:
+            if castlingAllowed(previosMovesList)==True:
                 return move[count]
+            else:
+                count+=1
+        elif moveType==2:
+            if enPassantAllowed(previosMovesList,i)==True:
+                return move[count]
+            else:
+                count+=1
+        else:
+            return move[count]
 
 if __name__=='__main__':
     defaultLayout=[
@@ -109,7 +105,7 @@ if __name__=='__main__':
     time.sleep(1)
     print('go')
     start_time = time.time()
-    move=UseGenericTacticToGenerateMove(defaultLayout, previosMovesList)
+    move=UseGenericTacticToGenerateMove(createBoardLayout(defaultLayout, previosMovesList), previosMovesList)
     print(move)
     print('done')
     print("--- %s seconds ---" % (time.time() - start_time))
