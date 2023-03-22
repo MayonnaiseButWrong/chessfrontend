@@ -2,7 +2,7 @@
   "name": "chessfrontend",
   "version": "0.1.0",
   "private": true,
-  "proxy":"https://localhost:5000/",
+  "proxy":"https://localhost:3000/",
   "dependencies": {
     "@chrisoakman/chessboardjs": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.5",

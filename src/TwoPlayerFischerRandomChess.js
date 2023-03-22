@@ -1,20 +1,39 @@
-import './DailyChess.css'
+import './TwoPlayerFischerRandomChess.css'
 import { Text, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 
-var startingLayout = [
-    ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
+var Layout = [
     ['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],
     ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
     ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
     ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
     ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
-    ['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],
-    ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
+    ['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP']
 ];
+
+
+const shuffleArray = array => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array
+}
+var L = ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'];
+var shuffledArray = shuffleArray(L)
+var blackpiecearray = [[]]
+var whitepiecearray = [[]]
+for (let i = 0; i < 8; i++) {
+    blackpiecearray[0].push('B' + shuffledArray[i])
+    whitepiecearray[0].push('W' + shuffledArray[i])
+}
+
+const startingLayout = [...blackpiecearray,...Layout,...whitepiecearray]
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
@@ -82,7 +101,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const DailyChess = () => {
+const TwoPlayerFischerRandomChess = () => {
 
     function currentPos(currentPosx) {
         console.log(currentPosx)
@@ -284,7 +303,7 @@ const DailyChess = () => {
 
     return (
         <div className="ChessFrontEnd">
-            <h1>Daily Chess</h1>
+            <h1>Fischer Random Chess</h1>
             <div className="grid-container1">
                 <div className='chessboard'>
                     <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
@@ -318,12 +337,12 @@ const DailyChess = () => {
                     </span>
 
                     <span className='black_pieces_taken'>
-                        <h2 className='black_pieces_taken_header'>Pieces Taken By User</h2>
+                        <h2 className='black_pieces_taken_header'>Black Pieces Taken</h2>
                         <Text style={styles.black_pieces_taken_text} className='black_pieces_taken_text' id='black_pieces_taken_text'>{black_pieces_taken_text}</Text>
                     </span>
 
                     <span className='white_pieces_taken'>
-                        <h2 className='white_pieces_taken_header'>Pieces Taken By AI</h2>
+                        <h2 className='white_pieces_taken_header'>White Pieces Taken</h2>
                         <Text style={styles.white_pieces_taken_text} className='white_pieces_taken_text' id='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
                     </span>
                     <span className='disclaimer'>
@@ -335,4 +354,4 @@ const DailyChess = () => {
     );
 };
 
-export { DailyChess };
+export { TwoPlayerFischerRandomChess };

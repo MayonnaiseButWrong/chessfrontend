@@ -1,4 +1,4 @@
-import './DailyChess.css'
+import './TwoPlayerEndGameChess.css'
 import { Text, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import { Chessboard } from "react-chessboard";
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const DailyChess = () => {
+const TwoPlayerEndGameChess = () => {
 
     function currentPos(currentPosx) {
         console.log(currentPosx)
@@ -284,7 +284,7 @@ const DailyChess = () => {
 
     return (
         <div className="ChessFrontEnd">
-            <h1>Daily Chess</h1>
+            <h1>End Game Chess</h1>
             <div className="grid-container1">
                 <div className='chessboard'>
                     <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
@@ -318,12 +318,12 @@ const DailyChess = () => {
                     </span>
 
                     <span className='black_pieces_taken'>
-                        <h2 className='black_pieces_taken_header'>Pieces Taken By User</h2>
+                        <h2 className='black_pieces_taken_header'>Black Pieces Taken</h2>
                         <Text style={styles.black_pieces_taken_text} className='black_pieces_taken_text' id='black_pieces_taken_text'>{black_pieces_taken_text}</Text>
                     </span>
 
                     <span className='white_pieces_taken'>
-                        <h2 className='white_pieces_taken_header'>Pieces Taken By AI</h2>
+                        <h2 className='white_pieces_taken_header'>White Pieces Taken</h2>
                         <Text style={styles.white_pieces_taken_text} className='white_pieces_taken_text' id='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
                     </span>
                     <span className='disclaimer'>
@@ -335,4 +335,4 @@ const DailyChess = () => {
     );
 };
 
-export { DailyChess };
+export { TwoPlayerEndGameChess };

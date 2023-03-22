@@ -1,4 +1,4 @@
-import './DailyChess.css'
+import './OnePlayerNormalChess.css'
 import { Text, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import { Chessboard } from "react-chessboard";
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const DailyChess = () => {
+const OnePlayerNormalChess = () => {
 
     function currentPos(currentPosx) {
         console.log(currentPosx)
@@ -284,7 +284,7 @@ const DailyChess = () => {
 
     return (
         <div className="ChessFrontEnd">
-            <h1>Daily Chess</h1>
+            <h1>Chess</h1>
             <div className="grid-container1">
                 <div className='chessboard'>
                     <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
@@ -335,4 +335,4 @@ const DailyChess = () => {
     );
 };
 
-export { DailyChess };
+export { OnePlayerNormalChess };

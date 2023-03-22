@@ -323,11 +323,11 @@ const TwoPlayerNormalChess = () => {
                     </span>
 
                     <span className='white_pieces_taken'>
-                        <h2 className='white_pieces_taken_header'>White Pieces</h2>
+                        <h2 className='white_pieces_taken_header'>White Pieces Taken</h2>
                         <Text style={styles.white_pieces_taken_text} className='white_pieces_taken_text' id='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
                     </span>
                     <span className='disclaimer'>
-                        <p className='disclaimer_text'>asifhkjlkvm;lsfrjhgiwuqehojpkdfl</p>
+                        <p className='disclaimer_text'>Data about the chess games, such as what moves were made and in what order, are stored so that the AI can learn and get better at chess. No data about the user is stored.</p>
                     </span>
                 </div>
             </div>
