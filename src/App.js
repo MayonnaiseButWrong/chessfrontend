@@ -1,10 +1,10 @@
-import React,{Component, useState, useEffect} from 'react';
+import React,{Component} from 'react';
 import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom';
 import {DailyChess} from './DailyChess.js';
 import {TwoPlayerNormalChess} from './TwoPlayerNormalChess.js';
 import {OnePlayerNormalChess} from './OnePlayerNormalChess.js';
-import {TwoPlayerFischerRandomChess} from './TwoPlayerFischerRandomChess.js';
-import {OnePlayerFischerRandomChess} from './OnePlayerFischerRandomChess.js';
+import {TwoPlayerHorde} from './TwoPlayerHorde.js';
+import {OnePlayerHorde} from './OnePlayerHorde.js';
 import {TwoPlayerTranscendentalChess} from './TwoPlayerTranscendentalChess.js';
 import {OnePlayerTranscendentalChess} from './OnePlayerTranscendentalChess.js';
 import {TwoPlayerUpsideDownChess} from './TwoPlayerUpsideDownChess.js';
@@ -19,30 +19,6 @@ import {TwoPlayerEndGameChess} from './TwoPlayerEndGameChess.js';
 import {OnePlayerEndGameChess} from './OnePlayerEndGameChess.js';
 import OptionsPage from './OptionsPage.js';
 
-
-function A() {
-  // usestate for setting a javascript
-  // object for storing and using data
-  const [data, setdata] = useState({
-      Game: ""
-  });
-
-  // Using useEffect for single rendering
-  useEffect(() => {
-      // Using fetch to fetch the api from 
-      // flask server it will be redirected to proxy
-      fetch("/data").then((res) =>
-          res.json().then((data) => {
-              // Setting a data from api
-              setdata({
-                  Game: data.Game
-              });
-          })
-      );
-  }, []);
-  console.log(data.Game)
-}
-
 class App extends Component {
   render (){
     return (
@@ -51,8 +27,8 @@ class App extends Component {
           <Route path='/DailyChess' element={<DailyChess/>}/>
           <Route path='/TwoPlayerNormalChess' element={<TwoPlayerNormalChess/>}/>
           <Route path='/OnePlayerNormalChess' element={<OnePlayerNormalChess/>}/>
-          <Route path='/TwoPlayerFischerRandomChess' element={<TwoPlayerFischerRandomChess/>}/>
-          <Route path='/OnePlayerFischerRandomChess' element={<OnePlayerFischerRandomChess/>}/>
+          <Route path='/TwoPlayerHorde' element={<TwoPlayerHorde/>}/>
+          <Route path='/OnePlayerHorde' element={<OnePlayerHorde/>}/>
           <Route path='/TwoPlayerTranscendentalChess' element={<TwoPlayerTranscendentalChess/>}/>
           <Route path='/OnePlayerTranscendentalChess' element={<OnePlayerTranscendentalChess/>}/>
           <Route path='/TwoPlayerUpsideDownChess' element={<TwoPlayerUpsideDownChess/>}/>
@@ -73,4 +49,4 @@ class App extends Component {
 }
 
 
-export {App,A}
+export default App;

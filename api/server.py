@@ -5,11 +5,23 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/ChessGame')
-def get_move():
+@app.route('/DailyChessdata')
+def get_startingLayout():
+    startingLayout = [
+    ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
+    ['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],
+    ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+    ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+    ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+    ['MT', 'MT', 'MT', 'MT', 'MT', 'WP', 'MT', 'MT'],
+    ['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
+    ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
+    ]
+    startingstring = to_xenonnumber(startingLayout)
+    print(startingstring)
     
     return {
-        'Game':'data sux fr'
+        'StaringLayoutString': startingstring
     }
 
 if __name__ == '__main__':

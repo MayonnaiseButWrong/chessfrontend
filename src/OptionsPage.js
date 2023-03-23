@@ -11,8 +11,8 @@ const OptionsPage = () => {
         <div className='topbutton'><Link to="/DailyChess"><button id="button 1"> Daily Chess</button>              </Link></div>
         <div><Link to="/TwoPlayerNormalChess"> <button id="button 2"> 2 Player Normal Chess</button>                      </Link></div>
         <div><Link to="/OnePlayerNormalChess"> <button id="button 3"> 1 Player Normal Chess</button>                      </Link></div>
-        <div><Link to="/TwoPlayerFischerRandomChess"> <button id="button 4"> 2 Player Fischer Random Chess</button>              </Link></div>
-        <div><Link to="/OnePlayerFischerRandomChess"> <button id="button 5"> 1 Player Fischer Random Chess</button>              </Link></div>
+        <div><Link to="/TwoPlayerHorde"> <button id="button 4"> 2 Player Horde</button>              </Link></div>
+        <div><Link to="/OnePlayerHorde"> <button id="button 5"> 1 Player Horde</button>              </Link></div>
         <div><Link to="/TwoPlayerTranscendentalChess"> <button id="button 6"> 2 Player Transcendental Chess</button>              </Link></div>
         <div><Link to="/OnePlayerTranscendentalChess"> <button id="button 7"> 1 Player Transcendental Chess</button>              </Link></div>
         <div><Link to="/TwoPlayerUpsideDownChess"> <button id="button 8"> 2 Player Upside Down Chess</button>                 </Link></div>

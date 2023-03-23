@@ -218,7 +218,7 @@ const TwoPlayerNormalChess = () => {
                 }
             };
             if (moveDone === false) {
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]

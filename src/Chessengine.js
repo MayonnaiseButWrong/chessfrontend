@@ -556,7 +556,7 @@ function generateOpponenMoves(currentLayout, turn) {
     return opponentMoves
 }
 
-function generatePossibleMoves(currentLayout, turn, previosMovesList) {
+function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPossible) {
     let moves = [];
     let PawnSpecialMoves = [];
     let check = {};
@@ -575,7 +575,9 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
     kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
     moves = moves.concat(kMoves)
     check = isCheck(currentLayout, KingPosition, opponentMoves);
-    castlingMoves = castling(previosMovesList, turn, currentLayout)
+    if (castlingPossible===true){
+        castlingMoves = castling(previosMovesList, turn, currentLayout)
+    }
     moves = moves.concat(castlingMoves);
     if (check['is Check'] === false) {
         for (let Move = 0; Move < moves.length; Move++) {
@@ -609,8 +611,8 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList) {
     };
 };
 
-function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves) {
-    let moves = generateMoves(currentLayout, turn, previosMoves);
+function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, castlingPossible) {
+    let moves = generateMoves(currentLayout, turn, previosMoves, castlingPossible);
     for (let Move = 0; Move < moves.length; Move++) {
         if (moves[Move][0] === fromSquare && moves[Move][1] === toSquare) {
             return [true, moves[Move]];

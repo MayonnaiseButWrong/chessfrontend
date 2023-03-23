@@ -111,7 +111,7 @@ let listToString = (inputList) => {
     let templist = []
     let s = ''
     let index = 0
-    let chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'Q', 'N', 'R', 'P', '0', '1', '2', '3', '4', '5', '6', '7', ',']
+    let chars = ['A','B','C','D','E','F','G','H','K','Q','N','M','R','P','T','W','0','1','2','3','4','5','6','7',',']
     let e = ''
     for (let i = 0; i < inputList.length; i++) {
         s = inputList[i][0] + inputList[i][1]
@@ -135,4 +135,44 @@ let listToString = (inputList) => {
     return outputString
 }
 
-export { toFEN, toDict, toTuple, toCoOrdinates, toBoardLayout, toXenonnumber, toUnicode };
+function stringToList(InputString) {
+    let chars=['A','B','C','D','E','F','G','H','K','Q','N','M','R','P','T','W','0','1','2','3','4','5','6','7',',']
+    let outputstr=''
+    let outputlist=[]
+    let l=[]
+    let templist = []
+    let flag=-1
+    let s=''
+    let index=''
+    for (let count = 0; count < InputString.length; count++) {
+        if(count%2!=0) {
+            index=InputString[count]
+            outputstr+=chars[index]
+        }
+    }
+    for (let count = 0; count < outputstr.length; count++) {
+        if (outputlist[count]==',') {
+            for (let i = 0; i < count-flag-1; i++) {
+                s+=outputlist[i+flag]
+                l.push(s)
+            }
+            flag=count
+        }
+    }
+    outputlist=[]
+    for (let count = 0; count < l.length; count++) {
+        if (l[count].length==4){
+            outputlist.push([l[count][0]+l[count][1],l[count][2]+l[count][3]])
+        } else {
+            for (let i = 5; i < l[count].length; i++) {
+                if(i%2!=0) {
+                    templist.push(l[count][i-1]+l[count][i])
+                }
+            }
+            outputlist.push([l[count][0]+l[count][1],l[count][2]+l[count][3]],templist)
+        }
+    }
+    return outputlist
+}
+
+export { toFEN, toDict, toTuple, toCoOrdinates, toBoardLayout, toXenonnumber, toUnicode, listToString, stringToList };

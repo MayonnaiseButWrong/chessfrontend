@@ -237,7 +237,7 @@ const OnePlayerTranscendentalChess = () => {
                 }
             };
             if (moveDone === false) {
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]

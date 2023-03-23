@@ -7,7 +7,7 @@ from findImportantPieces import findImportantPieces
 from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
 
 #finding a way to constantly generate a dataset was out of the scope of this project, so i am just assuming that whatever stockish says is the best possible move and using that to train my own NNUE
-stockfish=Stockfish('stockfish.exe')
+stockfish=Stockfish('api\stockfish.exe')
 pool=ThreadPoolExecutor(100)
 maxDepth=12
 

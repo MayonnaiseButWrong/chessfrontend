@@ -15,7 +15,6 @@ def to_xenonnumber(gamelist):
 
             n3=n1**n2                                                                                     #the respective prime number to the power of the xenon number for the piece at the corresponding place, multiplied by all the others goves the unique xenon number for the frame
             xenonnumber=xenonnumber*n3
-            print(i,n1,n2,n3,xenonnumber)
 
     return xenonnumber
 
@@ -57,7 +56,7 @@ def toTuple(InputCoOrdinates):
 def listToString(inputList):
     outputList=[]
     outputstr=''
-    chars=['A','B','C','D','E','F','G','H','K','Q','N','R','P','0','1','2','3','4','5','6','7',',']
+    chars=['A','B','C','D','E','F','G','H','K','Q','N','M','R','P','T','W','0','1','2','3','4','5','6','7',',']
     for l in inputList:
         s=l[0]+l[1]
         if len(l)==3:
@@ -67,7 +66,7 @@ def listToString(inputList):
         outputList.append(s)
         
     for l in outputList:
-        for count in len(l):
+        for count in range(len(l)):
             i=chars.index(l[count])
             if i<10:
                 i='0'+str(i)
@@ -77,7 +76,7 @@ def listToString(inputList):
     return outputstr
 
 def stringToList(inputString):
-    chars=['A','B','C','D','E','F','G','H','K','Q','N','R','P','0','1','2','3','4','5','6','7',',']
+    chars=['A','B','C','D','E','F','G','H','K','Q','N','M','R','P','T','W','0','1','2','3','4','5','6','7',',']
     outputstr=''
     outputlist=[]
     l=[]
@@ -92,7 +91,7 @@ def stringToList(inputString):
         if outputlist[count]==',':
             for i in range(count-flag-1):
                 s+=outputlist[i+flag]
-                i.append(s)
+                l.append(s)
             flag=count
     
     outputlist=[]

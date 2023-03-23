@@ -1,9 +1,9 @@
 import './DailyChess.css'
 import { Text, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
 import { Chessboard } from "react-chessboard";
-import { toFEN, toTuple, toDict, toUnicode } from './translations.js'
+import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
+import React, { useState, useEffect } from "react";
 
 var startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -15,6 +15,8 @@ var startingLayout = [
     ['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],
     ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
 ];
+
+
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
@@ -97,6 +99,19 @@ const DailyChess = () => {
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
 
+    const [Layout, setLayout] = useState ([{}])
+    useEffect(() => {
+        fetch('/DailyChessdata').then(
+            res => res.json()
+        ).then(
+            Layout => {
+                setLayout(Layout)
+                startingLayout = toBoardLayout(Layout)
+                console.log(startingLayout)
+                console.log(Layout)
+            }
+        )
+    },[])
 
 
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
@@ -218,7 +233,7 @@ const DailyChess = () => {
                 }
             };
             if (moveDone === false) {
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]
