@@ -24,12 +24,6 @@ var startingLayout = [
 //fix king movement
 //fix moving a piece on the board in general
 
-var originalPieces = FindPieces(startingLayout)
-const originalBlackPieces = originalPieces[0]
-const originalWhitePieces = originalPieces[1]
-var currentLayout = startingLayout;
-var currentString = toDict(currentLayout);
-var currentMove = [];
 var turn = 'W';
 var previosMoves = [];
 var previosMove = []
@@ -42,23 +36,6 @@ var blackPiecesTakenList = []
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
-
-function FindPieces(currentLayout) {
-    let blackPieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
-    let whitePieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
-    for (let j = 0; j < 8; j++) {
-        for (let i = 0; i < 8; i++) {
-            if (!(currentLayout[j][i] === 'MT')) {
-                if (currentLayout[j][i][0] === 'B') {
-                    blackPieces[currentLayout[j][i][1]]++
-                } else {
-                    whitePieces[currentLayout[j][i][1]]++
-                }
-            }
-        }
-    }
-    return [blackPieces, whitePieces]
-}
 
 const styles = StyleSheet.create({
     last_moves_text: {
@@ -106,13 +83,32 @@ const DailyChess = () => {
         ).then(
             Layout => {
                 setLayout(Layout)
-                startingLayout = toBoardLayout(Layout)
+                startingLayout = Layout['StaringLayoutString']
                 console.log(startingLayout)
-                console.log(Layout)
+                console.log(Layout['StaringLayoutString'])
             }
         )
     },[])
 
+    console.log(startingLayout[0])
+    var originalPieces = FindPieces(startingLayout)
+    const originalBlackPieces = originalPieces[0]
+    const originalWhitePieces = originalPieces[1]
+    var currentLayout = startingLayout;
+    var currentString = toDict(currentLayout);
+    var currentMove = [];
+
+    const [data, setData] = useState ([{}])
+    useEffect(() => {
+        // POST request using fetch inside useEffect React hook
+        const requestOptions = {
+            method: 'POST',
+            body: JSON.stringify({ title: 'React Hooks POST Request Example' })
+        };
+        fetch('/moverequest', requestOptions)
+            .then(response => response.json())
+            .then(data => setData(data));
+    }, []);
 
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)
@@ -124,6 +120,23 @@ const DailyChess = () => {
     //        history.pushState(null, document.title, location.href);
     //    }  
     //});
+
+    function FindPieces(currentLayout) {
+        let blackPieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
+        let whitePieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
+        for (let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
+                if (!(currentLayout[j][i] === 'MT')) {
+                    if (currentLayout[j][i][0] === 'B') {
+                        blackPieces[currentLayout[j][i][1]]++
+                    } else {
+                        whitePieces[currentLayout[j][i][1]]++
+                    }
+                }
+            }
+        }
+        return [blackPieces, whitePieces]
+    }
 
     function upadteCurrentString() {
         currentString = currentString

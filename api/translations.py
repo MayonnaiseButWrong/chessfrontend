@@ -16,7 +16,12 @@ def to_xenonnumber(gamelist):
             n3=n1**n2                                                                                     #the respective prime number to the power of the xenon number for the piece at the corresponding place, multiplied by all the others goves the unique xenon number for the frame
             xenonnumber=xenonnumber*n3
 
-    return xenonnumber
+    xenonnumber="{:,f}".format(int(xenonnumber))
+    outputstring=''
+    for letter in xenonnumber:
+        if letter!=','or letter!='.':
+            outputstring+=letter
+    return outputstring
 
 def to_gamelist(xenonnumber):
 

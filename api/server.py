@@ -1,7 +1,7 @@
 from generateAMoveToReturnToThePlayer import generateAMoveToReturnToThePlayer
 from updateDatabase import updateDatabase
 from translations import *
-from flask import Flask
+from flask import Flask,jsonify
 
 app = Flask(__name__)
 
@@ -18,15 +18,40 @@ def get_startingLayout():
     ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
     ]
     startingstring = to_xenonnumber(startingLayout)
-    print(startingstring)
+    print(type(startingstring))
     
-    return {
-        'StaringLayoutString': startingstring
-    }
+    output=jsonify({
+        'StaringLayoutString': startingLayout
+    })
+    print(output)
+    return output
+
+@app.route('/moverequest', methods = ['POST'])
+def move_request():
+    if request.method == 'POST':
+        layout = request.args.get('title')
+        print(layout)
+        startingLayout = [
+        ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
+        ['BP', 'BP', 'BP', 'MT', 'BP', 'BP', 'BP', 'BP'],
+        ['MT', 'MT', 'MT', 'BP', 'MT', 'MT', 'MT', 'MT'],
+        ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+        ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+        ['MT', 'MT', 'MT', 'MT', 'MT', 'WP', 'MT', 'MT'],
+        ['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
+        ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
+        ]
+        startingstring = to_xenonnumber(startingLayout)
+        print(type(startingstring))
+        
+        output=jsonify({
+            'StaringLayoutString': startingLayout
+        })
+        print(output)
+        return output
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(port=8080)
 #class move:
 #    def __init__(self,StartingLayout,listOfMoves):
 #        self.StartingLayout=to_gamelist(StartingLayout)
