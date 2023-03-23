@@ -98,17 +98,26 @@ const DailyChess = () => {
     var currentString = toDict(currentLayout);
     var currentMove = [];
 
-    const [data, setData] = useState ([{}])
-    useEffect(() => {
-        // POST request using fetch inside useEffect React hook
-        const requestOptions = {
-            method: 'POST',
-            body: JSON.stringify({ title: 'React Hooks POST Request Example' })
-        };
-        fetch('/moverequest', requestOptions)
-            .then(response => response.json())
-            .then(data => setData(data));
-    }, []);
+    async function postData(url = "", data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          cache: "default",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+          body: JSON.stringify(data),
+        });
+        return response.json()
+      }
+      
+      postData("/moverequest", { answer: 42 }).then((data) => {
+        console.log(data);
+      });
 
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)

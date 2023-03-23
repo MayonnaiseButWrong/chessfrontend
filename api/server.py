@@ -1,7 +1,7 @@
 from generateAMoveToReturnToThePlayer import generateAMoveToReturnToThePlayer
 from updateDatabase import updateDatabase
 from translations import *
-from flask import Flask,jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -29,7 +29,7 @@ def get_startingLayout():
 @app.route('/moverequest', methods = ['POST'])
 def move_request():
     if request.method == 'POST':
-        layout = request.args.get('title')
+        layout = request.args.get('answer')
         print(layout)
         startingLayout = [
         ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -43,7 +43,7 @@ def move_request():
         ]
         startingstring = to_xenonnumber(startingLayout)
         print(type(startingstring))
-        
+
         output=jsonify({
             'StaringLayoutString': startingLayout
         })
