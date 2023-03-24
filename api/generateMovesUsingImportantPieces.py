@@ -15,16 +15,19 @@ def generateOpponentMoves(boardLayout,importantPieces):
                 moves.append([piece,[piece[0]+1,piece[1]-1]])
                 moves.append([piece,[piece[0]-1,piece[1]-1]])
         else:
-            vectors=VectorsOfPieces[boardLayout[piece[1]][piece[0]][1]]
-            for direction in vectors:
-                for vector in direction:
-                    if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
-                        if not (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
-                            if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
-                                moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
-                                break
+            if not boardLayout[piece[1]][piece[0]]=='MT':
+                vectors=VectorsOfPieces[boardLayout[piece[1]][piece[0]][1]]
+                for direction in vectors:
+                    for vector in direction:
+                        if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
+                            if not (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
+                                if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
+                                    moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
+                                    break
+                                else:
+                                    break
                             else:
-                                break   
+                                moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
     return moves
 
 def enPassantMoves(boardLayout,i,j):
@@ -225,6 +228,7 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
     return moves
 
 def generateBoardLayout(move,layout):
+    print('len(move)',len(move))
     if len(move)==2:
         layout[move[1][1]][move[1][0]]=layout[move[0][1]][move[0][0]]
         layout[move[0][1]][move[0][0]]='MT'
@@ -232,9 +236,10 @@ def generateBoardLayout(move,layout):
         layout[move[1][1]][move[1][0]]=move[2][0]
         layout[move[0][1]][move[0][0]]='MT'
     else:
+        print(move)
         layout[move[1][1]][move[1][0]]=layout[move[0][1]][move[0][0]]
         layout[move[0][1]][move[0][0]]='MT'
-        layout[move[2][pos][1]][move[2][pos][0]]='MT'
+        layout[move[2][0][1]][move[2][0][0]]='MT'
     return layout
             
 

@@ -31,6 +31,23 @@ def enPassantMoves(boardLayout,i,j):
                 threatening.append([i-1,4])
     return threatening
 
+def sort(ins):
+    flag=True
+    while flag:
+        flag=False
+        for i in range(1,len(ins)):
+            if ins[i-1][0]>ins[i][0]:
+                temp=ins[i-1]
+                ins[i-1]=ins[i]
+                ins[i]=temp
+                falg=True
+            elif ins[i-1][0]==ins[i][0]:
+                if ins[i-1][1]>ins[i][1]:
+                    temp=ins[i-1]
+                    ins[i-1]=ins[i]
+                    ins[i]=temp
+                    falg=True
+    return ins
 
 def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
     VectorsOfPieces={'Q':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],],[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'K':[[[1,0]],[[-1,0]],[[0,1]],[[-0,1]],[[1,1]],[[-1,1]],[[1,-1]],[[-1,-1]]],'B':[[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'R':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],]],'N':[[[2,1]],[[1,2]],[[-2,1]],[[-1,2]],[[2,-1]],[[1,-2]],[[-1,-2]],[[-2,-1]]]}
@@ -116,9 +133,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 
         threatening=threatening+enPassantMoves(boardLayout,SpecificPiecePosition[0],SpecificPiecePosition[1])
         if len(threatening)>1:
-            print('threatening',threatening)
-            threatening=threatening.sort()
-            print('len(threatening)',threatening)
+            threatening=sort(threatening)
             for index in range(1,len(threatening)):
                 if threatening[index-1]==threatening[index]:
                     del threatening[index]
@@ -161,14 +176,14 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
 
 def findWeights(boardLayout,specificPiece,weights):
     if weights[specificPiece[1]][specificPiece[0]]=='MT':
-        weightofPiece=0
+        weightofPiece=staticWeight(boardLayout,specificPiece)
+        weights[specificPiece[1]][specificPiece[0]]=weightofPiece
     else:
         weightofPiece=weights[specificPiece[1]][specificPiece[0]]
     threatening=whatPieceIsThisOneThreatening(boardLayout,specificPiece)
     if len(threatening)==0:
         weightofPiece=staticWeight(boardLayout,specificPiece)
     for piece in threatening:
-        print(weights[piece[1]][piece[0]],boardLayout[piece[1]][piece[0]])
         if weights[piece[1]][piece[0]]=='MT':
             weight=findWeights(boardLayout, piece, weights)
             weightofPiece+=weight[piece[1]][piece[0]]
