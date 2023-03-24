@@ -15,7 +15,7 @@ def generateOpponentMoves(boardLayout,importantPieces):
                 moves.append([piece,[piece[0]+1,piece[1]-1]])
                 moves.append([piece,[piece[0]-1,piece[1]-1]])
         else:
-            if not boardLayout[piece[1]][piece[0]]=='MT':
+            if not (boardLayout[piece[1]][piece[0]]=='MT'):
                 vectors=VectorsOfPieces[boardLayout[piece[1]][piece[0]][1]]
                 for direction in vectors:
                     for vector in direction:
@@ -171,6 +171,9 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
                 kingPosition=[i,j]
                 found=True
                 break
+        else:
+            kingPosition = 'did not work'
+    print(kingPosition,toFEN(boardLayout))
             
     for piece in importantPieces:
         if boardLayout[piece[1]][piece[0]][1]=='P':
@@ -191,17 +194,18 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
                             else:
                                 break
         else:
-            vectors=VectorsOfPieces[boardLayout[piece[1]][piece[0]][1]]
-            for direction in vectors:
-                for vector in direction:
-                    if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
-                        if (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
-                            if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
-                                if isCheckUsingVectors(kingPosition[0],kingPosition[1],piece[0],piece[1],boardLayout)==False:
-                                    moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
-                                    break  
-                            else:
-                                break
+            if not boardLayout[piece[1]][piece[0]]=='MT':
+                vectors=VectorsOfPieces[boardLayout[piece[1]][piece[0]][1]]
+                for direction in vectors:
+                    for vector in direction:
+                        if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
+                            if (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
+                                if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
+                                    if isCheckUsingVectors(kingPosition[0],kingPosition[1],piece[0],piece[1],boardLayout)==False:
+                                        moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
+                                        break  
+                                else:
+                                    break
     
     
     checkList=isCheckList(kingPosition[0], kingPosition[1], boardLayout, opponentMoves)
@@ -228,7 +232,6 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
     return moves
 
 def generateBoardLayout(move,layout):
-    print('len(move)',len(move))
     if len(move)==2:
         layout[move[1][1]][move[1][0]]=layout[move[0][1]][move[0][0]]
         layout[move[0][1]][move[0][0]]='MT'
@@ -236,7 +239,6 @@ def generateBoardLayout(move,layout):
         layout[move[1][1]][move[1][0]]=move[2][0]
         layout[move[0][1]][move[0][0]]='MT'
     else:
-        print(move)
         layout[move[1][1]][move[1][0]]=layout[move[0][1]][move[0][0]]
         layout[move[0][1]][move[0][0]]='MT'
         layout[move[2][0][1]][move[2][0][0]]='MT'

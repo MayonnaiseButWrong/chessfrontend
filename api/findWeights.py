@@ -171,6 +171,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
         else:
             temp[0][4]='BR'
             threatening= threatening + whatPieceIsThisOneThreatening(temp, [4,0])
+
     return threatening
 
 
@@ -184,6 +185,8 @@ def findWeights(boardLayout,specificPiece,weights):
     if len(threatening)==0:
         weightofPiece=staticWeight(boardLayout,specificPiece)
     for piece in threatening:
+        if len(piece)<2:
+            piece=piece[0]
         if weights[piece[1]][piece[0]]=='MT':
             weight=findWeights(boardLayout, piece, weights)
             weightofPiece+=weight[piece[1]][piece[0]]
