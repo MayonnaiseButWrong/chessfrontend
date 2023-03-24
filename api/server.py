@@ -50,6 +50,13 @@ def move_request():
         print(output)
         return output
 
+@app.route('/outputgame', methods = ['PUT'])
+def outputgame():
+    if request.method == 'PUT':
+        game = request.args.get('title')
+        print(game)
+        return''
+
 if __name__ == '__main__':
     app.run(port=8080)
 #class move:

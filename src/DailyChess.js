@@ -99,7 +99,6 @@ const DailyChess = () => {
     var currentMove = [];
 
     async function postData(url = "", data = {}) {
-        // Default options are marked with *
         const response = await fetch(url, {
           method: "POST",
           mode: "cors",
@@ -113,12 +112,25 @@ const DailyChess = () => {
           body: JSON.stringify(data),
         });
         return response.json()
-      }
-      
-      postData("/moverequest", { answer: 42 }).then((data) => {
-        console.log(data);
-      });
+    }
+    
+    postData("/moverequest", { answer: 42 }).then((data) => {
+      console.log(data);
+    });
 
+    const [postId, setPostId] = useState(null)
+    useEffect(() => {
+      // PUT request using fetch inside useEffect React hook
+      const requestOptions = {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: 'React Hooks PUT Request Example' })
+      };
+      fetch('/outputgame', requestOptions)
+          .then(response => response.json())
+          .then(data => setPostId(data.id));
+    // empty dependency array means this effect will only run once (like componentDidMount in classes)
+    }, []);
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)
     //{

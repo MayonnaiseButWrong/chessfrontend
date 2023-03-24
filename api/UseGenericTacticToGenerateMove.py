@@ -54,8 +54,8 @@ def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
         return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
-    wImportantPieces1,bImportantPieces1=findImportantPieces(boardLayout)
-    m=pool.submit(generateMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1)
+    wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
+    m=pool.submit(generateMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1,pieces)
     pValues=[]
     moves=m.result()
     for a in moves:

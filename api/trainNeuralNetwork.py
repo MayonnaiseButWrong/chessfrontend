@@ -5,7 +5,8 @@ from translations import *
 from ratingBasedOnNeuralNetwork import NNUE
 from findImportantPieces import findImportantPieces
 from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
-
+import time
+import sys
 #finding a way to constantly generate a dataset was out of the scope of this project, so i am just assuming that whatever stockish says is the best possible move and using that to train my own NNUE
 stockfish=Stockfish('api\stockfish.exe')
 pool=ThreadPoolExecutor(100)
@@ -73,11 +74,11 @@ def format(ins):
 
 def comparingProbabilities(boardLayout,depth):
     print('depth',depth)
-    wImportantPieces1,bImportantPieces1=findImportantPieces(boardLayout)
-    wmoves=generateMovesUsingImportantPieces(boardLayout, wImportantPieces1, bImportantPieces1)
+    wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
+    wmoves=generateMovesUsingImportantPieces(boardLayout, wImportantPieces1, bImportantPieces1,pieces)
     for wmove in wmoves:
-        wImportantPieces2,bImportantPieces2=findImportantPieces(wmove)
-        bmoves=generateMovesUsingImportantPieces(wmove, bImportantPieces2, wImportantPieces2)
+        wImportantPieces2,bImportantPieces2,pieces=findImportantPieces(wmove)
+        bmoves=generateMovesUsingImportantPieces(wmove, bImportantPieces2, wImportantPieces2,pieces)
         if len(bmoves)<=0:
             continue
         else:
@@ -106,8 +107,8 @@ def trainNeuralNetwork(StartingLayout,listOfMoves):
             move=createBoardLayout(listOfMoves[count], StartingLayout)
         comparingProbabilities(move, 0)
 
-#if __name__=="__main__":
-#    defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
+if __name__=="__main__":
+    defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
     #isvalid=stockfish.is_fen_valid(toFEN(defaultLayout) + ' b - - 0 1')
     #if isvalid is True:
         #stockfish.set_fen_position(toFEN(defaultLayout) + ' b - - 0 1')
@@ -120,18 +121,17 @@ def trainNeuralNetwork(StartingLayout,listOfMoves):
     #NNUE.train([defaultLayout,eval])
     #print('here')
     #start_time = time.time()
-    #print('starting in')
-    #time.sleep(1)
-    #print('3')
-    #time.sleep(1)
-    #print('2')
-    #time.sleep(1)
-    #print('1')
-    #time.sleep(1)
-    #print('go')
-    #print(sys.getrecursionlimit())
-    ##sys.setrecursionlimit(3000)
-    ##print(sys.getrecursionlimit())
-    #comparingProbabilities(defaultLayout, 1)
-    #print('done')
-    #print("--- %s seconds ---" % (time.time() - start_time))
+    print('starting in')
+    time.sleep(0.25)
+    print('3')
+    time.sleep(0.25)
+    print('2')
+    time.sleep(0.25)
+    print('1')
+    time.sleep(0.25)
+    print('go')
+    sys.setrecursionlimit(10**6)
+    print(sys.getrecursionlimit())
+    comparingProbabilities(defaultLayout, 1)
+    print('done')
+    print("--- %s seconds ---" % (time.time() - start_time))

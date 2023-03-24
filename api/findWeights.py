@@ -115,8 +115,10 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
                 
         threatening=threatening+enPassantMoves(boardLayout,SpecificPiecePosition[0],SpecificPiecePosition[1])
-        if len(threatening)>0:
+        if len(threatening)>1:
+            print('threatening',threatening)
             threatening=threatening.sort()
+            print('len(threatening)',threatening)
             for index in range(1,len(threatening)):
                 if threatening[index-1]==threatening[index]:
                     del threatening[index]
@@ -158,13 +160,19 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
 
 
 def findWeights(boardLayout,specificPiece,weights):
-    weightofPiece=0
+    if weights[specificPiece[1]][specificPiece[0]]=='MT':
+        weightofPiece=0
+    else:
+        weightofPiece=weights[specificPiece[1]][specificPiece[0]]
     threatening=whatPieceIsThisOneThreatening(boardLayout,specificPiece)
     if len(threatening)==0:
-        weights[specificPiece[1]][specificPiece[0]]=staticWeight(boardLayout,specificPiece)
+        weightofPiece=staticWeight(boardLayout,specificPiece)
     for piece in threatening:
+        print(weights[piece[1]][piece[0]],boardLayout[piece[1]][piece[0]])
         if weights[piece[1]][piece[0]]=='MT':
             weight=findWeights(boardLayout, piece, weights)
             weightofPiece+=weight[piece[1]][piece[0]]
+        else:
+            weightofPiece+=weights[piece[1]][piece[0]]
     weights[specificPiece[1]][specificPiece[0]]=weightofPiece
     return weights

@@ -125,7 +125,6 @@ def toFEN(ins):
                 out+=ins[j][i][1]
                 Flag=False
             if count>0:
-                i+=(count-1)
                 if not Flag:
                     out+=str(count)
                     Flag=True
