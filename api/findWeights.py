@@ -133,10 +133,11 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 
         threatening=threatening+enPassantMoves(boardLayout,SpecificPiecePosition[0],SpecificPiecePosition[1])
         if len(threatening)>1:
-            threatening=sort(threatening)
-            for index in range(1,len(threatening)):
+            threatening,index=sort(threatening),1
+            while index<len(threatening):
                 if threatening[index-1]==threatening[index]:
                     del threatening[index]
+                index+=1
     else:
         moves=VectorsOfPieces[piece[1]]
         for direction in moves:
@@ -151,7 +152,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                             threatening.append([SpecificPiecePosition[0]+vector[0],SpecificPiecePosition[1]+vector[1]])
                             flag=True
                         elif (not previosCheckedPiece[0]==piece[0]) and (boardLayout[SpecificPiecePosition[1]+vector[1]][SpecificPiecePosition[0]+vector[0]][1]=='K'or boardLayout[SpecificPiecePosition[1]+vector[1]][SpecificPiecePosition[0]+vector[0]][1]=='Q'):
-                            threatening.append([[SpecificPiecePosition[0]+vector[0],SpecificPiecePosition[1]+vector[1]]])
+                            threatening.append([SpecificPiecePosition[0]+vector[0],SpecificPiecePosition[1]+vector[1]])
 
     if boardLayout[SpecificPiecePosition[1]][SpecificPiecePosition[0]]=='WR' and (SpecificPiecePosition==[0,7] or SpecificPiecePosition==[7,7]) and boardLayout[7][5]=='WK':
         temp=boardLayout
@@ -182,8 +183,6 @@ def findWeights(boardLayout,specificPiece,weights):
     else:
         weightofPiece=weights[specificPiece[1]][specificPiece[0]]
     threatening=whatPieceIsThisOneThreatening(boardLayout,specificPiece)
-    if len(threatening)==0:
-        weightofPiece=staticWeight(boardLayout,specificPiece)
     for piece in threatening:
         if len(piece)<2:
             piece=piece[0]

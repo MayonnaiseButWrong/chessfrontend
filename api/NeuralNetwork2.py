@@ -125,24 +125,6 @@ class NeuralNetwork():
     def __sigmoid_derivative(self, x):
         return x / (1.0 - x)
     
-    def __applySigmoid(self, ins):
-        array1,array2,count=ins,[],0
-        for row in array1:
-            array2.append([])
-            for element in row:
-                array2[count].append(self.__sigmoid(element))
-            count+=1
-        return array2
-    
-    def __applySigmoidDerivative(self, ins):
-        array1,array2,count=ins,[],0
-        for row in array1:
-            array2.append([])
-            for element in row:
-                array2[count].append(self.__sigmoid_derivative(element))
-            count+=1
-        return array2
-    
     def __matrixmul(self,ins1,ins2):
         m1,m2=numpy.asmatrix(ins1, dtype='float64'),numpy.asmatrix(ins2, dtype='float64')
         return numpy.matrix.getA(numpy.matmul(m1,m2))
@@ -193,11 +175,11 @@ class NeuralNetwork():
         return out
     
     def __testevaluate(self, ins):
-        m1,out=self.__encode(ins),[]
+        m1,out,sigmoid=self.__encode(ins),[],numpy.vectorize(self.__sigmoid)
         for i in range(len(self.weights)):
             m2 = self.__matrixmul(self.weights[i],m1)
             m3 = self.__matrixadd(m2,self.baises[i])
-            m1 = self.__applySigmoid(m3)
+            m1 = sigmoid(m3)
             out.append(m1)
         return out
     
@@ -250,21 +232,21 @@ class NeuralNetwork():
     
     def __backprop(self,weights,baises,activations,expected):#  C′(W)=(O−y)⋅R′(Z)⋅H         where C'(w) is the rate of change of the ocst function with respect to the weights, O is the output of the function, y in the expected value, R'(Z) is the sum of the previos layer's activation times their respective weights put into the derivitive of the sigmoid function, H is the previos layer's activation. explanaition: https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html 
         #  W=W-ΔW       ΔW=Error of layer infront * activation of previos Layer * learning rate
-        weights,baises,activations=weights[::-1],baises[::-1],activations[::-1]
+        weights,baises,activations,sigmoidDerivative=weights[::-1],baises[::-1],activations[::-1],numpy.vectorize(self.__sigmoid_derivative)
         observed,weight=activations[0],weights[0]
         
         error=self.__matrixsub(observed,expected)
         Z=[self.__matrixmul(weights[0],activations[1])]
-        E=[self.__matrixmeld(self.__applySigmoidDerivative(Z[0]),error)]
+        E=[self.__matrixmeld(sigmoidDerivative(Z[0]),error)]
         deltaW=[self.__matrixtranspose(self.__matrixmulconst(self.learning_rate,self.__matrixmul(activations[1], self.__matrixtranspose(E[0]))))]
         
         for i in range(1,len(weights)-1):
             Z.append(self.__matrixmul(weights[i],activations[i+1]))
-            E.append(self.__matrixmeld(self.__matrixmul(self.__matrixtranspose(weights[i-1]),E[-1]),self.__applySigmoidDerivative(Z[i])))
+            E.append(self.__matrixmeld(self.__matrixmul(self.__matrixtranspose(weights[i-1]),E[-1]),sigmoidDerivative(Z[i])))
             deltaW.append(self.__matrixtranspose(self.__matrixmulconst(self.learning_rate,self.__matrixmul(activations[i+1], self.__matrixtranspose(E[i])))))
         
         Z.append(self.__matrixmul(weights[-1],activations[-1]))
-        E.append(self.__matrixmeld(self.__matrixmul(self.__matrixtranspose(weights[-2]),E[-1]),self.__applySigmoidDerivative(Z[-1])))
+        E.append(self.__matrixmeld(self.__matrixmul(self.__matrixtranspose(weights[-2]),E[-1]),sigmoidDerivative(Z[-1])))
         deltaW.append(self.__matrixtranspose(self.__matrixmulconst(self.learning_rate,self.__matrixmul(activations[-1], self.__matrixtranspose(E[-1])))))
         #the change in bais is equal to the error, or E, for each of the layers
         return deltaW[::-1],E[::-1]  
@@ -288,10 +270,10 @@ class NeuralNetwork():
 
 if __name__ =="__main__":
     import time
+    NNUE=NeuralNetwork([4*64,64,10])
     T,avr=[],0
     for i in range(1000):
         start_time = time.time()
-        NNUE=NeuralNetwork([4*64,64,10])
         NNUE.evaluate([['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']])
         T.append(time.time() - start_time)
     for a in range(len(T)):
@@ -301,4 +283,3 @@ if __name__ =="__main__":
     #    NNUE.train([[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']],[[0], [0], [0], [0], [0], [1], [1], [0], [0], [0]]])
     print('done')
     print("--- %s seconds ---" % (avr))
-    #avr evaluation time is 0.021821412801742553 seconds

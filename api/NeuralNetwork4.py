@@ -2,6 +2,7 @@
 import numpy
 import warnings
 from numpy import exp, array, random, asmatrix, matmul, add
+import tensorflow as tf
 
 warnings.filterwarnings('ignore')
 class NeuralNetwork():
@@ -48,7 +49,7 @@ class NeuralNetwork():
                     array[-1].append(1.0)
             out+='1.0$'
             array[-1].append(1.0)
-            arrays.append(array)
+            arrays.append(tf.constant(array, dtype='float64'))
             array=[]
         f.write(out)
         return arrays
@@ -62,7 +63,7 @@ class NeuralNetwork():
                 out+='1.0;'
             out+='1.0$'
             array.append([1.0])
-            arrays.append(array)
+            arrays.append(tf.constant(array, dtype='float64'))
             array=[]
         f.write(out)
         return arrays
@@ -110,7 +111,7 @@ class NeuralNetwork():
                 elif text[count]=='$':
                     array[-1].append(float(word))
                     word=''
-                    out.append(array)
+                    out.append(tf.constant(array, dtype='float64'))
                     array=[[]]
                 else:
                     word+=text[count]
@@ -118,69 +119,19 @@ class NeuralNetwork():
             return []
         else:
             return out
-        
-    def __sigmoid(self, x):
-        return 1.0 / (1.0 + exp(-x,dtype='float64'))
     
+    @tf.function
+    def __sigmoid(self, x):
+        return 1.0 / (1.0 + tf.math.exp(-x))
+    
+    @tf.function
     def __sigmoid_derivative(self, x):
         return x / (1.0 - x)
     
-    def __applySigmoid(self, ins):
-        array1,array2,count=ins,[],0
-        for row in array1:
-            array2.append([])
-            for element in row:
-                array2[count].append(self.__sigmoid(element))
-            count+=1
-        return array2
-    
-    def __applySigmoidDerivative(self, ins):
-        array1,array2,count=ins,[],0
-        for row in array1:
-            array2.append([])
-            for element in row:
-                array2[count].append(self.__sigmoid_derivative(element))
-            count+=1
-        return array2
-    
-    def __matrixmul(self,ins1,ins2):
-        m1,m2=numpy.asmatrix(ins1, dtype='float64'),numpy.asmatrix(ins2, dtype='float64')
-        return numpy.matrix.getA(numpy.matmul(m1,m2))
-    
-    def __matrixadd(self,ins1,ins2):
-        m1,m2=numpy.asmatrix(ins1, dtype='float64'),numpy.asmatrix(ins2, dtype='float64')
-        return numpy.matrix.getA(numpy.add(m1,m2))
-    
-    def __matrixsub(self,ins1,ins2):
-        for j in range(len(ins2)):
-            for i in range(len(ins2[j])):
-                ins2[j][i]=-ins2[j][i]
-        return self.__matrixadd(ins1,ins2)
-    
-    def __matrixmeld(self,ins1,ins2):
-        out=[]
-        for j in range(len(ins2)):
-            out.append([])
-            for i in range(len(ins2[j])):
-                out[j].append(ins1[j][i]*ins2[j][i])
-        return out
-    
-    def __matrixtranspose(self,ins):
-        m=numpy.asmatrix(ins, dtype='float64')
-        return numpy.matrix.getA(numpy.matrix.transpose(m))
-    
     def __reduce(self,ins):
-        out=self.__matrixadd(ins[0],ins[1])
+        out=tf.math.add(ins[0],ins[1])
         for i in range(2,len(ins)):
-            out=self.__matrixadd(out,ins[i])
-        return out
-    
-    def __matrixmulconst(self,ins1,ins2):
-        out=[]
-        for j in range(len(ins2)):
-            out.append([])
-            for i in range(len(ins2[j])):
-                out[j].append(ins1*ins2[j][i])
+            out=tf.math.add(out,ins[i])
         return out
     
     def __findAverage(self,ins):
@@ -189,15 +140,15 @@ class NeuralNetwork():
             templist=[]
             for element in ins:
                 templist.append(element[a])
-            out.append(self.__matrixmulconst((1/len(ins)),self.__reduce(templist)))
+            out.append((tf.multiply(1/len(ins))*self.__reduce(templist)))
         return out
     
     def __testevaluate(self, ins):
         m1,out=self.__encode(ins),[]
         for i in range(len(self.weights)):
-            m2 = self.__matrixmul(self.weights[i],m1)
-            m3 = self.__matrixadd(m2,self.baises[i])
-            m1 = self.__applySigmoid(m3)
+            m2 = tf.linalg.matmul(self.weights[i],m1)
+            m3 = tf.math.add(m2,self.baises[i])
+            m1 = self.__sigmoid(m3)
             out.append(m1)
         return out
     
@@ -211,10 +162,10 @@ class NeuralNetwork():
         for j in range(8):
             for i in range(8):
                 out=piecedict[ins[j][i]]+out
-        return out
+        return tf.constant(out, dtype='float64')
     
     def __decode(self,ins):
-        m=''
+        m,ins='',ins.numpy()
         for a in ins:
             m+=str(int(round(a[0])))
         if m[0]=='1':exponent=-(int(self.__bintoint(self.__twoscompliment(m[0:4]))))
@@ -253,19 +204,19 @@ class NeuralNetwork():
         weights,baises,activations=weights[::-1],baises[::-1],activations[::-1]
         observed,weight=activations[0],weights[0]
         
-        error=self.__matrixsub(observed,expected)
-        Z=[self.__matrixmul(weights[0],activations[1])]
-        E=[self.__matrixmeld(self.__applySigmoidDerivative(Z[0]),error)]
-        deltaW=[self.__matrixtranspose(self.__matrixmulconst(self.learning_rate,self.__matrixmul(activations[1], self.__matrixtranspose(E[0]))))]
+        error=tf.math.add(observed,tf.multiply(-1,expected))
+        Z=[tf.linalg.matmul(weights[0],activations[1])]
+        E=[tf.multiply(self.__sigmoid_derivative(Z[0]),error)]
+        deltaW=[tf.transpose(tf.multiply(self.learning_rate,tf.linalg.matmul(activations[1], tf.transpose(E[0]))))]
         
         for i in range(1,len(weights)-1):
-            Z.append(self.__matrixmul(weights[i],activations[i+1]))
-            E.append(self.__matrixmeld(self.__matrixmul(self.__matrixtranspose(weights[i-1]),E[-1]),self.__applySigmoidDerivative(Z[i])))
-            deltaW.append(self.__matrixtranspose(self.__matrixmulconst(self.learning_rate,self.__matrixmul(activations[i+1], self.__matrixtranspose(E[i])))))
+            Z.append(tf.linalg.matmul(weights[i],activations[i+1]))
+            E.append(tf.multiply(tf.linalg.matmul(tf.transpose(weights[i-1]),E[-1]),self.__sigmoid_derivative(Z[i])))
+            deltaW.append(tf.transpose(tf.multiply(self.learning_rate,tf.linalg.matmul(activations[i+1], tf.transpose(E[i])))))
         
-        Z.append(self.__matrixmul(weights[-1],activations[-1]))
-        E.append(self.__matrixmeld(self.__matrixmul(self.__matrixtranspose(weights[-2]),E[-1]),self.__applySigmoidDerivative(Z[-1])))
-        deltaW.append(self.__matrixtranspose(self.__matrixmulconst(self.learning_rate,self.__matrixmul(activations[-1], self.__matrixtranspose(E[-1])))))
+        Z.append(tf.linalg.matmul(weights[-1],activations[-1]))
+        E.append(tf.multiply(tf.linalg.matmul(tf.transpose(weights[-2]),E[-1]),self.__sigmoid_derivative(Z[-1])))
+        deltaW.append(tf.transpose(tf.multiply(self.learning_rate,tf.linalg.matmul(activations[-1], tf.transpose(E[-1])))))
         #the change in bais is equal to the error, or E, for each of the layers
         return deltaW[::-1],E[::-1]  
     
@@ -281,7 +232,7 @@ class NeuralNetwork():
                 newweights.append(self.__matrixsub(self.weights[i],avrWeightChanges[i]))
                 newbaises.append(self.__matrixsub(self.baises[i],avrBaisChanges[i]))
             self.weights,self.baises=newweights,newbaises
-            self.__UpdateWeightsAndBaises(self.weights,self.baises)
+            self.__UpdateWeightsAndBaises(self.weights.numpy(),self.baises.numpy())
             self.weightchanges,self.baischanges=[],[]
             return
 
@@ -289,9 +240,9 @@ class NeuralNetwork():
 if __name__ =="__main__":
     import time
     T,avr=[],0
+    NNUE=NeuralNetwork([4*64,64,10])
     for i in range(1000):
         start_time = time.time()
-        NNUE=NeuralNetwork([4*64,64,10])
         NNUE.evaluate([['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']])
         T.append(time.time() - start_time)
     for a in range(len(T)):
@@ -301,4 +252,4 @@ if __name__ =="__main__":
     #    NNUE.train([[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']],[[0], [0], [0], [0], [0], [1], [1], [0], [0], [0]]])
     print('done')
     print("--- %s seconds ---" % (avr))
-    #avr evaluation time is 0.021821412801742553 seconds
+    # avr evaluation time improved to 0.0012592103481292726 seconds

@@ -97,7 +97,7 @@ def castling(boardLayout,i,j,opponentMoves):
 def pawnMoves(boardLayout,i,j):
     moves=[]
     if boardLayout[j][i][0]=='B':
-        if i>0 and i<7:
+        if i>0 and i<6:
             if j<6:
                 if boardLayout[j+1][i]=='MT':
                     moves.append([[i,j],[i,j+1]])
@@ -110,7 +110,7 @@ def pawnMoves(boardLayout,i,j):
                     if boardLayout[3][i]=='MT' or boardLayout[3][i][0]=='W':
                         moves.append([[i,j],[i,3]])
     else:
-        if i>0 and i<7:
+        if i>0 and i<6:
             if j>1:
                 if boardLayout[j-1][i]=='MT':
                     moves.append([[i,j],[i,j-1]])
@@ -131,17 +131,19 @@ def kingMoves(i,j,opponentMoves):
     for piece in opponentMoves:
         for vector in vectors:
             if not(((i+vector[0])==piece[0]) and ((j+vector[1])==piece[1])):
-                moves.append([[i,j],[i+vector[0],j+vector[1]]])
+                if (i+vector[0])<8 and (i+vector[0])>=0 and (j+vector[1])<8 and (j+vector[1])>=0:
+                    moves.append([[i,j],[i+vector[0],j+vector[1]]])
     return moves
 
 def isCheckList(i,j,boardLayout,opponentMoves):
     squares=[]
     for move in opponentMoves:
         if move[1]==[i,j]:
-            vectors=VectorsOfPieces[boardLayout[move[0][1]][move[0][0]]]
-            for vector in vectors:
-                if [move[0],[move[0][0]+vector[0],move[0][1]+vector[1]]] in opponentMoves:
-                    squares.append([move[0][0]+vector[0],move[0][1]+vector[1]])
+            vectors=VectorsOfPieces[boardLayout[move[0][1]][move[0][0]][1]]
+            for direction in vectors:
+                for vector in direction:
+                    if [move[0],[move[0][0]+vector[0],move[0][1]+vector[1]]] in opponentMoves:
+                        squares.append([move[0][0]+vector[0],move[0][1]+vector[1]])
     return squares
   
 def isCheckUsingVectors(kingI,kingJ,pieceI,pieceJ,boardLayout):
@@ -159,7 +161,7 @@ def isCheckUsingVectors(kingI,kingJ,pieceI,pieceJ,boardLayout):
                         return True
     return False
         
-def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
+def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,CheckMovesFlag):
     moves=[]
     opponentMoves=generateOpponentMoves(boardLayout,opponentImportantPieces)
     found=False
@@ -167,13 +169,15 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
         if found==True:
             break
         for i in range(8):
+            print(boardLayout[j][i],boardLayout[importantPieces[0][1]][importantPieces[0][0]])
             if boardLayout[j][i]==(boardLayout[importantPieces[0][1]][importantPieces[0][0]][0] + 'K'):
                 kingPosition=[i,j]
                 found=True
                 break
         else:
-            kingPosition = 'did not work'
-    print(kingPosition,toFEN(boardLayout))
+            kingPosition=0
+    if kingPosition==0:
+        return []
             
     for piece in importantPieces:
         if boardLayout[piece[1]][piece[0]][1]=='P':
@@ -218,9 +222,9 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces):
             else:
                 if move[1] in checkList:    
                         checkMoves.append(move)
-        if len(checkMoves)==0:
+        if len(checkMoves)==0 and CheckMovesFlag==False:
             otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces)]
-            otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces)
+            otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces,pieces,True)
             for move in otherMoves:
                 if boardLayout[move[0][0]][move[0][1]][1]=='K':
                     if not move[1] in checkList:    
@@ -246,7 +250,7 @@ def generateBoardLayout(move,layout):
             
 
 def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
-    moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces)
+    moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:
         for move in moves:

@@ -2,15 +2,17 @@ from concurrent.futures import ThreadPoolExecutor
 from createBoardLayout import createBoardLayout
 from stockfish import Stockfish
 from translations import *
-from ratingBasedOnNeuralNetwork import NNUE
+#from ratingBasedOnNeuralNetwork import NNUE
 from findImportantPieces import findImportantPieces
 from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
+from NeuralNetwork4 import*
 import time
 import sys
 #finding a way to constantly generate a dataset was out of the scope of this project, so i am just assuming that whatever stockish says is the best possible move and using that to train my own NNUE
 stockfish=Stockfish('api\stockfish.exe')
+NNUE=NeuralNetwork([4*64,64,10])
 pool=ThreadPoolExecutor(100)
-maxDepth=12
+maxDepth=4
 
 def tobinary(ins):
     out=[]

@@ -60,8 +60,6 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     moves=m.result()
     for a in moves:
         print('moves',toFEN(a))
-    print(wImportantPieces1)
-    print(bImportantPieces1)
     for move in moves:
         p,q=rateMoveBasedOnWinProbability(move,0)
         pValues.append(p*100000/q)
@@ -85,14 +83,14 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
 
 if __name__=='__main__':
     defaultLayout=[
-        ['BR','BN','BB','BQ','BK','BB','BN','BR'],
+        ['MT','WN','WN','WR','WR','WB','WB','WQ'],
         ['BP','BP','BP','BP','BP','BP','BP','BP'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','MT','MT'],
-        ['WP','WP','WP','WP','WP','WP','WP','WP'],
-        ['WR','WN','WB','WQ','WK','WB','WN','WR']]
+        ['MT','BR','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','BK','MT'],
+        ['BQ','MT','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','BB','BN','BN','BB','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','MT','BR'],
+        ['MT','MT','MT','MT','MT','MT','WK','MT']]
     previosMovesList=[['E2','E3']]
     print(toFEN(defaultLayout))
     print('starting in')
