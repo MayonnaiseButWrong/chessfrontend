@@ -93,13 +93,17 @@ const DailyChess = () => {
     var originalPieces = FindPieces(startingLayout)
     const originalBlackPieces = originalPieces[0]
     const originalWhitePieces = originalPieces[1]
-    var currentLayout = startingLayout;
+    var currentLayout = Object.assign([],startingLayout)
+    var previosLayout = Object.assign([],startingLayout)
     var currentString = toDict(currentLayout);
     var currentMove = [];
     
-    postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
+    //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
+    //currentPiece=data['Piece']
+    //currentMove=data['Coordinates']
+    //currentLayout=data['NextLayout']
 
-    putData({ StartingLayout: startingLayout, listofmoves: previosMoves })
+    //putData({ StartingLayout: startingLayout, listofmoves: previosMoves })
 
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)
@@ -111,6 +115,7 @@ const DailyChess = () => {
     //        history.pushState(null, document.title, location.href);
     //    }  
     //});
+    // aler('alert the user bish lmao')
 
     function FindPieces(currentLayout) {
         let blackPieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
@@ -195,6 +200,7 @@ const DailyChess = () => {
             currentMove = [];
             buttonpressed = true
             moveDone = false
+            previosLayout = Object.assign([],currentLayout)
 
             console.log(previosMoves)
 
@@ -214,27 +220,28 @@ const DailyChess = () => {
         currentMove = [fromSquare, toSquare]
         if (currentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] === turn) {
             if (buttonpressed === false) {
-                let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
-                if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
-                    currentPiece = piece
-                    moveDone = move()
-                    currentMove = []
-                    moveDone = false
-                    LastMovesText = '--' + LastMovesText
-                    changelast_moves_text(LastMovesText)
-                    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
-                    buttonpressed = true
-                    return true
-                } else {
-                    currentMove = inverseMove
-                    moveDone = move()
-                    LastMovesText = '--' + LastMovesText
-                    changelast_moves_text(LastMovesText)
-                    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
-                    fromSquare = previosMove[0]
-                    currentMove = []
-                    moveDone = false
-                }
+                //let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
+                //if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
+                //    currentPiece = piece
+                //    moveDone = move()
+                //    currentMove = []
+                //    moveDone = false
+                //    LastMovesText = '--' + LastMovesText
+                //    changelast_moves_text(LastMovesText)
+                //    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
+                //    buttonpressed = true
+                //    return true
+                //} else {
+                //    currentMove = inverseMove
+                //    moveDone = move()
+                //    LastMovesText = '--' + LastMovesText
+                //    changelast_moves_text(LastMovesText)
+                //    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
+                //    fromSquare = previosMove[0]
+                //    currentMove = []
+                //    moveDone = false
+                //}
+                currentLayout = Object.assign([],startingLayout)
             };
             if (moveDone === false) {
                 MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);

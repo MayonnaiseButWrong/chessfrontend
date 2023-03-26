@@ -54,13 +54,19 @@ def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
     m=pool.submit(generatePossibleMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1,pieces)
-    pValues,moves,coordinates,pieces=[]
+    pValues,moves,coordinates,coordinate,pieces=[],[],[],[],[]
     for o in m.result():
         moves.append(o[0])
-        coordinates.append(o[1])
         pieces.append(boardlayout[o[1][0][1]][o[1][0][0]])
-    for coordinate in coordinates:
-        
+        coordinate.append(toCoOrdinates(o[1][0]))
+        coordinate.append(toCoOrdinates(o[1][1]))
+        if len(o[1])>2:
+            if o[1][2][0][0]=='W' or o[1][2][0][0]=='B':
+                coordinate.append(o[1][2])
+            else:
+                coordinate.append([toCoOrdinates(o[1][2][0])])
+        coordiantes.append(coordinate)
+        coordinate=[]
     num=0
     for move in moves:
         p,q,haha=rateMoveBasedOnWinProbability(move,0,0)
@@ -74,16 +80,16 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
         moveType,i=typeOfMove(boardLayout,moves[count])
         if moveType==1:
             if castlingAllowed(previosMovesList)==True:
-                return moves[count]
+                return moves[count],coordinates[count],pieces[count]
             else:
                 count+=1
         elif moveType==2:
             if enPassantAllowed(previosMovesList,i)==True:
-                return moves[count]
+                return moves[count],coordinates[count],pieces[count]
             else:
                 count+=1
         else:
-            return moves[count]
+            return moves[count],coordinates[count],pieces[count]
 
 if __name__=='__main__':
     defaultLayout=[

@@ -69,7 +69,7 @@ def move_request():
     if request.method == 'POST':
         StartingLayout = request.args.get('StartingLayout')
         listOfMoves = request.args.get('listOfMoves')
-        move=generateAMoveToReturnToThePlayer(listOfMoves, StartingLayout)
+        moveLayout,coordiates,piece=generateAMoveToReturnToThePlayer(listOfMoves, StartingLayout)
         #startingLayout = [
         #['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
         #['BP', 'BP', 'BP', 'MT', 'BP', 'BP', 'BP', 'BP'],
@@ -80,11 +80,11 @@ def move_request():
         #['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
         #['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
         #]
-        movestring = to_xenonnumber(move)
-        print(type(movestring))
 
         output=jsonify({
-            'NextLayout': movestring
+            'NextLayout': moveLayout,
+            'Coordiantes': coordiates,
+            'Piece': piece
         })
         print(output)
         return output

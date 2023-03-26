@@ -96,6 +96,7 @@ def comparingProbabilities(boardLayout,depth):
                     eval=format(eval['value'])
                     pool.submit(NNUE.train,[bmove,eval])
                     #NNUE.train([bmove,eval])
+                    #update database here
                     if depth<maxDepth:
                         depth+=1
                         comparingProbabilities(bmove, depth)

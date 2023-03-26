@@ -17,6 +17,5 @@ def generateAMoveToReturnToThePlayer(listOfMoves,StartingLayout):
     #        return useEndingTacticsToGenerateMove(boardLayout)
     #    else:
     boardLayout=createBoardLayout(StartingLayout, listOfMoves)
-    moveLayout=useMidgameTacticToGenerateMove(boardLayout, listOfMoves)
-    
-    return 
+    moveLayout,coordiates,piece=useMidgameTacticToGenerateMove(boardLayout, listOfMoves)
+    return moveLayout,coordiates,piece
