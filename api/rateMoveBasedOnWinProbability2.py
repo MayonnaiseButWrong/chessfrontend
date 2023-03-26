@@ -7,7 +7,6 @@ import time
 NNUE=NeuralNetwork([4*64,64,10])
 
 maxDepth=2
-#pool = Pool(250)
 
 def rateMoveBasedOnWinProbability(boardLayout,depth,num):
     print('rate move depth',depth)
@@ -19,20 +18,25 @@ def rateMoveBasedOnWinProbability(boardLayout,depth,num):
         bmoves=generateMovesUsingImportantPieces(wmove, bImportantPieces2, wImportantPieces2,pieces)
         if len(bmoves)>0:
             p-=1
-            print(len(wmoves),len(bmoves))
-            for bmove in bmoves:
-                wImportantPieces3,bImportantPieces3,pieces=findImportantPieces(bmove)
-                checkMoves=generateMovesUsingImportantPieces(bmove, wImportantPieces3, bImportantPieces3,pieces)
-                if len(checkMoves)==0:
-                    p+=1
-                elif depth<maxDepth:
-                    depth+=1
-                    pchange,qchange,num=rateMoveBasedOnWinProbability(bmove, depth,num)
-                else:
-                    num+=1
-                    start_time = time.time()
-                    pchange=NNUE.evaluate(bmove)
-                    #print(time.time() - start_time,'time taken NNUE')
+            if depth<maxDepth:
+                for bmove in bmoves:
+                    wImportantPieces3,bImportantPieces3,pieces=findImportantPieces(bmove)
+                    checkMoves=generateMovesUsingImportantPieces(bmove, wImportantPieces3, bImportantPieces3,pieces)
+                    if len(checkMoves)==0:
+                        p+=1
+                    else:
+                        depth+=1
+                        pchange,qchange,num=rateMoveBasedOnWinProbability(bmove, depth,num)
+            else:
+                pool = Pool(6)
+                print('here',len(wmoves),len(bmoves))
+                start_time = time.time()
+                num+=1
+                pchanges=pool.map(NNUE.evaluate,bmoves)
+                for change in pchanges:
+                    qchange+=1
+                    pchange+=change
+                print(time.time() - start_time,'time taken NNUE')
     return p+pchange,q+qchange+1,num
 
 

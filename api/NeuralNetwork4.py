@@ -5,6 +5,15 @@ from numpy import exp, array, random, asmatrix, matmul, add
 import tensorflow as tf
 
 warnings.filterwarnings('ignore')
+
+@tf.function
+def sigmoid(x):
+    return 1.0 / (1.0 + tf.math.exp(-x))
+
+@tf.function
+def sigmoid_derivative(x):
+    return x / (1.0 - x)
+
 class NeuralNetwork():
     def __init__(self,layers):
         fweights=open("api\Weights.txt","r+")
@@ -120,14 +129,6 @@ class NeuralNetwork():
         else:
             return out
     
-    @tf.function
-    def __sigmoid(self, x):
-        return 1.0 / (1.0 + tf.math.exp(-x))
-    
-    @tf.function
-    def __sigmoid_derivative(self, x):
-        return x / (1.0 - x)
-    
     def __reduce(self,ins):
         out=tf.math.add(ins[0],ins[1])
         for i in range(2,len(ins)):
@@ -148,7 +149,7 @@ class NeuralNetwork():
         for i in range(len(self.weights)):
             m2 = tf.linalg.matmul(self.weights[i],m1)
             m3 = tf.math.add(m2,self.baises[i])
-            m1 = self.__sigmoid(m3)
+            m1 = sigmoid(m3)
             out.append(m1)
         return out
     
@@ -206,16 +207,16 @@ class NeuralNetwork():
         
         error=tf.math.add(observed,tf.multiply(-1,expected))
         Z=[tf.linalg.matmul(weights[0],activations[1])]
-        E=[tf.multiply(self.__sigmoid_derivative(Z[0]),error)]
+        E=[tf.multiply(sigmoid_derivative(Z[0]),error)]
         deltaW=[tf.transpose(tf.multiply(self.learning_rate,tf.linalg.matmul(activations[1], tf.transpose(E[0]))))]
         
         for i in range(1,len(weights)-1):
             Z.append(tf.linalg.matmul(weights[i],activations[i+1]))
-            E.append(tf.multiply(tf.linalg.matmul(tf.transpose(weights[i-1]),E[-1]),self.__sigmoid_derivative(Z[i])))
+            E.append(tf.multiply(tf.linalg.matmul(tf.transpose(weights[i-1]),E[-1]),sigmoid_derivative(Z[i])))
             deltaW.append(tf.transpose(tf.multiply(self.learning_rate,tf.linalg.matmul(activations[i+1], tf.transpose(E[i])))))
         
         Z.append(tf.linalg.matmul(weights[-1],activations[-1]))
-        E.append(tf.multiply(tf.linalg.matmul(tf.transpose(weights[-2]),E[-1]),self.__sigmoid_derivative(Z[-1])))
+        E.append(tf.multiply(tf.linalg.matmul(tf.transpose(weights[-2]),E[-1]),sigmoid_derivative(Z[-1])))
         deltaW.append(tf.transpose(tf.multiply(self.learning_rate,tf.linalg.matmul(activations[-1], tf.transpose(E[-1])))))
         #the change in bais is equal to the error, or E, for each of the layers
         return deltaW[::-1],E[::-1]  
