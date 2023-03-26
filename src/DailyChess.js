@@ -4,6 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useEffect } from "react";
+import {postData,putData} from './commonInputsAndOutPuts.js'
 
 var startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -15,8 +16,6 @@ var startingLayout = [
     ['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],
     ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
 ];
-
-
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
@@ -97,40 +96,11 @@ const DailyChess = () => {
     var currentLayout = startingLayout;
     var currentString = toDict(currentLayout);
     var currentMove = [];
-
-    async function postData(url = "", data = {}) {
-        const response = await fetch(url, {
-          method: "POST",
-          mode: "cors",
-          cache: "default",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          redirect: "follow",
-          referrerPolicy: "no-referrer",
-          body: JSON.stringify(data),
-        });
-        return response.json()
-    }
     
-    postData("/moverequest", { answer: 42 }).then((data) => {
-      console.log(data);
-    });
+    postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
 
-    const [postId, setPostId] = useState(null)
-    useEffect(() => {
-      // PUT request using fetch inside useEffect React hook
-      const requestOptions = {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: 'React Hooks PUT Request Example' })
-      };
-      fetch('/outputgame', requestOptions)
-          .then(response => response.json())
-          .then(data => setPostId(data.id));
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
-    }, []);
+    putData({ StartingLayout: startingLayout, listofmoves: previosMoves })
+
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)
     //{

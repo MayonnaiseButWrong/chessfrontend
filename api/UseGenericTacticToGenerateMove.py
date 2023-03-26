@@ -1,12 +1,10 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 from findImportantPieces import findImportantPieces,bubbleSort
-from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
+from generateMovesUsingImportantPieces import generatePossibleMovesUsingImportantPieces
 from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from createBoardLayout import createBoardLayout
 from translations import *
-
-pool=ThreadPoolExecutor(100)
 
 def typeOfMove(layout1,layout2):    #0 is a mormal move, 1 is castling, 2 is enpassant
     if layout1[0][4]=='K' and layout2[0][4]=='MT':
@@ -55,11 +53,14 @@ def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
-    m=pool.submit(generateMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1,pieces)
-    pValues=[]
-    moves=m.result()
-    for a in moves:
-        print('moves',toFEN(a))
+    m=pool.submit(generatePossibleMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1,pieces)
+    pValues,moves,coordinates,pieces=[]
+    for o in m.result():
+        moves.append(o[0])
+        coordinates.append(o[1])
+        pieces.append(boardlayout[o[1][0][1]][o[1][0][0]])
+    for coordinate in coordinates:
+        
     num=0
     for move in moves:
         p,q,haha=rateMoveBasedOnWinProbability(move,0,0)

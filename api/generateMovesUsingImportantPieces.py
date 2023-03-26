@@ -258,6 +258,16 @@ def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImport
             newLayout=[]
     return outputList
 
+def generatePossibleMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
+    moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
+    outputList,newLayout=[],[]
+    if len(moves)>0:
+        for move in moves:
+            newLayout=generateBoardLayout(move,copy.deepcopy(boardLayout))
+            outputList.append([newLayout,move])
+            newLayout=[]
+    return outputList
+
 
 if __name__=='__main__':
     import time

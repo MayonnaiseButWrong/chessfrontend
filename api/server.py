@@ -2,11 +2,49 @@ from generateAMoveToReturnToThePlayer import generateAMoveToReturnToThePlayer
 from updateDatabase import updateDatabase
 from translations import *
 from flask import Flask, jsonify, request
+import threading as t
+from multiprocessing import Pool
+from trainNeuralNetwork import*
 
 app = Flask(__name__)
 
+class Training:
+    def __init__():
+        self.trainingdata=[]
+    
+    def enterTrainingData(self,layout,movesList):
+        self.trainingdata.append((layout,movesList))
+        if t.active_count()<5:
+            with Pool() as pool:
+                pool.starmap(trainNeuralNetwork,self.trainingdata)
+                pool.terminate()
+        self.trainingdata=[]
+        
+training=Training()
+
+@app.reoute('/EndGameChessdata')
+def get_EndGameChess_startingLayout():
+    startingLayout = [
+        ['MT','WN','WN','WR','WR','WB','WB','WQ'],
+        ['BP','BP','BP','BP','BP','BP','BP','BP'],
+        ['MT','BR','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','BK','MT'],
+        ['BQ','MT','MT','MT','MT','MT','MT','MT'],
+        ['MT','MT','BB','BN','BN','BB','MT','MT'],
+        ['MT','MT','MT','MT','MT','MT','MT','BR'],
+        ['MT','MT','MT','MT','MT','MT','WK','MT']
+        ]
+    startingstring = to_xenonnumber(startingLayout)
+    print(type(startingstring))
+    
+    output=jsonify({
+        'StaringLayoutString': startingLayout
+    })
+    print(output)
+    return output
+
 @app.route('/DailyChessdata')
-def get_startingLayout():
+def get_DailyChess_startingLayout():
     startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
     ['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],
@@ -29,23 +67,24 @@ def get_startingLayout():
 @app.route('/moverequest', methods = ['POST'])
 def move_request():
     if request.method == 'POST':
-        layout = request.args.get('answer')
-        print(layout)
-        startingLayout = [
-        ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
-        ['BP', 'BP', 'BP', 'MT', 'BP', 'BP', 'BP', 'BP'],
-        ['MT', 'MT', 'MT', 'BP', 'MT', 'MT', 'MT', 'MT'],
-        ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
-        ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
-        ['MT', 'MT', 'MT', 'MT', 'MT', 'WP', 'MT', 'MT'],
-        ['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
-        ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
-        ]
-        startingstring = to_xenonnumber(startingLayout)
-        print(type(startingstring))
+        StartingLayout = request.args.get('StartingLayout')
+        listOfMoves = request.args.get('listOfMoves')
+        move=generateAMoveToReturnToThePlayer(listOfMoves, StartingLayout)
+        #startingLayout = [
+        #['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
+        #['BP', 'BP', 'BP', 'MT', 'BP', 'BP', 'BP', 'BP'],
+        #['MT', 'MT', 'MT', 'BP', 'MT', 'MT', 'MT', 'MT'],
+        #['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+        #['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
+        #['MT', 'MT', 'MT', 'MT', 'MT', 'WP', 'MT', 'MT'],
+        #['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
+        #['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
+        #]
+        movestring = to_xenonnumber(move)
+        print(type(movestring))
 
         output=jsonify({
-            'StaringLayoutString': startingLayout
+            'NextLayout': movestring
         })
         print(output)
         return output
@@ -53,8 +92,9 @@ def move_request():
 @app.route('/outputgame', methods = ['PUT'])
 def outputgame():
     if request.method == 'PUT':
-        game = request.args.get('title')
-        print(game)
+        StartingLayout = request.args.get('StartingLayout')
+        listOfMoves = request.args.get('listOfMoves')
+        training.enterTrainingData(StartingLayout, listOfMoves)
         return''
 
 if __name__ == '__main__':
