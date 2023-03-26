@@ -169,7 +169,6 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
         if found==True:
             break
         for i in range(8):
-            print(boardLayout[j][i],boardLayout[importantPieces[0][1]][importantPieces[0][0]])
             if boardLayout[j][i]==(boardLayout[importantPieces[0][1]][importantPieces[0][0]][0] + 'K'):
                 kingPosition=[i,j]
                 found=True

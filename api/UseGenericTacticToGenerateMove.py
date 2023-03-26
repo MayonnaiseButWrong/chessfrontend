@@ -60,26 +60,29 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     moves=m.result()
     for a in moves:
         print('moves',toFEN(a))
+    num=0
     for move in moves:
-        p,q=rateMoveBasedOnWinProbability(move,0)
+        p,q,haha=rateMoveBasedOnWinProbability(move,0,0)
         pValues.append(p*100000/q)
+        num+=haha
+    print(num)
     moves=bubbleSort(moves,pValues)
     flag=True
     count=0
     for count in range(len(moves)):
-        moveType,i=typeOfMove(boardLayout,move[count])
+        moveType,i=typeOfMove(boardLayout,moves[count])
         if moveType==1:
             if castlingAllowed(previosMovesList)==True:
-                return move[count]
+                return moves[count]
             else:
                 count+=1
         elif moveType==2:
             if enPassantAllowed(previosMovesList,i)==True:
-                return move[count]
+                return moves[count]
             else:
                 count+=1
         else:
-            return move[count]
+            return moves[count]
 
 if __name__=='__main__':
     defaultLayout=[

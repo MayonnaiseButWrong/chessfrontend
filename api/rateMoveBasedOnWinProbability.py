@@ -4,9 +4,9 @@ from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
 from NeuralNetwork4 import*
 NNUE=NeuralNetwork([4*64,64,10])
 
-maxDepth=6
+maxDepth=2
 
-def rateMoveBasedOnWinProbability(boardLayout,depth):
+def rateMoveBasedOnWinProbability(boardLayout,depth,num):
     print('rate move depth',depth)
     p,q,pchange,qchange=0,0,0,0
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
@@ -23,9 +23,10 @@ def rateMoveBasedOnWinProbability(boardLayout,depth):
                     p+=1
                 elif depth<maxDepth:
                     depth+=1
-                    pchange,qchange=rateMoveBasedOnWinProbability(bmove, depth)
+                    pchange,qchange,num=rateMoveBasedOnWinProbability(bmove, depth,num)
                 else:
+                    num+=1
                     pchange,qchange=NNUE.evaluate(bmove),1
-    return p+pchange,q+qchange+1
+    return p+pchange,q+qchange+1,num
 
 
