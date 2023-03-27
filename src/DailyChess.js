@@ -89,17 +89,27 @@ const DailyChess = () => {
         )
     },[])
 
+    //function clone(list1) {
+    //    let c = []
+    //    for (let key = 0; key < list1.length; key++) {
+    //        c[key] = list1[key];
+    //    }
+    //    return c
+    //}
+
     console.log(startingLayout[0])
     var originalPieces = FindPieces(startingLayout)
     const originalBlackPieces = originalPieces[0]
     const originalWhitePieces = originalPieces[1]
-    var currentLayout = []
-    var previosLayout = []
-    currentLayout=startingLayout
-    previosLayout=startingLayout
+    var currentLayout = Array.from(startingLayout);
+    var previosLayout = Array.from(startingLayout);
     console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
     var currentString = toDict(currentLayout);
     var currentMove = [];
+    if (LastMovesText.length < 1) { LastMovesText = '---' }
+    changelast_moves_text(LastMovesText)
+    LastMovesText = LastMovesText.slice(1, LastMovesText.length)
+    buttonpressed = false
     
     //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
     //currentPiece=data['Piece']
