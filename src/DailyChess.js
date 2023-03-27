@@ -4,7 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useEffect } from "react";
-import {postData,putData} from './commonInputsAndOutPuts.js'
+import {postData,putData,getData} from './commonInputsAndOutPuts.js'
 
 var startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -23,6 +23,23 @@ var startingLayout = [
 //fix king movement
 //fix moving a piece on the board in general
 
+function FindPieces(currentLayout) {
+    let blackPieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
+    let whitePieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
+    for (let j = 0; j < 8; j++) {
+        for (let i = 0; i < 8; i++) {
+            if (!(currentLayout[j][i] === 'MT')) {
+                if (currentLayout[j][i][0] === 'B') {
+                    blackPieces[currentLayout[j][i][1]]++
+                } else {
+                    whitePieces[currentLayout[j][i][1]]++
+                }
+            }
+        }
+    }
+    return [blackPieces, whitePieces]
+}
+
 var turn = 'W';
 var previosMoves = [];
 var previosMove = []
@@ -35,6 +52,18 @@ var blackPiecesTakenList = []
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
+
+startingLayout=getData('/DailyChessdata')
+
+console.log(startingLayout[0])
+var originalPieces = FindPieces(startingLayout)
+const originalBlackPieces = originalPieces[0]
+const originalWhitePieces = originalPieces[1]
+var currentLayout = Array.from(startingLayout);
+var previosLayout = Array.from(startingLayout);
+console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
+var currentString = toDict(currentLayout);
+var currentMove = [];
 
 const styles = StyleSheet.create({
     last_moves_text: {
@@ -75,20 +104,6 @@ const DailyChess = () => {
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
 
-    const [Layout, setLayout] = useState ([{}])
-    useEffect(() => {
-        fetch('/DailyChessdata').then(
-            res => res.json()
-        ).then(
-            Layout => {
-                setLayout(Layout)
-                startingLayout = Layout['StaringLayoutString']
-                console.log(startingLayout)
-                console.log(Layout['StaringLayoutString'])
-            }
-        )
-    },[])
-
     //function clone(list1) {
     //    let c = []
     //    for (let key = 0; key < list1.length; key++) {
@@ -96,20 +111,6 @@ const DailyChess = () => {
     //    }
     //    return c
     //}
-
-    console.log(startingLayout[0])
-    var originalPieces = FindPieces(startingLayout)
-    const originalBlackPieces = originalPieces[0]
-    const originalWhitePieces = originalPieces[1]
-    var currentLayout = Array.from(startingLayout);
-    var previosLayout = Array.from(startingLayout);
-    console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
-    var currentString = toDict(currentLayout);
-    var currentMove = [];
-    if (LastMovesText.length < 1) { LastMovesText = '---' }
-    changelast_moves_text(LastMovesText)
-    LastMovesText = LastMovesText.slice(1, LastMovesText.length)
-    buttonpressed = false
     
     //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
     //currentPiece=data['Piece']
@@ -130,22 +131,6 @@ const DailyChess = () => {
     //});
     // aler('alert the user bish lmao')
 
-    function FindPieces(currentLayout) {
-        let blackPieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
-        let whitePieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
-        for (let j = 0; j < 8; j++) {
-            for (let i = 0; i < 8; i++) {
-                if (!(currentLayout[j][i] === 'MT')) {
-                    if (currentLayout[j][i][0] === 'B') {
-                        blackPieces[currentLayout[j][i][1]]++
-                    } else {
-                        whitePieces[currentLayout[j][i][1]]++
-                    }
-                }
-            }
-        }
-        return [blackPieces, whitePieces]
-    }
 
     function upadteCurrentString() {
         currentString = currentString
