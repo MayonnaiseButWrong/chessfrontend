@@ -93,8 +93,11 @@ const DailyChess = () => {
     var originalPieces = FindPieces(startingLayout)
     const originalBlackPieces = originalPieces[0]
     const originalWhitePieces = originalPieces[1]
-    var currentLayout = Object.assign([],startingLayout)
-    var previosLayout = Object.assign([],startingLayout)
+    var currentLayout = []
+    var previosLayout = []
+    currentLayout=startingLayout
+    previosLayout=startingLayout
+    console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
     var currentString = toDict(currentLayout);
     var currentMove = [];
     
@@ -200,7 +203,7 @@ const DailyChess = () => {
             currentMove = [];
             buttonpressed = true
             moveDone = false
-            previosLayout = Object.assign([],currentLayout)
+            previosLayout = currentLayout
 
             console.log(previosMoves)
 
@@ -241,7 +244,9 @@ const DailyChess = () => {
                 //    currentMove = []
                 //    moveDone = false
                 //}
-                currentLayout = Object.assign([],startingLayout)
+                console.log('before assigning previosLayout','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
+                currentLayout = startingLayout
+                console.log('after assigning previosLayout','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
             };
             if (moveDone === false) {
                 MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);

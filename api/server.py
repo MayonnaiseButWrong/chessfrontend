@@ -9,7 +9,7 @@ from trainNeuralNetwork import*
 app = Flask(__name__)
 
 class Training:
-    def __init__():
+    def __init__(self):
         self.trainingdata=[]
     
     def enterTrainingData(self,layout,movesList):
@@ -22,7 +22,7 @@ class Training:
         
 training=Training()
 
-@app.reoute('/EndGameChessdata')
+@app.route('/EndGameChessdata')
 def get_EndGameChess_startingLayout():
     startingLayout = [
         ['MT','WN','WN','WR','WR','WB','WB','WQ'],
