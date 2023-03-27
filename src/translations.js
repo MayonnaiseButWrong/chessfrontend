@@ -145,13 +145,13 @@ function stringToList(InputString) {
     let s=''
     let index=''
     for (let count = 0; count < InputString.length; count++) {
-        if(count%2!=0) {
+        if(count%2!==0) {
             index=InputString[count]
             outputstr+=chars[index]
         }
     }
     for (let count = 0; count < outputstr.length; count++) {
-        if (outputlist[count]==',') {
+        if (outputlist[count]===',') {
             for (let i = 0; i < count-flag-1; i++) {
                 s+=outputlist[i+flag]
                 l.push(s)
@@ -161,11 +161,11 @@ function stringToList(InputString) {
     }
     outputlist=[]
     for (let count = 0; count < l.length; count++) {
-        if (l[count].length==4){
+        if (l[count].length===4){
             outputlist.push([l[count][0]+l[count][1],l[count][2]+l[count][3]])
         } else {
             for (let i = 5; i < l[count].length; i++) {
-                if(i%2!=0) {
+                if(i%2!==0) {
                     templist.push(l[count][i-1]+l[count][i])
                 }
             }

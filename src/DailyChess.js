@@ -53,6 +53,8 @@ var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
 
+console.log(startingLayout[0])
+
 startingLayout=getData('/DailyChessdata')
 
 console.log(startingLayout[0])

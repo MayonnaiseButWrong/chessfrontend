@@ -35,6 +35,9 @@ async function getData(url = "") {
     mode: "cors",
     cache: "no-cache",
     credentials: "same-origin",
+    headers : { 
+      Accept: 'application/json'
+     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
   });
