@@ -55,7 +55,11 @@ var buttonpressed = true
 
 console.log(startingLayout[0])
 
-startingLayout=getData('/DailyChessdata')
+//startingLayout=getData('/DailyChessdata')
+
+let temp = await getData('/DailyChessdata')
+
+console.log(temp)
 
 console.log(startingLayout[0])
 var originalPieces = FindPieces(startingLayout)

@@ -5,6 +5,9 @@ from generateMovesUsingImportantPieces import generatePossibleMovesUsingImportan
 from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from createBoardLayout import createBoardLayout
 from translations import *
+from concurrent.futures import ThreadPoolExecutor
+
+pool = ThreadPoolExecutor(6)
 
 def typeOfMove(layout1,layout2):    #0 is a mormal move, 1 is castling, 2 is enpassant
     if layout1[0][4]=='K' and layout2[0][4]=='MT':
@@ -57,7 +60,7 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     pValues,moves,coordinates,coordinate,pieces=[],[],[],[],[]
     for o in m.result():
         moves.append(o[0])
-        pieces.append(boardlayout[o[1][0][1]][o[1][0][0]])
+        pieces.append(boardLayout[o[1][0][1]][o[1][0][0]])
         coordinate.append(toCoOrdinates(o[1][0]))
         coordinate.append(toCoOrdinates(o[1][1]))
         if len(o[1])>2:
@@ -65,7 +68,7 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
                 coordinate.append(o[1][2])
             else:
                 coordinate.append([toCoOrdinates(o[1][2][0])])
-        coordiantes.append(coordinate)
+        coordinates.append(coordinate)
         coordinate=[]
     num=0
     for move in moves:

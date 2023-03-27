@@ -32,14 +32,14 @@ function putData(data = {}) {
 async function getData(url = "") {
   const response = await fetch(url, {
     method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "same-origin",
-    headers : { 
-      Accept: 'application/json'
-     },
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
+    //mode: "cors",
+    //cache: "no-cache",
+    //credentials: "same-origin",
+    //headers : { 
+    //  Accept: 'application/json'
+    // },
+    //redirect: "follow",
+    //referrerPolicy: "no-referrer",
   });
   return response.json();
 }
