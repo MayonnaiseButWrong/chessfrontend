@@ -41,7 +41,9 @@ async function getData(url = "") {
     //redirect: "follow",
     //referrerPolicy: "no-referrer",
   });
-  return response.json();
+  if (response.status !==200) {
+    return response.json();
+  }
 }
 
 

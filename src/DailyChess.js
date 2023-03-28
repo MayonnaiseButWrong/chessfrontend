@@ -57,7 +57,13 @@ console.log(startingLayout[0])
 
 //startingLayout=getData('/DailyChessdata')
 
-let temp = await getData('/DailyChessdata')
+function getLayout () {
+    let temporary = {}
+    temporary = getData('/DailyChessdata')
+    return temporary
+}
+
+let temp = setTimeout(getLayout,0)
 
 console.log(temp)
 
