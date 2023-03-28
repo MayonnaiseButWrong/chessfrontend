@@ -60,11 +60,7 @@ console.log(startingLayout[0])
 let temp = getData('/DailyChessdata')
 //let temp = postData({startingLayout})
 
-console.log(temp['StaringLayoutString'])
-
-if (temp['PromiseResult'] !== undefined){
-    console.log(temp)
-}
+startingLayout = temp['StaringLayoutString']
 
 console.log(startingLayout[0])
 var originalPieces = FindPieces(startingLayout)
