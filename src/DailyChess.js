@@ -6,7 +6,7 @@ import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useEffect } from "react";
 import {postData,putData,getData} from './commonInputsAndOutPuts.js'
 
-var startingLayout = [
+const startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
     ['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],
     ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
@@ -57,24 +57,19 @@ console.log(startingLayout[0])
 
 //startingLayout=getData('/DailyChessdata')
 
-function getLayout () {
-    let temporary = {}
-    temporary = getData('/DailyChessdata')
-    return temporary
+let temp = getData('/DailyChessdata')
+//let temp = postData({startingLayout})
+
+console.log(temp['StaringLayoutString'])
+
+if (temp['PromiseResult'] !== undefined){
+    console.log(temp)
 }
-
-let temp = setTimeout(getLayout,0)
-
-console.log(temp)
 
 console.log(startingLayout[0])
 var originalPieces = FindPieces(startingLayout)
 const originalBlackPieces = originalPieces[0]
 const originalWhitePieces = originalPieces[1]
-var currentLayout = Array.from(startingLayout);
-var previosLayout = Array.from(startingLayout);
-console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
-var currentString = toDict(currentLayout);
 var currentMove = [];
 
 const styles = StyleSheet.create({
@@ -115,6 +110,18 @@ const DailyChess = () => {
 
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
+
+    const temporaryLayout1 = startingLayout
+    const temporaryLayout2 = startingLayout
+
+    const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
+
+    const [previosLayout,setPreviosLayout] = useState(temporaryLayout2)
+
+    var currentString = toDict(currentLayout);
+
+    console.log(previosLayout===currentLayout)
+    console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
 
     //function clone(list1) {
     //    let c = []
@@ -210,7 +217,8 @@ const DailyChess = () => {
             currentMove = [];
             buttonpressed = true
             moveDone = false
-            previosLayout = currentLayout
+            let temporary = [...currentLayout]
+            setPreviosLayout(temporary)
 
             console.log(previosMoves)
 
@@ -226,8 +234,9 @@ const DailyChess = () => {
         let MoveSuccesfulTuple = [];
         fromSquare = String(fromSquare).toUpperCase();
         toSquare = String(toSquare).toUpperCase();
-        previosMove = currentMove
+        //previosMove = currentMove
         currentMove = [fromSquare, toSquare]
+        console.log('currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
         if (currentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] === turn) {
             if (buttonpressed === false) {
                 //let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
@@ -251,12 +260,17 @@ const DailyChess = () => {
                 //    currentMove = []
                 //    moveDone = false
                 //}
+                console.log(currentLayout === startingLayout)
                 console.log('before assigning previosLayout','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
-                currentLayout = startingLayout
+                let temp = [...previosLayout]
+                console.log('temp',temp,'previosLayout',previosLayout)
+                setCurrentLayout(temp)
                 console.log('after assigning previosLayout','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
             };
             if (moveDone === false) {
+                console.log('before','previosLayout',previosLayout)
                 MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);
+                console.log('after','previosLayout',previosLayout)
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]
@@ -276,7 +290,7 @@ const DailyChess = () => {
     }
 
     function move() {
-        let boardCopy = currentLayout
+        let boardCopy = [...currentLayout]
         let fromSquare = currentMove[0]
         let toSquare = currentMove[1]
         if (currentMove.length === 3) {
@@ -314,7 +328,9 @@ const DailyChess = () => {
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
-        currentLayout = boardCopy
+        let temp = [...boardCopy]
+        console.log('temp',temp,'previosLayout',previosLayout)
+        setCurrentLayout(temp)
         currentString = toDict(currentLayout)
         upadteCurrentString()
         return true

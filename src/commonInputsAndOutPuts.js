@@ -40,10 +40,10 @@ async function getData(url = "") {
     // },
     //redirect: "follow",
     //referrerPolicy: "no-referrer",
-  });
-  if (response.status !==200) {
-    return response.json();
-  }
+  })
+  const abc = await response.json()
+  console.log(abc)
+  return response
 }
 
 

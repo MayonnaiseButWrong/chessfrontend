@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 import threading as t
 from multiprocessing import Pool
 from trainNeuralNetwork import*
+import sys
 
 app = Flask(__name__)
 
@@ -40,7 +41,6 @@ def get_EndGameChess_startingLayout():
     output=jsonify({
         'StaringLayoutString': startingLayout
     })
-    print(output)
     return output
 
 @app.route('/DailyChessdata', methods = ['GET'])
@@ -57,13 +57,15 @@ def get_DailyChess_startingLayout():
         ['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
         ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
         ]
-        startingstring = to_xenonnumber(startingLayout)
-        print(type(startingstring))
-
-        output=jsonify({
-            'StaringLayoutString': startingLayout
-        })
+        #startingstring = to_xenonnumber(startingLayout)
+        #print(type(startingstring))
+        print('output')
+        print(startingLayout)
+        output=jsonify({'StaringLayoutString': startingLayout})
+        print('here3')
         print(output)
+        print('here2')
+        #raise TypeError('here')
         return output
 
 @app.route('/moverequest', methods = ['POST'])

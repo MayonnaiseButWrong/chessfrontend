@@ -1,6 +1,12 @@
 from createBoardLayout import createBoardLayout
 from UseGenericTacticToGenerateMove import UseGenericTacticToGenerateMove
 from translations import *
+#import mysql.connector
+#
+#database = mysql.connector.connect(
+#    host = 'localhost'
+#)
+
 
 def updateStartingMoveEncyclopaedia(StartingLayout,listOfMoves):
     for count in range(listOfMoves):
