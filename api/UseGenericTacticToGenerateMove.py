@@ -6,6 +6,22 @@ from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from createBoardLayout import createBoardLayout
 from translations import *
 from concurrent.futures import ThreadPoolExecutor
+import mysql.connector
+
+ChessDb = mysql.connector.connect(
+  host="localhost",
+  user="ChessIsImportant",
+  password="ItShouldBeProtected"
+)
+
+cursor = ChessDb.cursor()
+
+try:
+    cursor.execute("SHOW DATABASES")
+except:
+    cursor.execute('CREATE DATABASE ChessData') 
+finally:
+    cursor.execute('CREAT TABLE ...')
 
 pool = ThreadPoolExecutor(6)
 
