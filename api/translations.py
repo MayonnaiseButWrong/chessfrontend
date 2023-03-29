@@ -16,15 +16,12 @@ def to_xenonnumber(gamelist):
             n3=n1**n2                                                                                     #the respective prime number to the power of the xenon number for the piece at the corresponding place, multiplied by all the others goves the unique xenon number for the frame
             xenonnumber=xenonnumber*n3
 
-    xenonnumber="{:,f}".format(int(xenonnumber))
-    outputstring=''
-    for letter in xenonnumber:
-        if letter!=','or letter!='.':
-            outputstring+=letter
-    return outputstring
+    xenonnumber=hex(xenonnumber)
+    return xenonnumber
 
-def to_gamelist(xenonnumber):
-
+def to_gamelist(ins):
+    temp=int(ins,16)
+    xenonnumber=temp
     primeNumbers=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283.293,307,311,313]
     Pieceslist=['MT','WR','WN','WB','WQ','WK','WP','BR','BN','BB','BQ','BK','BP']
     gamelist=[]                                                                                      #announcing the variables

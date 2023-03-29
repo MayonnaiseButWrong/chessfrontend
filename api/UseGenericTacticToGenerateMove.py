@@ -20,8 +20,13 @@ try:
     cursor.execute("SHOW DATABASES")
 except:
     cursor.execute('CREATE DATABASE ChessData') 
-finally:
-    cursor.execute('CREAT TABLE ...')
+    cursor.execute('CREAT TABLE BestMoves (FEN VARCHAR(80), BestMovesFEN VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), PRIMARY KEY(FEN,BestMovesFEN))')
+else:
+    try:
+        cursor.execute("SELECT * FROM BestMoves WHERE FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'")
+    except:
+        cursor.execute('CREAT TABLE BestMoves (FEN VARCHAR(80), BestMovesFEN VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(FEN,BestMovesFEN))')
+    
 
 pool = ThreadPoolExecutor(6)
 
@@ -66,8 +71,11 @@ def enPassantAllowed(previosMovesList,i):
     return False
 
 def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
-    #check if the move is in the database
-    #else
+    cursor.execute('SELECT BestMoveFEN,Piece,Move FROM BestMoves WHERE FEN = ',toFEN(boardLayout),' ORDER BY Rating')
+    result = cursor.fetchall()
+    if len(result)>=0:
+        toBoardLayout(resutl[0][0])
+    else
         return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
