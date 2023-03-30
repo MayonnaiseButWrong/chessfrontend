@@ -5,7 +5,7 @@ import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useCallback } from "react";
 import { postData, putData, getData } from './commonInputsAndOutPuts.js'
-import { Modal } from 'react-native-web';
+import { Modal, Backdrop } from 'react-native-web';
 import styled from 'styled-components/native'
 
 const startingLayout = [
@@ -194,10 +194,11 @@ const DailyChess = () => {
         let temp = []
         let checkmate = false
         if (moveDone === true) {
-            if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
-                console.log(currentPiece,toTuple(currentMove[1])[1])
+            //if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
+            //    console.log(currentPiece,toTuple(currentMove[1])[1])
                 setShow(true)
-            }
+                console.log(show)
+            //}
 
             whitePiecesTakenList = []
             blackPiecesTakenList = []
