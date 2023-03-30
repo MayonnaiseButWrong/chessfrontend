@@ -1,6 +1,6 @@
 import './TwoPlayerUpsideDownChess.css'
 import { Text, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
@@ -25,8 +25,6 @@ var startingLayout = [
 var originalPieces = FindPieces(startingLayout)
 const originalBlackPieces = originalPieces[0]
 const originalWhitePieces = originalPieces[1]
-var currentLayout = startingLayout;
-var currentString = toDict(currentLayout);
 var currentMove = [];
 var turn = 'W';
 var previosMoves = [];
@@ -88,6 +86,30 @@ const TwoPlayerUpsideDownChess = () => {
         console.log(currentPosx)
     }
 
+    function clone(ins) {
+        let string=ins.toString()
+        let word = ''
+        let letter = ''
+        let out=[]
+        let temp = []
+        for (let i = 0; i < string.length; i++){
+            letter=string[i]
+            if (letter === ','){
+                temp.push(word)
+                word=''
+                if (temp.length>=8) {
+                    out.push(temp)
+                    temp=[]
+                }
+            } else {
+                word+=letter
+            }
+        }
+        temp.push(word)
+        out.push(temp)
+        return out
+    }
+
     const [last_moves_text, setlast_moves_text] = useState("--");
     const changelast_moves_text = (text) => { setlast_moves_text(text); }
 
@@ -97,7 +119,11 @@ const TwoPlayerUpsideDownChess = () => {
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
 
-
+    const temporaryLayout1 = clone(startingLayout)
+    const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
+    const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
+    
+    var currentString = toDict(currentLayout);
 
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)
@@ -120,7 +146,6 @@ const TwoPlayerUpsideDownChess = () => {
         let currentWhitePieces = []
         let temp = []
         let checkmate = false
-        console.log('skdfjbvhfjk', currentMove)
         if (moveDone === true) {
 
             whitePiecesTakenList = []
@@ -171,13 +196,10 @@ const TwoPlayerUpsideDownChess = () => {
             LastMovesText = ',' + LastMovesText
 
             turn = (turn === 'W') ? 'B' : 'W';
-            console.log(turn)
             previosMoves.push(currentMove);
             currentMove = [];
             buttonpressed = true
             moveDone = false
-
-            console.log(previosMoves)
 
             checkmate = isCheckmate(currentLayout, turn, previosMoves)
             console.log(checkmate)
@@ -214,7 +236,10 @@ const TwoPlayerUpsideDownChess = () => {
                     LastMovesText = LastMovesText.slice(2, LastMovesText.length)
                     fromSquare = previosMove[0]
                     currentMove = []
+                    buttonpressed = true
                     moveDone = false
+                    alert('You must move one piece at a time')
+                    return true
                 }
             };
             if (moveDone === false) {
@@ -277,6 +302,49 @@ const TwoPlayerUpsideDownChess = () => {
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
         currentLayout = boardCopy
+        currentString = toDict(currentLayout)
+        upadteCurrentString()
+        return true
+    }function move() {
+        let boardCopy = clone(currentLayout)
+        let fromSquare = currentMove[0]
+        let toSquare = currentMove[1]
+        if (currentMove.length === 3) {
+            if (currentMove[2][0][1] === 'Q' || currentMove[2][0][1] === 'B' || currentMove[2][0][1] === 'R' || currentMove[2][0][1] === 'N') {
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = currentMove[2][0]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+            } else {
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+                boardCopy[toTuple(currentMove[2][0])[1]][toTuple(currentMove[2][0])[0]] = 'MT'
+            }
+        } else if (boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1]==='K') {
+            if (fromSquare==='E8'&&toSquare==='G8') {
+                boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('H8')[1]][toTuple('H8')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+            } else if (fromSquare==='E8'&&toSquare==='C8') {
+                boardCopy[toTuple('D8')[1]][toTuple('D8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('A8')[1]][toTuple('A8')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+            } else if (fromSquare==='E1'&&toSquare==='G1') {
+                boardCopy[toTuple('F1')[1]][toTuple('F1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('H1')[1]][toTuple('H1')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+            } else if (fromSquare==='E1'&&toSquare==='C1') {
+                boardCopy[toTuple('D1')[1]][toTuple('D1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+                boardCopy[toTuple('A1')[1]][toTuple('A1')[0]] = 'MT'
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+            }
+        } else {
+            boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+            boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+        };
+        updateCurrentLayout(clone(boardCopy))
         currentString = toDict(currentLayout)
         upadteCurrentString()
         return true

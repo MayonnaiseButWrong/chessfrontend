@@ -634,4 +634,6 @@ function generateMoves(currentLayout, turn, previosMoves) {
     return AllMoves
 }
 
+
+
 export { MoveSuccessful, isCheckmate };

@@ -3,7 +3,7 @@ import { Text, StyleSheet } from 'react-native';
 import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {postData,putData,getData} from './commonInputsAndOutPuts.js'
 
 const startingLayout = [
@@ -53,14 +53,12 @@ var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
 
-console.log(startingLayout[0])
-
 //startingLayout=getData('/DailyChessdata')
 
-let temp = getData('/DailyChessdata')
+//let temp = getData('/DailyChessdata')
 //let temp = postData({startingLayout})
 
-startingLayout = temp['StaringLayoutString']
+//startingLayout = temp['StaringLayoutString']
 
 console.log(startingLayout[0])
 var originalPieces = FindPieces(startingLayout)
@@ -98,6 +96,30 @@ const DailyChess = () => {
         console.log(currentPosx)
     }
 
+    function clone(ins) {
+        let string=ins.toString()
+        let word = ''
+        let letter = ''
+        let out=[]
+        let temp = []
+        for (let i = 0; i < string.length; i++){
+            letter=string[i]
+            if (letter === ','){
+                temp.push(word)
+                word=''
+                if (temp.length>=8) {
+                    out.push(temp)
+                    temp=[]
+                }
+            } else {
+                word+=letter
+            }
+        }
+        temp.push(word)
+        out.push(temp)
+        return out
+    }
+
     const [last_moves_text, setlast_moves_text] = useState("--");
     const changelast_moves_text = (text) => { setlast_moves_text(text); }
 
@@ -107,25 +129,11 @@ const DailyChess = () => {
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
 
-    const temporaryLayout1 = startingLayout
-    const temporaryLayout2 = startingLayout
-
+    const temporaryLayout1 = clone(startingLayout)
     const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
-
-    const [previosLayout,setPreviosLayout] = useState(temporaryLayout2)
-
+    const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
+    
     var currentString = toDict(currentLayout);
-
-    console.log(previosLayout===currentLayout)
-    console.log('when initialising the variables','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
-
-    //function clone(list1) {
-    //    let c = []
-    //    for (let key = 0; key < list1.length; key++) {
-    //        c[key] = list1[key];
-    //    }
-    //    return c
-    //}
     
     //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
     //currentPiece=data['Piece']
@@ -157,7 +165,6 @@ const DailyChess = () => {
         let currentWhitePieces = []
         let temp = []
         let checkmate = false
-        console.log('skdfjbvhfjk', currentMove)
         if (moveDone === true) {
 
             whitePiecesTakenList = []
@@ -208,15 +215,10 @@ const DailyChess = () => {
             LastMovesText = ',' + LastMovesText
 
             turn = (turn === 'W') ? 'B' : 'W';
-            console.log(turn)
             previosMoves.push(currentMove);
             currentMove = [];
             buttonpressed = true
             moveDone = false
-            let temporary = [...currentLayout]
-            setPreviosLayout(temporary)
-
-            console.log(previosMoves)
 
             checkmate = isCheckmate(currentLayout, turn, previosMoves)
             console.log(checkmate)
@@ -230,43 +232,38 @@ const DailyChess = () => {
         let MoveSuccesfulTuple = [];
         fromSquare = String(fromSquare).toUpperCase();
         toSquare = String(toSquare).toUpperCase();
-        //previosMove = currentMove
+        previosMove = currentMove
         currentMove = [fromSquare, toSquare]
-        console.log('currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
         if (currentLayout[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] === turn) {
             if (buttonpressed === false) {
-                //let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
-                //if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
-                //    currentPiece = piece
-                //    moveDone = move()
-                //    currentMove = []
-                //    moveDone = false
-                //    LastMovesText = '--' + LastMovesText
-                //    changelast_moves_text(LastMovesText)
-                //    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
-                //    buttonpressed = true
-                //    return true
-                //} else {
-                //    currentMove = inverseMove
-                //    moveDone = move()
-                //    LastMovesText = '--' + LastMovesText
-                //    changelast_moves_text(LastMovesText)
-                //    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
-                //    fromSquare = previosMove[0]
-                //    currentMove = []
-                //    moveDone = false
-                //}
-                console.log(currentLayout === startingLayout)
-                console.log('before assigning previosLayout','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
-                let temp = [...previosLayout]
-                console.log('temp',temp,'previosLayout',previosLayout)
-                setCurrentLayout(temp)
-                console.log('after assigning previosLayout','currentLayout',currentLayout,'previosLayout',previosLayout,'startingLayout',startingLayout)
+                let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
+                if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
+                    currentPiece = piece
+                    moveDone = move()
+                    currentMove = []
+                    moveDone = false
+                    LastMovesText = '--' + LastMovesText
+                    changelast_moves_text(LastMovesText)
+                    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
+                    buttonpressed = true
+                    return true
+                } else {
+                    console.log('here')
+                    currentMove = inverseMove
+                    moveDone = move()
+                    LastMovesText = '--' + LastMovesText
+                    changelast_moves_text(LastMovesText)
+                    LastMovesText = LastMovesText.slice(2, LastMovesText.length)
+                    fromSquare = previosMove[0]
+                    currentMove = []
+                    buttonpressed = true
+                    moveDone = false
+                    alert('You must move one piece at a time')
+                    return true
+                }
             };
             if (moveDone === false) {
-                console.log('before','previosLayout',previosLayout)
                 MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);
-                console.log('after','previosLayout',previosLayout)
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]
@@ -286,7 +283,7 @@ const DailyChess = () => {
     }
 
     function move() {
-        let boardCopy = [...currentLayout]
+        let boardCopy = clone(currentLayout)
         let fromSquare = currentMove[0]
         let toSquare = currentMove[1]
         if (currentMove.length === 3) {
@@ -324,9 +321,7 @@ const DailyChess = () => {
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
-        let temp = [...boardCopy]
-        console.log('temp',temp,'previosLayout',previosLayout)
-        setCurrentLayout(temp)
+        updateCurrentLayout(clone(boardCopy))
         currentString = toDict(currentLayout)
         upadteCurrentString()
         return true

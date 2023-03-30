@@ -1,6 +1,6 @@
 import './TwoPlayerWeakChess.css'
 import { Text, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
@@ -25,8 +25,6 @@ var startingLayout = [
 var originalPieces = FindPieces(startingLayout)
 const originalBlackPieces = originalPieces[0]
 const originalWhitePieces = originalPieces[1]
-var currentLayout = startingLayout;
-var currentString = toDict(currentLayout);
 var currentMove = [];
 var turn = 'W';
 var previosMoves = [];
@@ -88,6 +86,30 @@ const TwoPlayerWeakChess = () => {
         console.log(currentPosx)
     }
 
+    function clone(ins) {
+        let string=ins.toString()
+        let word = ''
+        let letter = ''
+        let out=[]
+        let temp = []
+        for (let i = 0; i < string.length; i++){
+            letter=string[i]
+            if (letter === ','){
+                temp.push(word)
+                word=''
+                if (temp.length>=8) {
+                    out.push(temp)
+                    temp=[]
+                }
+            } else {
+                word+=letter
+            }
+        }
+        temp.push(word)
+        out.push(temp)
+        return out
+    }
+
     const [last_moves_text, setlast_moves_text] = useState("--");
     const changelast_moves_text = (text) => { setlast_moves_text(text); }
 
@@ -97,7 +119,11 @@ const TwoPlayerWeakChess = () => {
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
 
-
+    const temporaryLayout1 = clone(startingLayout)
+    const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
+    const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
+    
+    var currentString = toDict(currentLayout);
 
     //history.pushState(null, document.title, location.href);  do the same for a relode of the page
     //window.addEventListener('popstate', function (event)
@@ -120,7 +146,6 @@ const TwoPlayerWeakChess = () => {
         let currentWhitePieces = []
         let temp = []
         let checkmate = false
-        console.log('skdfjbvhfjk', currentMove)
         if (moveDone === true) {
 
             whitePiecesTakenList = []
@@ -171,13 +196,10 @@ const TwoPlayerWeakChess = () => {
             LastMovesText = ',' + LastMovesText
 
             turn = (turn === 'W') ? 'B' : 'W';
-            console.log(turn)
             previosMoves.push(currentMove);
             currentMove = [];
             buttonpressed = true
             moveDone = false
-
-            console.log(previosMoves)
 
             checkmate = isCheckmate(currentLayout, turn, previosMoves)
             console.log(checkmate)
@@ -214,11 +236,14 @@ const TwoPlayerWeakChess = () => {
                     LastMovesText = LastMovesText.slice(2, LastMovesText.length)
                     fromSquare = previosMove[0]
                     currentMove = []
+                    buttonpressed = true
                     moveDone = false
+                    alert('You must move one piece at a time')
+                    return true
                 }
             };
             if (moveDone === false) {
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1]
@@ -238,7 +263,7 @@ const TwoPlayerWeakChess = () => {
     }
 
     function move() {
-        let boardCopy = currentLayout
+        let boardCopy = clone(currentLayout)
         let fromSquare = currentMove[0]
         let toSquare = currentMove[1]
         if (currentMove.length === 3) {
@@ -276,7 +301,7 @@ const TwoPlayerWeakChess = () => {
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
-        currentLayout = boardCopy
+        updateCurrentLayout(clone(boardCopy))
         currentString = toDict(currentLayout)
         upadteCurrentString()
         return true
