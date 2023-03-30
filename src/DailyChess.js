@@ -4,7 +4,9 @@ import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useCallback } from "react";
-import {postData,putData,getData} from './commonInputsAndOutPuts.js'
+import { postData, putData, getData } from './commonInputsAndOutPuts.js'
+import { Modal } from 'react-native-web';
+import styled from 'styled-components/native'
 
 const startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -133,6 +135,9 @@ const DailyChess = () => {
     const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
     const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
     
+    const [show, setShow] = useState(false);
+    const renderBackdrop = (props) => <Backdrop {...props} />;
+
     var currentString = toDict(currentLayout);
     
     //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
@@ -159,6 +164,29 @@ const DailyChess = () => {
         currentString = currentString
     }
 
+    const Backdrop = styled("div")`
+        position: fixed;
+        z-index: 1040;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #000;
+        opacity: 0.5;
+            `;
+    const PromotionModal = styled(Modal)`
+        position: fixed;
+        width: 400px;
+        z-index: 1040;
+        top: 50vh;
+        left: 50vw;
+        border: 1px solid #e5e5e5;
+        background-color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+            `;
+
+
     function selectMove() {
         let currentPieces = []
         let currentBlackPieces = []
@@ -166,6 +194,10 @@ const DailyChess = () => {
         let temp = []
         let checkmate = false
         if (moveDone === true) {
+            if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
+                console.log(currentPiece,toTuple(currentMove[1])[1])
+                setShow(true)
+            }
 
             whitePiecesTakenList = []
             blackPiecesTakenList = []
@@ -351,6 +383,19 @@ const DailyChess = () => {
                         getPositionObject={currentPos}
                     />
                 </div>
+                <PromotionModal
+                show={show}
+                renderBackdrop={renderBackdrop}
+                aria-labelledby='modal-label'
+                >
+                    <div>
+                        <h4>sample text</h4>
+                        <p>
+                        sample-text;sample-text;sample-text;sample-text;sample-text;
+                        sample-text;sample-text;sample-text;sample-text;sample-text
+                        </p>
+                    </div>
+                </PromotionModal>
 
                 <div className='details'>
                     <span className='selet_move_button'>
