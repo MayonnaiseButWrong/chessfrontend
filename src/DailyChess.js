@@ -8,6 +8,9 @@ import { postData, putData, getData } from './commonInputsAndOutPuts.js'
 import Modal from 'react-overlays/Modal';
 import styled from 'styled-components/native'
 import { useEffect } from 'react';
+import './extrapages.css';
+import { RiCloseLine } from "react-icons/ri";
+
 
 const startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -69,7 +72,7 @@ const originalBlackPieces = originalPieces[0]
 const originalWhitePieces = originalPieces[1]
 var currentMove = [];
 
-const styles = StyleSheet.create({
+const textStyles = StyleSheet.create({
     last_moves_text: {
         fontFamily: 'Raleway',
         fontSize: 25,
@@ -136,11 +139,10 @@ const DailyChess = () => {
     const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
     const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
     
-    const [show, setShow] = useState(false);
-    const updateShow = useCallback((value) => setShow(value),[show])
-    const renderBackdrop = (props) => <Backdrop {...props} />;
+    const [showpp, setppShow] = useState(false);
+    const updateShow = useCallback((value) => setppShow(value),[showpp])
 
-    useEffect(()=>console.log(show),[show])
+    useEffect(()=>console.log(showpp),[showpp])
 
     var currentString = toDict(currentLayout);
     
@@ -168,29 +170,6 @@ const DailyChess = () => {
         currentString = currentString
     }
 
-    const Backdrop = styled("div")`
-        position: fixed;
-        z-index: 1040;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: #000;
-        opacity: 0.5;
-            `;
-    const PromotionModal = styled(Modal)`
-        position: fixed;
-        width: 400px;
-        z-index: 1040;
-        top: 50vh;
-        left: 50vw;
-        border: 1px solid #e5e5e5;
-        background-color: white;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        padding: 20px;
-            `;
-
-
     function selectMove() {
         let currentPieces = []
         let currentBlackPieces = []
@@ -200,8 +179,8 @@ const DailyChess = () => {
         if (moveDone === true) {
             //if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
             //    console.log(currentPiece,toTuple(currentMove[1])[1])
-            updateShow(true)
-            console.log(show)
+            setppShow(true)
+            console.log(showpp)
             //}
 
             whitePiecesTakenList = []
@@ -363,72 +342,69 @@ const DailyChess = () => {
         upadteCurrentString()
         return true
     }
-
-    return (
-        <div className="ChessFrontEnd">
-            <h1>Daily Chess</h1>
-            <div className="grid-container1">
-                <div className='chessboard'>
-                    <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
-                        id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
-                        position={currentString}
-                        showBoardNotation='true'
-                        snapToCursor='true'
-                        customArrowColor='#eda215'
-                        customBoardStyle={{
-                            borderRadius: '15px',
-                            boxShadow: '0 5px 15px rgb(0, 0, 0, 0.5)'
-                        }}
-                        customDarkSquareStyle={{ backgroundColor: '#1f1f1f' }}
-                        customLightSquareStyle={{ backgroundColor: '#d6d6d6' }}
-                        customDropSquareStyle={{ boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)' }}
-                        customPremoveDarkSquareStyle={{ backgroundColor: '#470a61' }}
-                        customPremoveLightSquareStyle={{ backgroundColor: '#6c4080' }}
-                        onPieceDrop={onDrop}
-                        getPositionObject={currentPos}
-                    />
-                </div>
-
-                <PromotionModal
-                show={show}
-                renderBackdrop={renderBackdrop}
-                aria-labelledby='modal-label'
-                >
-                    <div>
-                        <h4 id = 'modal-label'>sample text</h4>
-                        <p>
-                        sample-text;sample-text;sample-text;sample-text;sample-text;
-                        sample-text;sample-text;sample-text;sample-text;sample-text
-                        </p>
-                    </div>
-                </PromotionModal>
-
-                <div className='details'>
-                    <span className='selet_move_button'>
-                        <button className='type2' onClick={selectMove}>Select Move</button>
-                    </span>
-
-                    <span className='last_moves'>
-                        <h2 className='last_moves_header'>Last Moves</h2>
-                        <Text style={styles.last_moves_text} className='last_moves_text' id='p1'>{last_moves_text}</Text>
-                    </span>
-
-                    <span className='black_pieces_taken'>
-                        <h2 className='black_pieces_taken_header'>Pieces Taken By User</h2>
-                        <Text style={styles.black_pieces_taken_text} className='black_pieces_taken_text' id='black_pieces_taken_text'>{black_pieces_taken_text}</Text>
-                    </span>
-
-                    <span className='white_pieces_taken'>
-                        <h2 className='white_pieces_taken_header'>Pieces Taken By AI</h2>
-                        <Text style={styles.white_pieces_taken_text} className='white_pieces_taken_text' id='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
-                    </span>
-                    <span className='disclaimer'>
-                        <p className='disclaimer_text'>Data about the chess games, such as what moves were made and in what order, are stored so that the AI can learn and get better at chess. No data about the user is stored.</p>
-                    </span>
+    if (showpp===true) {
+        return (
+            <div clasName='pp'>
+                <div className='promotionOptionsGrid'>
+                    <button>Queen</button>
+                    <button>Knight</button>
+                    <button>Bishop</button>
+                    <button>Rook</button>
                 </div>
             </div>
-        </div>
-    );
+        )
+    } else {
+        return (
+            <div className="ChessFrontEnd">
+                <h1>Daily Chess</h1>
+                <div className="grid-container1">
+                    <div className='chessboard'>
+                        <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project
+                            id='board1' //the api is open source an cusomisable, allowing me to make the board look anw function the way I want it too
+                            position={currentString}
+                            showBoardNotation='true'
+                            snapToCursor='true'
+                            customArrowColor='#eda215'
+                            customBoardStyle={{
+                                borderRadius: '15px',
+                                boxShadow: '0 5px 15px rgb(0, 0, 0, 0.5)'
+                            }}
+                            customDarkSquareStyle={{ backgroundColor: '#1f1f1f' }}
+                            customLightSquareStyle={{ backgroundColor: '#d6d6d6' }}
+                            customDropSquareStyle={{ boxShadow: 'inset 0 0 1px 6px rgba(255,255,255,0.75)' }}
+                            customPremoveDarkSquareStyle={{ backgroundColor: '#470a61' }}
+                            customPremoveLightSquareStyle={{ backgroundColor: '#6c4080' }}
+                            onPieceDrop={onDrop}
+                            getPositionObject={currentPos}
+                        />
+                    </div>
+                    <div className='details'>
+                        <span className='selet_move_button'>
+                            <button className='type2' onClick={selectMove}>Select Move</button>
+                        </span>
+
+                        <span className='last_moves'>
+                            <h2 className='last_moves_header'>Last Moves</h2>
+                            <Text style={textStyles.last_moves_text} className='last_moves_text' id='p1'>{last_moves_text}</Text>
+                        </span>
+
+                        <span className='black_pieces_taken'>
+                            <h2 className='black_pieces_taken_header'>Pieces Taken By User</h2>
+                            <Text style={textStyles.black_pieces_taken_text} className='black_pieces_taken_text' id='black_pieces_taken_text'>{black_pieces_taken_text}</Text>
+                        </span>
+
+                        <span className='white_pieces_taken'>
+                            <h2 className='white_pieces_taken_header'>Pieces Taken By AI</h2>
+                            <Text style={textStyles.white_pieces_taken_text} className='white_pieces_taken_text' id='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
+                        </span>
+                        <span className='disclaimer'>
+                            <p className='disclaimer_text'>Data about the chess games, such as what moves were made and in what order, are stored so that the AI can learn and get better at chess. No data about the user is stored.</p>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 };
 
 export { DailyChess };

@@ -1,0 +1,10 @@
+.promotionOptionsGrid {
+    display: grid;
+    position: relative;
+    justify-items: center;
+    width: 98vw;
+    text-align: center;
+    grid-template: 40vw 40vw;
+    gap: 10px;
+    padding: 10px;
+ }
