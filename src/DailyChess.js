@@ -5,8 +5,9 @@ import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useCallback } from "react";
 import { postData, putData, getData } from './commonInputsAndOutPuts.js'
-import { Modal, Backdrop } from 'react-native-web';
+import Modal from 'react-overlays/Modal';
 import styled from 'styled-components/native'
+import { useEffect } from 'react';
 
 const startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
@@ -136,7 +137,10 @@ const DailyChess = () => {
     const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
     
     const [show, setShow] = useState(false);
+    const updateShow = useCallback((value) => setShow(value),[show])
     const renderBackdrop = (props) => <Backdrop {...props} />;
+
+    useEffect(()=>console.log(show),[show])
 
     var currentString = toDict(currentLayout);
     
@@ -196,8 +200,8 @@ const DailyChess = () => {
         if (moveDone === true) {
             //if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
             //    console.log(currentPiece,toTuple(currentMove[1])[1])
-                setShow(true)
-                console.log(show)
+            updateShow(true)
+            console.log(show)
             //}
 
             whitePiecesTakenList = []
@@ -254,7 +258,7 @@ const DailyChess = () => {
             moveDone = false
 
             checkmate = isCheckmate(currentLayout, turn, previosMoves)
-            console.log(checkmate)
+            console.log('checkmate is',checkmate)
             if (checkmate === true) {
                 console.log('checkamte')
             }
@@ -384,13 +388,14 @@ const DailyChess = () => {
                         getPositionObject={currentPos}
                     />
                 </div>
+
                 <PromotionModal
                 show={show}
                 renderBackdrop={renderBackdrop}
                 aria-labelledby='modal-label'
                 >
                     <div>
-                        <h4>sample text</h4>
+                        <h4 id = 'modal-label'>sample text</h4>
                         <p>
                         sample-text;sample-text;sample-text;sample-text;sample-text;
                         sample-text;sample-text;sample-text;sample-text;sample-text
