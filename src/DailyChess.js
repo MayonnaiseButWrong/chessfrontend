@@ -47,6 +47,7 @@ function FindPieces(currentLayout) {
 }
 
 var turn = 'W';
+var donePromotion = true
 var previosMoves = [];
 var previosMove = []
 var LastMovesText = ''
@@ -140,7 +141,32 @@ const DailyChess = () => {
     const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
     
     const [showpp, setppShow] = useState(false);
-    const updateShow = useCallback((value) => setppShow(value),[showpp])
+    const [promtedPiece, setPromotedPiece] = useState('')
+    const [promotedPosition, setPromotedPosition] = useState([])
+    useEffect(() => {
+        let boardLayout = currentLayout
+        if (promotedPosition.length>0) {
+            boardLayout[promotedPosition[1]][promotedPosition[0]] = turn + promtedPiece
+        }
+    }, [promtedPiece])
+    
+    function changePieceQ() {
+        setPromotedPiece('Q')
+        donePromotion=true
+    }
+    function changePieceB() {
+        setPromotedPiece('B')
+        donePromotion=true
+
+    }
+    function changePieceR() {
+        setPromotedPiece('R')
+        donePromotion=true
+    }
+    function changePieceN() {
+        setPromotedPiece('N')
+        donePromotion=true
+    }
 
     useEffect(()=>console.log(showpp),[showpp])
 
@@ -165,82 +191,87 @@ const DailyChess = () => {
     //});
     // aler('alert the user bish lmao')
 
+    function updateScreen () {
+        let currentPieces = []
+        let currentBlackPieces = []
+        let currentWhitePieces = []
+        let temp = []
+        let checkmate = false
+
+        whitePiecesTakenList = []
+        blackPiecesTakenList = []
+        currentPieces = FindPieces(currentLayout)
+        currentBlackPieces = currentPieces[0]
+        currentWhitePieces = currentPieces[1]
+
+        if (currentBlackPieces['P'] < originalBlackPieces['P']) { blackPiecesTakenList.push('WP') }
+        if (currentBlackPieces['Q'] < originalBlackPieces['Q']) { blackPiecesTakenList.push('WQ') }
+        if (currentBlackPieces['K'] < originalBlackPieces['K']) { blackPiecesTakenList.push('WK') }
+        if (currentBlackPieces['R'] < originalBlackPieces['R']) { blackPiecesTakenList.push('WR') }
+        if (currentBlackPieces['B'] < originalBlackPieces['B']) { blackPiecesTakenList.push('WB') }
+        if (currentBlackPieces['N'] < originalBlackPieces['N']) { blackPiecesTakenList.push('WN') }
+
+        if (currentWhitePieces['P'] < originalWhitePieces['P']) { whitePiecesTakenList.push('BP') }
+        if (currentWhitePieces['Q'] < originalWhitePieces['Q']) { whitePiecesTakenList.push('BQ') }
+        if (currentWhitePieces['K'] < originalWhitePieces['K']) { whitePiecesTakenList.push('BK') }
+        if (currentWhitePieces['R'] < originalWhitePieces['R']) { whitePiecesTakenList.push('BR') }
+        if (currentWhitePieces['B'] < originalWhitePieces['B']) { whitePiecesTakenList.push('BB') }
+        if (currentWhitePieces['N'] < originalWhitePieces['N']) { whitePiecesTakenList.push('BN') }
+
+        whitePiecesTakenList.sort()
+        blackPiecesTakenList.sort()
+        for (let elements = 0; elements < whitePiecesTakenList.length; elements++) {
+            temp.push(toUnicode(whitePiecesTakenList[elements]))
+        }
+        whitePiecesTakenList = temp
+        temp = []
+        for (let elements = 0; elements < blackPiecesTakenList.length; elements++) {
+            temp.push(toUnicode(blackPiecesTakenList[elements]))
+        }
+        blackPiecesTakenList = temp
+        whitePiecesTakenText = (whitePiecesTakenList.length > 0) ? whitePiecesTakenList.toString() : ' '
+        blackPiecesTakenText = (blackPiecesTakenList.length > 0) ? blackPiecesTakenList.toString() : ' '
+
+        if (LastMovesList === undefined) { LastMovesList = [] }
+        LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase()) + ' > ' + currentMove[1])
+        if (LastMovesList.length > 3) { LastMovesList.shift() }
+        LastMovesList.reverse()
+        LastMovesText = (LastMovesList.length > 0) ? LastMovesList.toString() : ' '
+        LastMovesList.reverse()
+
+        changewhite_pieces_taken_text(whitePiecesTakenText)
+        changeblack_pieces_taken_text(blackPiecesTakenText)
+        changelast_moves_text(LastMovesText)
+
+        LastMovesText = ',' + LastMovesText
+
+        turn = (turn === 'W') ? 'B' : 'W';
+        previosMoves.push(currentMove);
+        currentMove = [];
+        buttonpressed = true
+        moveDone = false
+
+        checkmate = isCheckmate(currentLayout, turn, previosMoves)
+        console.log('checkmate is',checkmate)
+        if (checkmate === true) {
+            console.log('checkamte')
+        }
+    }
 
     function upadteCurrentString() {
         currentString = currentString
     }
 
     function selectMove() {
-        let currentPieces = []
-        let currentBlackPieces = []
-        let currentWhitePieces = []
-        let temp = []
-        let checkmate = false
         if (moveDone === true) {
-            //if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
-            //    console.log(currentPiece,toTuple(currentMove[1])[1])
-            setppShow(true)
-            console.log(showpp)
-            //}
-
-            whitePiecesTakenList = []
-            blackPiecesTakenList = []
-            currentPieces = FindPieces(currentLayout)
-            currentBlackPieces = currentPieces[0]
-            currentWhitePieces = currentPieces[1]
-
-            if (currentBlackPieces['P'] < originalBlackPieces['P']) { blackPiecesTakenList.push('WP') }
-            if (currentBlackPieces['Q'] < originalBlackPieces['Q']) { blackPiecesTakenList.push('WQ') }
-            if (currentBlackPieces['K'] < originalBlackPieces['K']) { blackPiecesTakenList.push('WK') }
-            if (currentBlackPieces['R'] < originalBlackPieces['R']) { blackPiecesTakenList.push('WR') }
-            if (currentBlackPieces['B'] < originalBlackPieces['B']) { blackPiecesTakenList.push('WB') }
-            if (currentBlackPieces['N'] < originalBlackPieces['N']) { blackPiecesTakenList.push('WN') }
-
-            if (currentWhitePieces['P'] < originalWhitePieces['P']) { whitePiecesTakenList.push('BP') }
-            if (currentWhitePieces['Q'] < originalWhitePieces['Q']) { whitePiecesTakenList.push('BQ') }
-            if (currentWhitePieces['K'] < originalWhitePieces['K']) { whitePiecesTakenList.push('BK') }
-            if (currentWhitePieces['R'] < originalWhitePieces['R']) { whitePiecesTakenList.push('BR') }
-            if (currentWhitePieces['B'] < originalWhitePieces['B']) { whitePiecesTakenList.push('BB') }
-            if (currentWhitePieces['N'] < originalWhitePieces['N']) { whitePiecesTakenList.push('BN') }
-
-            whitePiecesTakenList.sort()
-            blackPiecesTakenList.sort()
-            for (let elements = 0; elements < whitePiecesTakenList.length; elements++) {
-                temp.push(toUnicode(whitePiecesTakenList[elements]))
+            
+            if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
+                console.log(currentPiece,toTuple(currentMove[1])[1])
+                setPromotedPosition(currentMove)
+                setppShow(true)
+                donePromotion = false
             }
-            whitePiecesTakenList = temp
-            temp = []
-            for (let elements = 0; elements < blackPiecesTakenList.length; elements++) {
-                temp.push(toUnicode(blackPiecesTakenList[elements]))
-            }
-            blackPiecesTakenList = temp
-            whitePiecesTakenText = (whitePiecesTakenList.length > 0) ? whitePiecesTakenList.toString() : ' '
-            blackPiecesTakenText = (blackPiecesTakenList.length > 0) ? blackPiecesTakenList.toString() : ' '
-
-            if (LastMovesList === undefined) { LastMovesList = [] }
-            LastMovesList.push(toUnicode(currentPiece.toLocaleUpperCase()) + ' > ' + currentMove[1])
-            if (LastMovesList.length > 3) { LastMovesList.shift() }
-            LastMovesList.reverse()
-            LastMovesText = (LastMovesList.length > 0) ? LastMovesList.toString() : ' '
-            LastMovesList.reverse()
-
-            changewhite_pieces_taken_text(whitePiecesTakenText)
-            changeblack_pieces_taken_text(blackPiecesTakenText)
-            changelast_moves_text(LastMovesText)
-
-            LastMovesText = ',' + LastMovesText
-
-            turn = (turn === 'W') ? 'B' : 'W';
-            previosMoves.push(currentMove);
-            currentMove = [];
-            buttonpressed = true
-            moveDone = false
-
-            checkmate = isCheckmate(currentLayout, turn, previosMoves)
-            console.log('checkmate is',checkmate)
-            if (checkmate === true) {
-                console.log('checkamte')
-            }
+            updateScreen()
         }
     };
 
@@ -345,11 +376,14 @@ const DailyChess = () => {
     if (showpp===true) {
         return (
             <div clasName='pp'>
+            <h2 className='header'>Pick a piece to promote your pawn to</h2>
                 <div className='promotionOptionsGrid'>
-                    <button>Queen</button>
-                    <button>Knight</button>
-                    <button>Bishop</button>
-                    <button>Rook</button>
+                    <div className='buffer'></div>
+                    <div className='buffer'></div>
+                    <button className='type3' onClick={changePieceQ}>Queen</button>
+                    <button className='type3' onClick={changePieceN}>Knight</button>
+                    <button className='type3' onClick={changePieceB}>Bishop</button>
+                    <button className='type3' onClick={changePieceR}>Rook</button>
                 </div>
             </div>
         )
