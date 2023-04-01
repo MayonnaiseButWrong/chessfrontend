@@ -20,14 +20,9 @@ def generateOpponentMoves(boardLayout,importantPieces):
                 for direction in vectors:
                     for vector in direction:
                         if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
+                            moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])   
                             if not (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
-                                if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
-                                    moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
-                                    break
-                                else:
-                                    break
-                            else:
-                                moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
+                                break
     return moves
 
 def enPassantMoves(boardLayout,i,j):

@@ -5,11 +5,9 @@ import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState, useCallback } from "react";
 import { postData, putData, getData } from './commonInputsAndOutPuts.js'
-import Modal from 'react-overlays/Modal';
-import styled from 'styled-components/native'
 import { useEffect } from 'react';
 import './extrapages.css';
-import { RiCloseLine } from "react-icons/ri";
+import { Link } from 'react-router-dom'
 
 
 const startingLayout = [
@@ -46,7 +44,32 @@ function FindPieces(currentLayout) {
     return [blackPieces, whitePieces]
 }
 
+function clone(ins) {
+    let string=ins.toString()
+    let word = ''
+    let letter = ''
+    let out=[]
+    let temp = []
+    for (let i = 0; i < string.length; i++){
+        letter=string[i]
+        if (letter === ','){
+            temp.push(word)
+            word=''
+            if (temp.length>=8) {
+                out.push(temp)
+                temp=[]
+            }
+        } else {
+            word+=letter
+        }
+    }
+    temp.push(word)
+    out.push(temp)
+    return out
+}
+
 var turn = 'W';
+var team = 'The Player'; //change to white
 var donePromotion = true
 var previosMoves = [];
 var previosMove = []
@@ -59,6 +82,10 @@ var blackPiecesTakenList = []
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
+var currentLayout = clone(startingLayout)
+const setCurrentLayout = (layout) => {currentLayout = layout}
+var previosLayout = clone(startingLayout)
+const setPreviosLayout = (layout) => {previosLayout = layout}
 
 //startingLayout=getData('/DailyChessdata')
 
@@ -99,10 +126,6 @@ const textStyles = StyleSheet.create({
 
 const DailyChess = () => {
 
-    function currentPos(currentPosx) {
-        console.log(currentPosx)
-    }
-
     function clone(ins) {
         let string=ins.toString()
         let word = ''
@@ -135,20 +158,25 @@ const DailyChess = () => {
 
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
-
-    const temporaryLayout1 = clone(startingLayout)
-    const [currentLayout,setCurrentLayout] = useState(temporaryLayout1)
-    const updateCurrentLayout = useCallback((layout) => setCurrentLayout(layout),[currentLayout])
     
+    const [checkmate, setCheckmate] = useState(false)
+
     const [showpp, setppShow] = useState(false);
-    const [promtedPiece, setPromotedPiece] = useState('')
+    const [promotedPiece, setPromotedPiece] = useState('')
     const [promotedPosition, setPromotedPosition] = useState([])
+
     useEffect(() => {
-        let boardLayout = currentLayout
+        let boardLayout = clone(currentLayout)
+        setppShow(false)
         if (promotedPosition.length>0) {
-            boardLayout[promotedPosition[1]][promotedPosition[0]] = turn + promtedPiece
+            boardLayout[promotedPosition[1]][promotedPosition[0]] = turn + promotedPiece
+            setCurrentLayout(clone(boardLayout))
+            currentMove.push([turn + promotedPiece])
+            setPromotedPiece('')
+            setPromotedPosition([])
+            updateScreen()
         }
-    }, [promtedPiece])
+    }, [promotedPiece])
     
     function changePieceQ() {
         setPromotedPiece('Q')
@@ -167,8 +195,6 @@ const DailyChess = () => {
         setPromotedPiece('N')
         donePromotion=true
     }
-
-    useEffect(()=>console.log(showpp),[showpp])
 
     var currentString = toDict(currentLayout);
     
@@ -246,32 +272,30 @@ const DailyChess = () => {
         LastMovesText = ',' + LastMovesText
 
         turn = (turn === 'W') ? 'B' : 'W';
+        team = (team === 'The Player') ? 'The AI' : 'The Player' //change to black/white
         previosMoves.push(currentMove);
         currentMove = [];
         buttonpressed = true
         moveDone = false
 
-        checkmate = isCheckmate(currentLayout, turn, previosMoves)
-        console.log('checkmate is',checkmate)
-        if (checkmate === true) {
-            console.log('checkamte')
-        }
-    }
+        setPreviosLayout(clone(currentLayout))
 
-    function upadteCurrentString() {
-        currentString = currentString
+        setCheckmate(isCheckmate(currentLayout, turn, previosMoves))
+        console.log('checkmate is',checkmate)
     }
 
     function selectMove() {
         if (moveDone === true) {
-            
             if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {
-                console.log(currentPiece,toTuple(currentMove[1])[1])
-                setPromotedPosition(currentMove)
+                setPromotedPosition(toTuple(currentMove[1]))
                 setppShow(true)
                 donePromotion = false
+            } //add for black pieces
+            if (donePromotion === true) {
+                updateScreen()
             }
-            updateScreen()
+        } else {
+            alert('Please select a piece to move first ')
         }
     };
 
@@ -286,18 +310,17 @@ const DailyChess = () => {
                 let inverseMove = [previosMove[1], previosMove[0]]     //must depend on the button being pressed
                 if (currentLayout[toTuple(inverseMove[0])[1]][toTuple(inverseMove[0])[0]][0] === turn && fromSquare === inverseMove[0] && toSquare === inverseMove[1]) {
                     currentPiece = piece
-                    moveDone = move()
+                    setCurrentLayout(clone(previosLayout))
+                    currentString = toDict(currentLayout)
                     currentMove = []
                     moveDone = false
                     LastMovesText = '--' + LastMovesText
                     changelast_moves_text(LastMovesText)
                     LastMovesText = LastMovesText.slice(2, LastMovesText.length)
                     buttonpressed = true
-                    return true
                 } else {
-                    console.log('here')
-                    currentMove = inverseMove
-                    moveDone = move()
+                    setCurrentLayout(clone(previosLayout))
+                    currentString = toDict(currentLayout)
                     LastMovesText = '--' + LastMovesText
                     changelast_moves_text(LastMovesText)
                     LastMovesText = LastMovesText.slice(2, LastMovesText.length)
@@ -306,7 +329,6 @@ const DailyChess = () => {
                     buttonpressed = true
                     moveDone = false
                     alert('You must move one piece at a time')
-                    return true
                 }
             };
             if (moveDone === false) {
@@ -319,7 +341,6 @@ const DailyChess = () => {
                     changelast_moves_text(LastMovesText)
                     LastMovesText = LastMovesText.slice(1, LastMovesText.length)
                     buttonpressed = false
-                    return true
                 } else {
                     currentMove = []
                     moveDone = false
@@ -363,20 +384,24 @@ const DailyChess = () => {
                 boardCopy[toTuple('A1')[1]][toTuple('A1')[0]] = 'MT'
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-            }
+            } else {
+                boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
+                boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
+            };
         } else {
             boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
             boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
         };
-        updateCurrentLayout(clone(boardCopy))
+        setCurrentLayout(clone(boardCopy))
         currentString = toDict(currentLayout)
-        upadteCurrentString()
         return true
     }
+
+
     if (showpp===true) {
         return (
-            <div clasName='pp'>
-            <h2 className='header'>Pick a piece to promote your pawn to</h2>
+            <div className='pp'>
+            <h2 className='ppheader'>Pick a piece to promote your pawn to</h2>
                 <div className='promotionOptionsGrid'>
                     <div className='buffer'></div>
                     <div className='buffer'></div>
@@ -387,6 +412,16 @@ const DailyChess = () => {
                 </div>
             </div>
         )
+    
+    } else if (checkmate===true) {
+        return (
+            <div className='checkmateScreen'>
+                <h2 className='CheckMateHeader'>¡¡ {team} Wins !!</h2>
+                <div className='return'><Link to="*"> <button className='returnButton'>Return Back To Options Page</button></Link></div>
+                <div className='explanation'><p className='disclaimer_text'>Press the button to return back to the Options Page or Press Anywhere To return to the Chess screen</p></div>
+            </div>
+        )
+
     } else {
         return (
             <div className="ChessFrontEnd">
@@ -409,7 +444,6 @@ const DailyChess = () => {
                             customPremoveDarkSquareStyle={{ backgroundColor: '#470a61' }}
                             customPremoveLightSquareStyle={{ backgroundColor: '#6c4080' }}
                             onPieceDrop={onDrop}
-                            getPositionObject={currentPos}
                         />
                     </div>
                     <div className='details'>

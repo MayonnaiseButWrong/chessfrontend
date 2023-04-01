@@ -94,7 +94,7 @@ function checkPawnSpecialMove(currentLayout, turn, previosMovesList) {
         for (let i = 0; i < 8; i++) {
             if ((currentLayout[1][i]) === 'BP') {
                 if (currentLayout[2][i] === 'MT') {
-                    if (currentLayout[3][i][0] === 'W' || currentLayout[3][i] === 'MT') {
+                    if (currentLayout[3][i] === 'MT') {
                         moves.push([toCoOrdinates([i, 1]), toCoOrdinates([i, 3])]);
                     };
                 };
@@ -105,23 +105,22 @@ function checkPawnSpecialMove(currentLayout, turn, previosMovesList) {
         for (let i = 0; i < 8; i++) {
             if ((currentLayout[6][i]) === 'WP') {
                 if (currentLayout[5][i] === 'MT') {
-                    if (currentLayout[4][i][0] === 'B' || currentLayout[4][i] === 'MT') {
+                    if (currentLayout[4][i] === 'MT') {
                         moves.push([toCoOrdinates([i, 6]), toCoOrdinates([i, 4])]);
                     };
                 };
             };
         };
     };
-    pawnNormalMoves = pawnNormal(currentLayout, turn)
+    
     enPassantMoves = enPassant(currentLayout, turn, previosMovesList)
-    promotionMoves = Promotion(currentLayout, turn)
-    moves = moves.concat(pawnNormalMoves)
     moves = moves.concat(enPassantMoves)
-    moves = moves.concat(promotionMoves)
+    pawnNormalMoves = pawnNormal(currentLayout, turn, false)
+    moves = moves.concat(pawnNormalMoves)
     return moves
 };
 
-function pawnNormal(currentLayout, turn) {
+function pawnNormal(currentLayout, turn, isOpponentMoves) {
     let moves = []
     let currentPiece = ''
     for (let j = 0; j < 8; j++) {
@@ -138,6 +137,11 @@ function pawnNormal(currentLayout, turn) {
                     if (currentLayout[j - 1][i] === 'MT') {
                         moves.push([toCoOrdinates([i, j]), toCoOrdinates([i, j - 1])]);
                     }
+                    if (isOpponentMoves==true) {
+                        moves.push([toCoOrdinates([i, j]), toCoOrdinates([i + 1, j - 1])]);
+                        moves.push([toCoOrdinates([i, j]), toCoOrdinates([i - 1, j - 1])]);
+                        moves.push([toCoOrdinates([i, j]), toCoOrdinates([i, j - 1])]);
+                    }
                 }
                 if (turn === 'B' && turn === currentPiece[0]) {
                     if (i < 7 && currentLayout[j + 1][i + 1][0] === 'W') {
@@ -147,6 +151,11 @@ function pawnNormal(currentLayout, turn) {
                         moves.push([toCoOrdinates([i, j]), toCoOrdinates([i - 1, j + 1])]);
                     };
                     if (currentLayout[j + 1][i] === 'MT') {
+                        moves.push([toCoOrdinates([i, j]), toCoOrdinates([i, j + 1])]);
+                    }
+                    if (isOpponentMoves==true) {
+                        moves.push([toCoOrdinates([i, j]), toCoOrdinates([i + 1, j + 1])]);
+                        moves.push([toCoOrdinates([i, j]), toCoOrdinates([i - 1, j + 1])]);
                         moves.push([toCoOrdinates([i, j]), toCoOrdinates([i, j + 1])]);
                     }
                 };
@@ -166,17 +175,21 @@ function enPassant(currentLayout, turn, previosMovesList) {
             if (currentLayout[3][i] === 'WP') {
                 if (i < 7 && currentLayout[3][i + 1] === 'BP') {
                     startSquare = toCoOrdinates([i, 3]);
-                    positionList = []
-                    positionList.push(toCoOrdinates([i + 1, 3]));
-                    endSquare = toCoOrdinates([i + 1, 2]);
-                    enPassantMoves.push([startSquare, endSquare, positionList])
+                    endSquare = toCoOrdinates([i + 1, 2])
+                    if (previosMovesList.includes([toCoOrdinates([i + 1, 1]), endSquare])){
+                        positionList = []
+                        positionList.push(toCoOrdinates([i + 1, 3]));
+                        enPassantMoves.push([startSquare, endSquare, positionList])
+                    }
                 };
                 if (i > 0 && currentLayout[3][i - 1] === 'BP') {
                     startSquare = toCoOrdinates([i, 3]);
-                    positionList = []
-                    positionList.push(toCoOrdinates([i - 1, 3]));
                     endSquare = toCoOrdinates([i - 1, 2]);
-                    enPassantMoves.push([startSquare, endSquare, positionList])
+                    if (previosMovesList.includes([toCoOrdinates([i - 1, 1]), endSquare])){
+                        positionList = []
+                        positionList.push(toCoOrdinates([i - 1, 3]));
+                        enPassantMoves.push([startSquare, endSquare, positionList])
+                    }
                 };
             };
         };
@@ -184,45 +197,26 @@ function enPassant(currentLayout, turn, previosMovesList) {
             if (currentLayout[4][i] === 'BP') {
                 if (i < 7 && currentLayout[4][i + 1] === 'WP') {
                     startSquare = toCoOrdinates([i, 4]);
-                    positionList = []
-                    positionList.push(toCoOrdinates([i + 1, 4]));
                     endSquare = toCoOrdinates([i + 1, 5]);
-                    enPassantMoves.push([startSquare, endSquare, positionList])
+                    if (previosMovesList.includes([toCoOrdinates([i + 1, 6]), endSquare])){
+                        positionList = []
+                        positionList.push(toCoOrdinates([i + 1, 4]));
+                        enPassantMoves.push([startSquare, endSquare, positionList])
+                    }
                 };
                 if (i > 0 && currentLayout[4][i - 1] === 'WP') {
                     startSquare = toCoOrdinates([i, 4]);
-                    positionList = []
-                    positionList.push(toCoOrdinates([i - 1, 4]));
                     endSquare = toCoOrdinates([i - 1, 5]);
-                    enPassantMoves.push([startSquare, endSquare, positionList])
+                    if (previosMovesList.includes([toCoOrdinates([i - 1, 6]), endSquare])) {
+                        positionList = []
+                        positionList.push(toCoOrdinates([i - 1, 4]));
+                        enPassantMoves.push([startSquare, endSquare, positionList])
+                    }
                 };//penis
             };
         };
     };
     return enPassantMoves
-};
-
-function Promotion(currentLayout, turn) {
-    let promotionMoves = [];
-    for (let i = 0; i < 8; i++) {
-        if (turn === 'W') {
-            if (currentLayout[1][i] === 'WP') {
-                promotionMoves.push([toCoOrdinates([i, 1]), toCoOrdinates([i, 0]), ['WQ']])
-                promotionMoves.push([toCoOrdinates([i, 1]), toCoOrdinates([i, 0]), ['WB']])
-                promotionMoves.push([toCoOrdinates([i, 1]), toCoOrdinates([i, 0]), ['WR']])
-                promotionMoves.push([toCoOrdinates([i, 1]), toCoOrdinates([i, 0]), ['WK']])
-            };
-        };
-        if (turn === 'B') {
-            if (currentLayout[6][i] === 'BP') {
-                promotionMoves.push([toCoOrdinates([i, 6]), toCoOrdinates([i, 7]), ['BQ']])
-                promotionMoves.push([toCoOrdinates([i, 6]), toCoOrdinates([i, 7]), ['BB']])
-                promotionMoves.push([toCoOrdinates([i, 6]), toCoOrdinates([i, 7]), ['BR']])
-                promotionMoves.push([toCoOrdinates([i, 6]), toCoOrdinates([i, 7]), ['BK']])
-            };
-        };
-    };
-    return promotionMoves
 };
 
 function opponentKingMoves(KingPosition) {
@@ -266,7 +260,7 @@ function kingMoves(KingPosition, opponentMoves, boardLayout) {
     return moves
 }
 
-function checkVectors(currentLayout, turn, KingPosition) {
+function checkVectors(currentLayout, turn, KingPosition,isOpponentMoves) {
     let Qmoves = generateQMoves();
     let Bmoves = generateBMoves();
     let Rmoves = generateRMoves();
@@ -303,6 +297,9 @@ function checkVectors(currentLayout, turn, KingPosition) {
                                             } else if (currentLayout[j + vector[1]][i + vector[0]] === 'MT') {
                                                 moves.push([toCoOrdinates([i, j]), toCoOrdinates([i + vector[0], j + vector[1]])]);
                                             } else {
+                                                if (isOpponentMoves===true) {
+                                                    moves.push([toCoOrdinates([i, j]), toCoOrdinates([i + vector[0], j + vector[1]])]);
+                                                }
                                                 break;
                                             };
                                         };
@@ -548,8 +545,8 @@ function generateOpponenMoves(currentLayout, turn) {
     let kMoves = []
     let KingPosition = []
     KingPosition = findKing(currentLayout, turn)
-    opponentMoves = checkVectors(currentLayout, turn, KingPosition)
-    PawnMoves = pawnNormal(currentLayout, turn)
+    opponentMoves = checkVectors(currentLayout, turn, KingPosition, true)
+    PawnMoves = pawnNormal(currentLayout, turn, true)
     opponentMoves = opponentMoves.concat(PawnMoves);
     kMoves = opponentKingMoves(KingPosition)
     opponentMoves = opponentMoves.concat(kMoves)
@@ -569,7 +566,7 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPo
     let castlingMoves = []
     opponentMoves = generateOpponenMoves(currentLayout, turn)
     KingPosition = findKing(currentLayout, turn);
-    moves = checkVectors(currentLayout, turn, KingPosition);
+    moves = checkVectors(currentLayout, turn, KingPosition, false);
     PawnSpecialMoves = checkPawnSpecialMove(currentLayout, turn, previosMovesList);
     moves = moves.concat(PawnSpecialMoves);
     kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
@@ -588,25 +585,18 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPo
         Line = findLine(KingPosition, check['piece'], check['position'])
         for (let Move = 0; Move < moves.length; Move++) {
             position = moves[Move][1]
-            console.log('here')
-            console.log(currentLayout[toTuple(moves[Move][0])[1]][toTuple(moves[Move][0])[0]])
             if (currentLayout[toTuple(moves[Move][0])[1]][toTuple(moves[Move][0])[0]][1]==='K') {
-                console.log('hereeeeeeeeeeeeeeeeeee')
                 kMoves = kingMoves(KingPosition, opponentMoves, currentLayout)
-                console.log(kMoves,'kmoves')
                 if (!(Line.includes(moves[Move][1]))) {
-                    console.log(moves[Move],currentLayout[toTuple(moves[Move][1])[1]][toTuple(moves[Move][1])[0]])
                     CheckMoves = CheckMoves.concat(kMoves)
                 }
             } else if (Line.includes(position) === true) {
-                console.log(moves[Move])
                 CheckMoves.push(moves[Move])
             };
         };
         for (let Move = 0; Move < CheckMoves.length; Move++) {
             if (CheckMoves === undefined) { CheckMoves.splice(Move, 1) }
         }
-        console.log(CheckMoves)
         return CheckMoves
     };
 };
@@ -623,6 +613,7 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves,
 
 function isCheckmate(currentLayout, turn, previosMoves) {
     let moves = generateMoves(currentLayout, turn, previosMoves);
+    console.log(moves)
     if (moves.length < 1) {
         return true
     }
