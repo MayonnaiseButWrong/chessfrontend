@@ -23,10 +23,6 @@ const startingLayout = [
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
-//add checkamte
-//fix king movement
-//fix moving a piece on the board in general
-
 function FindPieces(currentLayout) {
     let blackPieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
     let whitePieces = { 'P': 0, 'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0 }
@@ -68,6 +64,7 @@ function clone(ins) {
     return out
 }
 
+var unloading = false
 var turn = 'W';
 var team = 'The Player'; //change to white
 var donePromotion = true
@@ -161,6 +158,10 @@ const DailyChess = () => {
     
     const [checkmate, setCheckmate] = useState(false)
 
+    function unCheckMate() {
+        setCheckmate(false)
+    }
+
     const [showpp, setppShow] = useState(false);
     const [promotedPiece, setPromotedPiece] = useState('')
     const [promotedPosition, setPromotedPosition] = useState([])
@@ -202,20 +203,6 @@ const DailyChess = () => {
     //currentPiece=data['Piece']
     //currentMove=data['Coordinates']
     //currentLayout=data['NextLayout']
-
-    //putData({ StartingLayout: startingLayout, listofmoves: previosMoves })
-
-    //history.pushState(null, document.title, location.href);  do the same for a relode of the page
-    //window.addEventListener('popstate', function (event)
-    //{
-    //    const leavePage = confirm("you want to go ahead ?");
-    //    if (leavePage) {
-    //    history.back(); 
-    //    } else {
-    //        history.pushState(null, document.title, location.href);
-    //    }  
-    //});
-    // aler('alert the user bish lmao')
 
     function updateScreen () {
         let currentPieces = []
@@ -414,8 +401,9 @@ const DailyChess = () => {
         )
     
     } else if (checkmate===true) {
+        putData({ StartingLayout: startingLayout, listofmoves: previosMoves })
         return (
-            <div className='checkmateScreen'>
+            <div className='checkmateScreen' onClick={unCheckMate}>
                 <h2 className='CheckMateHeader'>¡¡ {team} Wins !!</h2>
                 <div className='return'><Link to="*"> <button className='returnButton'>Return Back To Options Page</button></Link></div>
                 <div className='explanation'><p className='disclaimer_text'>Press the button to return back to the Options Page or Press Anywhere To return to the Chess screen</p></div>

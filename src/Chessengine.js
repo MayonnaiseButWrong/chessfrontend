@@ -112,7 +112,7 @@ function checkPawnSpecialMove(currentLayout, turn, previosMovesList) {
             };
         };
     };
-    
+
     enPassantMoves = enPassant(currentLayout, turn, previosMovesList)
     moves = moves.concat(enPassantMoves)
     pawnNormalMoves = pawnNormal(currentLayout, turn, false)
@@ -212,7 +212,7 @@ function enPassant(currentLayout, turn, previosMovesList) {
                         positionList.push(toCoOrdinates([i - 1, 4]));
                         enPassantMoves.push([startSquare, endSquare, positionList])
                     }
-                };//penis
+                };
             };
         };
     };

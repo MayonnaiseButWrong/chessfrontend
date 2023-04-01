@@ -2,8 +2,7 @@ from generateAMoveToReturnToThePlayer import generateAMoveToReturnToThePlayer
 from updateDatabase import updateDatabase
 from translations import *
 from flask import Flask, jsonify, request
-import threading as t
-from multiprocessing import Pool
+import psutil
 from trainNeuralNetwork import*
 import sys
 
@@ -15,10 +14,8 @@ class Training:
     
     def enterTrainingData(self,layout,movesList):
         self.trainingdata.append((layout,movesList))
-        if t.active_count()<5:
-            with Pool() as pool:
-                pool.starmap(trainNeuralNetwork,self.trainingdata)
-                pool.terminate()
+        if psutil.cpu_percent(4)<50:
+            map(trainNeuralNetwork,self.trainingdata)
         self.trainingdata=[]
         
 training=Training()
