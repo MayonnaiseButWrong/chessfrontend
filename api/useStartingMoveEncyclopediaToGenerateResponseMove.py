@@ -6,6 +6,7 @@ import re
 import chess
 import chess.pgn
 from io import StringIO
+import sys
 
 ChessDb = sqlite3.connect('api\ChessData')
 cursor = ChessDb.cursor()
@@ -13,19 +14,21 @@ cursor = ChessDb.cursor()
 try:
     cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
     res=cursor.fetchall()
-    if len(res)<=0:
-        raise ValueError('No Data')
-    print(len(res))
+    #if len(res)<=0:
+    raise ValueError('No Data')
 except:
     cursor.execute('DROP TABLE StartingMoves')
-    cursor.execute('CREATE TABLE StartingMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))')
+    cursor.execute('CREATE TABLE StartingMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating INTAGER, TimesUsed INTAGER, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))')
     
     
     
     #*********************************************************************************************************************************************************************************************************************#
-    fd=open('api\scid.txt','r')
-    board=chess.Board()
+    fd=open('api\scid.eco','r')
+    count=0
     while True:
+        sys.stdout.write('\r'+str(count))
+        count+=1
+        board=chess.Board()
         line=fd.readline()
         if not line:break
         line = line[:-1]
@@ -76,11 +79,13 @@ except:
                     move=tosquare+fromsquare+currentLayout[toTuple(tosquare)[1]][toTuple(tosquare)[0]]
                 else:
                     move=tosquare+fromsquare
-
-                cursor.execute('INSERT INTO StartingMoves VALUES('+previosxenonnumber+','+currentxenonnumber+','+piece+','+move+')')
+                cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '"+previosxenonnumber+"' AND BestMovesXenonNumber = '"+currentxenonnumber+"'")
+                if len(cursor.fetchall())<=0:
+                    params=(previosxenonnumber,currentxenonnumber,piece,move,0,0)
+                    cursor.execute('INSERT INTO StartingMoves VALUES(?,?,?,?,?,?)',params)
                 
 cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
-print(cursor.fetchall())
+print(cursor.fetchall()[0])
 
 def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout):
     print('rwbgmomk')
