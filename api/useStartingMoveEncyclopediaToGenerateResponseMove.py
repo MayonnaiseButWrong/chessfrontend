@@ -14,8 +14,8 @@ cursor = ChessDb.cursor()
 try:
     cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
     res=cursor.fetchall()
-    #if len(res)<=0:
-    raise ValueError('No Data')
+    if len(res)<=0:
+        raise ValueError('No Data')
 except:
     cursor.execute('DROP TABLE StartingMoves')
     cursor.execute('CREATE TABLE StartingMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating INTAGER, TimesUsed INTAGER, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))')
@@ -84,8 +84,6 @@ except:
                     params=(previosxenonnumber,currentxenonnumber,piece,move,0,0)
                     cursor.execute('INSERT INTO StartingMoves VALUES(?,?,?,?,?,?)',params)
                 
-cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
-print(cursor.fetchall()[0])
 
 def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout):
     print('rwbgmomk')
@@ -93,7 +91,7 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
     boardLayout=createBoardLayout(StartingLayout, listOfMoves)
     if StartingLayout == defaultLayout:
         boardLayout=createBoardLayout(StartingLayout, listOfMoves)
-        cursor.execute('SELECT BestMoveXenonNumber,Move,Piece FROM StartingMoves WHERE XenonNumber = ',to_xenonnumber(boardLayout),' ORDER BY Rating')
+        cursor.execute('SELECT BestMoveXenonNumber,Move,Piece,TimesUsed FROM StartingMoves WHERE XenonNumber = "'+to_xenonnumber(boardLayout)+'" ORDER BY Rating AND TimesUsed')
         result = cursor.fetchall()
         if len(result)>=0:
             move=to_gamelist(result[0][0])
@@ -101,6 +99,7 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
             coordinates=[c[0:1],c[2:3]]
             if len(c)>4:
                 coordinates.append(c[4:5])
+            cursor.execute('UPDATE StartingMoves SET TimesUsed = '+str(result[0][3]+1)+' WHERE  XenonNumber = "'+to_xenonnumber(boardLayout)+'" AND BestMoveXenonNumber = "'+result[0][0]+'"')
             return move, coordinates, result[0][2]
         else:
             return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)

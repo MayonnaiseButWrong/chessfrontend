@@ -103,7 +103,7 @@ def comparingProbabilities(boardLayout,depth):
                 prevmove=bmove
                     
 def trainNeuralNetwork(StartingLayout,listOfMoves):
-    for count in range(listOfMoves):
+    for count in range(len(listOfMoves)):
         if count>0:
             move=createBoardLayout(listOfMoves[count], move)
         else:
