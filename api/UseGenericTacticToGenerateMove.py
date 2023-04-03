@@ -6,27 +6,15 @@ from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from createBoardLayout import createBoardLayout
 from translations import *
 from concurrent.futures import ThreadPoolExecutor
-#import mysql.connector
+import sqlite3
 
-#ChessDb = mysql.connector.connect(
-#  host="localhost",
-#  user="ChessIsImportant",
-#  password="ItShouldBeProtected"
-#)
-#
-#cursor = ChessDb.cursor()
-#
-#try:
-#    cursor.execute("SHOW DATABASES")
-#except:
-#    cursor.execute('CREATE DATABASE ChessData') 
-#    cursor.execute('CREAT TABLE BestMoves (FEN VARCHAR(80), BestMovesFEN VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), PRIMARY KEY(FEN,BestMovesFEN))')
-#else:
-#    try:
-#        cursor.execute("SELECT * FROM BestMoves WHERE FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'")
-#    except:
-#        cursor.execute('CREAT TABLE BestMoves (FEN VARCHAR(80), BestMovesFEN VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(FEN,BestMovesFEN))')
-    
+ChessDb = sqlite3.connect('api\ChessData')
+cursor = ChessDb.cursor()
+
+try:
+    cursor.execute("SELECT * FROM BestMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
+except:
+    cursor.execute('CREATE TABLE BestMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))')
 
 pool = ThreadPoolExecutor(6)
 
@@ -71,11 +59,16 @@ def enPassantAllowed(previosMovesList,i):
     return False
 
 def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
-    #cursor.execute('SELECT BestMoveFEN,Piece,Move FROM BestMoves WHERE FEN = ',toFEN(boardLayout),' ORDER BY Rating')
-    #result = cursor.fetchall()
-    #if len(result)>=0:
-    #    toBoardLayout(resutl[0][0])
-    #else
+    cursor.execute('SELECT BestMoveXenonNumber,Move,Piece FROM BestMoves WHERE XenonNumber = ',to_xenonnumber(boardLayout),' ORDER BY Rating')
+    result = cursor.fetchall()
+    if len(result)>=0:
+        move=to_gamelist(result[0][0])
+        c=result[0][1]
+        coordinates=[c[0:1],c[2:3]]
+        if len(c)>4:
+            coordinates.append(c[4:5])
+        return move, coordinates, result[0][2]
+    else:
         return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
@@ -99,7 +92,6 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
         p,q,haha=rateMoveBasedOnWinProbability(move,0,0)
         pValues.append(p*100000/q)
         num+=haha
-    print(num)
     moves=bubbleSort(moves,pValues)
     flag=True
     count=0
