@@ -1,17 +1,17 @@
-from concurrent.futures import ThreadPoolExecutor
 from createBoardLayout import createBoardLayout
 from stockfish import Stockfish
 from translations import *
-#from ratingBasedOnNeuralNetwork import NNUE
+from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from findImportantPieces import findImportantPieces
 from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
+from updateDatabase import updateDatabase
 from NeuralNetwork4 import*
 import time
 import sys
+
 #finding a way to constantly generate a dataset was out of the scope of this project, so i am just assuming that whatever stockish says is the best possible move and using that to train my own NNUE
 stockfish=Stockfish('api\stockfish.exe')
 NNUE=NeuralNetwork([4*64,64,10])
-pool=ThreadPoolExecutor(100)
 maxDepth=4
 
 def tobinary(ins):
@@ -94,9 +94,7 @@ def comparingProbabilities(boardLayout,depth):
                     eval=stockfish.get_evaluation()
                     print(eval)
                     eval=format(eval['value'])
-                    pool.submit(NNUE.train,[bmove,eval])
-                    #NNUE.train([bmove,eval])
-                    #update database here
+                    NNUE.train([bmove,eval])
                     if depth<maxDepth:
                         depth+=1
                         comparingProbabilities(bmove, depth)
@@ -109,7 +107,20 @@ def trainNeuralNetwork(StartingLayout,listOfMoves):
         else:
             move=createBoardLayout(listOfMoves[count], StartingLayout)
         comparingProbabilities(move, 0)
-
+    count,previosMove=0,[]
+    for count in range(len(listOfMoves)):
+        if count>0:
+            move=createBoardLayout(listOfMoves[count], move)
+            count=0
+            for j in range(8):
+                for i in range(8):
+                    if not move[j][i]=='MT':
+                        count+=1
+            updateDatabase(to_xenonnumber(previosMove),to_xenonnumber(move),rateMoveBasedOnWinProbability(move, 0),count,previosMove[toCoOrdinates(listOfMoves[count][0])[1]][toCoOrdinates(listOfMoves[count][0])[0]],listOfMoves[count])
+            previosMove=move
+        else:
+            previosMove=createBoardLayout(listOfMoves[count], StartingLayout)
+    
 if __name__=="__main__":
     defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
     #isvalid=stockfish.is_fen_valid(toFEN(defaultLayout) + ' b - - 0 1')

@@ -3,13 +3,11 @@ from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
 from multiprocessing import Pool
 #from ratingBasedOnNeuralNetwork import ratingBasedOnNeuralNetwork
 from NeuralNetwork4 import*
-import time
 NNUE=NeuralNetwork([4*64,64,10])
 
 maxDepth=2
 
-def rateMoveBasedOnWinProbability(boardLayout,depth,num):
-    print('rate move depth',depth)
+def rateMoveBasedOnWinProbability(boardLayout,depth):
     p,q,pchange,qchange=0,0,0,0
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
     wmoves=generateMovesUsingImportantPieces(boardLayout, wImportantPieces1, bImportantPieces1,pieces)
@@ -26,17 +24,13 @@ def rateMoveBasedOnWinProbability(boardLayout,depth,num):
                         p+=1
                     else:
                         depth+=1
-                        pchange,qchange,num=rateMoveBasedOnWinProbability(bmove, depth,num)
+                        pchange,qchange=rateMoveBasedOnWinProbability(bmove, depth)
             else:
                 pool = Pool(6)
-                print('here',len(wmoves),len(bmoves))
-                start_time = time.time()
-                num+=1
                 pchanges=pool.map(NNUE.evaluate,bmoves)
                 for change in pchanges:
                     qchange+=1
                     pchange+=change
-                print(time.time() - start_time,'time taken NNUE')
-    return p+pchange,q+qchange+1,num
+    return p+pchange,q+qchange+1
 
 

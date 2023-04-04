@@ -9,7 +9,7 @@ NNUE=NeuralNetwork([4*64,64,10])
 maxDepth=2
 #pool = Pool(250)
 
-def rateMoveBasedOnWinProbability(boardLayout,depth,num):
+def rateMoveBasedOnWinProbability(boardLayout,depth):
     print('rate move depth',depth)
     p,q,pchange,qchange=0,0,0,0
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
@@ -27,12 +27,11 @@ def rateMoveBasedOnWinProbability(boardLayout,depth,num):
                     p+=1
                 elif depth<maxDepth:
                     depth+=1
-                    pchange,qchange,num=rateMoveBasedOnWinProbability(bmove, depth,num)
+                    pchange,qchange=rateMoveBasedOnWinProbability(bmove, depth)
                 else:
-                    num+=1
                     start_time = time.time()
                     pchange=NNUE.evaluate(bmove)
                     #print(time.time() - start_time,'time taken NNUE')
-    return p+pchange,q+qchange+1,num
+    return p+pchange,q+qchange+1
 
 

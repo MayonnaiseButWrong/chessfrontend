@@ -1,5 +1,4 @@
 from generateAMoveToReturnToThePlayer import generateAMoveToReturnToThePlayer
-from updateDatabase import updateDatabase
 from translations import *
 from flask import Flask, jsonify, request
 import psutil

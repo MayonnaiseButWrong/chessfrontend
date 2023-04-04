@@ -87,11 +87,9 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
                 coordinate.append([toCoOrdinates(o[1][2][0])])
         coordinates.append(coordinate)
         coordinate=[]
-    num=0
     for move in moves:
-        p,q,haha=rateMoveBasedOnWinProbability(move,0,0)
+        p,q=rateMoveBasedOnWinProbability(move,0)
         pValues.append(p*100000/q)
-        num+=haha
     moves=bubbleSort(moves,pValues)
     flag=True
     count=0
