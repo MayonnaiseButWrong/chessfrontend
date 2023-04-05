@@ -102,15 +102,14 @@ def comparingProbabilities(boardLayout,depth):
                     
 def trainNeuralNetwork(StartingLayout,listOfMoves):
     for count in range(len(listOfMoves)):
-        if count>0:
-            move=createBoardLayout(listOfMoves[count], move)
-        else:
-            move=createBoardLayout(listOfMoves[count], StartingLayout)
+        print(count,listOfMoves[0:count+1])
+        move=createBoardLayout(listOfMoves[0:count+1], StartingLayout)
+        print(move)
         comparingProbabilities(move, 0)
     count,previosMove=0,[]
     for count in range(len(listOfMoves)):
         if count>0:
-            move=createBoardLayout(listOfMoves[count], move)
+            move=createBoardLayout(listOfMoves[0:count+1], move)
             count=0
             for j in range(8):
                 for i in range(8):
@@ -119,7 +118,7 @@ def trainNeuralNetwork(StartingLayout,listOfMoves):
             updateDatabase(to_xenonnumber(previosMove),to_xenonnumber(move),rateMoveBasedOnWinProbability(move, 0),count,previosMove[toCoOrdinates(listOfMoves[count][0])[1]][toCoOrdinates(listOfMoves[count][0])[0]],listOfMoves[count])
             previosMove=move
         else:
-            previosMove=createBoardLayout(listOfMoves[count], StartingLayout)
+            previosMove=createBoardLayout(listOfMoves[0:count+1], StartingLayout)
     
 if __name__=="__main__":
     defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]

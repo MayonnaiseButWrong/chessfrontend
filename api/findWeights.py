@@ -55,7 +55,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
     piece=boardLayout[SpecificPiecePosition[1]][SpecificPiecePosition[0]]
     if piece[1]=='P':
         if piece[0]=='W':
-            if SpecificPiecePosition[0]<7 and boardLayout[SpecificPiecePosition[1]-1][SpecificPiecePosition[0]+1][0]=='B':
+            if SpecificPiecePosition[0]<7 and SpecificPiecePosition[1]>1 and boardLayout[SpecificPiecePosition[1]-1][SpecificPiecePosition[0]+1][0]=='B':
                 threatening.append([SpecificPiecePosition[0]+1,SpecificPiecePosition[1]-1])
                 if SpecificPiecePosition[1]==1:
                     temp=boardLayout
@@ -68,7 +68,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
                     temp[0][SpecificPiecePosition[0]]='WN'
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
-            if SpecificPiecePosition[0]>0 and boardLayout[SpecificPiecePosition[1]-1][SpecificPiecePosition[0]-1][0]=='B':
+            if SpecificPiecePosition[0]>0 and SpecificPiecePosition[1]>1 and boardLayout[SpecificPiecePosition[1]-1][SpecificPiecePosition[0]-1][0]=='B':
                 threatening.append([SpecificPiecePosition[0]-1,SpecificPiecePosition[1]-1])
                 if SpecificPiecePosition[1]==1:
                     temp=boardLayout
@@ -93,7 +93,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 temp[0][SpecificPiecePosition[0]]='WN'
                 threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
         else:
-            if SpecificPiecePosition[0]<7 and boardLayout[SpecificPiecePosition[1]+1][SpecificPiecePosition[0]+1][0]=='B':
+            if SpecificPiecePosition[0]<7 and SpecificPiecePosition[1]<6 and boardLayout[SpecificPiecePosition[1]+1][SpecificPiecePosition[0]+1][0]=='B':
                 threatening.append([SpecificPiecePosition[0]+1,SpecificPiecePosition[1]+1])
                 if SpecificPiecePosition[1]==6:
                     temp=boardLayout
@@ -106,7 +106,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
                     temp[7][SpecificPiecePosition[0]]='BN'
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
-            if SpecificPiecePosition[0]>0 and boardLayout[SpecificPiecePosition[1]+1][SpecificPiecePosition[0]-1][0]=='B':
+            if SpecificPiecePosition[0]>0 and SpecificPiecePosition[1]<6 and boardLayout[SpecificPiecePosition[1]+1][SpecificPiecePosition[0]-1][0]=='B':
                 threatening.append([SpecificPiecePosition[0]-1,SpecificPiecePosition[1]+1])
                 if SpecificPiecePosition[1]==6:
                     temp=boardLayout

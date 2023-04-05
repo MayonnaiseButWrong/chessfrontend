@@ -54,42 +54,35 @@ except:
             previosLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
             previosxenonnumber=to_xenonnumber(previosLayout)
             for number,move in enumerate(game.mainline_moves()):
+                m=move.uci()
                 board.push(move)    #moveing the move ont the board
                 fen=board.fen()
                 currentLayout=fromFENtoBoardLayout(fen)
                 currentxenonnumber=to_xenonnumber(currentLayout)
-                tosquare,fromsquare,blank,flag='','','',False
-                for j in range(0,8):    #finsing which piece moved and hoe it moved
-                    for i in range(0,8):
-                        if currentLayout[j][i]!=previosLayout[j][i]:
-                            if currentLayout[j][i]=='MT':
-                                if flag==False:
-                                    fromsquare=toCoOrdinates([i,j])
-                                    piece=previosLayout[j][i]
-                                else:
-                                    blank=toCoOrdinates([i,j])
-                            else:
-                                tosquare=toCoOrdinates([i,j])
-                if flag==True and blank!='':
-                    if piece==currentLayout[toTuple(tosquare)[1]][toTuple(tosquare)[0]]:
-                        move=fromsquare+tosquare+blank
-                    else:
-                        piece=previosLayout[toTuple(blank)[1]][toTuple(blank)[0]]
-                        move=blank+tosquare+fromsquare
-                elif piece!=currentLayout[toTuple(tosquare)[1]][toTuple(tosquare)[0]]:
-                    move=tosquare+fromsquare+currentLayout[toTuple(tosquare)[1]][toTuple(tosquare)[0]]
-                else:
-                    move=tosquare+fromsquare
+                move=m[0].upper()+m[1]+m[2].upper()+m[3]
+                if len(m)>4:
+                    move=move+'B'+m[4].upper()
+                elif previosLayout[toTuple(move[0:2])[1]][toTuple(move[0:2])[0]][1]=='P' and toTuple(move[0:2])[1]==3:
+                    if toTuple(move[2:])[0]-toTuple(move[0:2])[0]>0 and previosLayout[toTuple(move[0:2])[1]][toTuple(move[0:2])[0]+1][1]=='P':
+                        move=move+toCoOrdinates([toTuple(move[0:2])[0]+1,toTuple(move[0:2])[1]])
+                    elif toTuple(move[2:])[0]-toTuple(move[0:2])[0]<0 and previosLayout[toTuple(move[0:2])[1]][toTuple(move[0:2])[0]-1][1]=='P':
+                        move=move+toCoOrdinates([toTuple(move[0:2])[0]-1,toTuple(move[0:2])[1]])
+                piece=previosLayout[toTuple(move[0:2])[1]][toTuple(move[0:2])[0]]
                 cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '"+previosxenonnumber+"' AND BestMovesXenonNumber = '"+currentxenonnumber+"'")  #checking ig the record is already in the database, so that there is no duplicate data
                 if len(cursor.fetchall())<=0:
                     params=(previosxenonnumber,currentxenonnumber,piece,move,0)
                     cursor.execute('INSERT INTO StartingMoves VALUES(?,?,?,?,?)',params)    #writing to the database
+                previosxenonnumber=currentxenonnumber
+                previosLayout=currentLayout
     #cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
     #res=cursor.fetchall()
     #print(res)
+cursor.close()
     #*********************************************************************************************************************************************************************************************************************# <
 
 def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout):
+    ChessDb = sqlite3.connect('api\ChessData')
+    cursor = ChessDb.cursor()
     defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
     boardLayout=createBoardLayout(StartingLayout, listOfMoves)
     if StartingLayout == defaultLayout:
@@ -102,6 +95,7 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
             coordinates=[c[0:1],c[2:3]]
             if len(c)>4:
                 coordinates.append(c[4:5])
+            cursor.close()
             return move, coordinates, result[0][2]
         else:
             return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)

@@ -131,14 +131,17 @@ def kingMoves(i,j,opponentMoves):
     return moves
 
 def isCheckList(i,j,boardLayout,opponentMoves):
+    VectorsOfPieces={'Q':[[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],],[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'K':[[[0,0]],[[1,0]],[[-1,0]],[[0,1]],[[-0,1]],[[1,1]],[[-1,1]],[[1,-1]],[[-1,-1]]],'B':[[[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'R':[[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],]],'N':[[[0,0]],[[2,1]],[[1,2]],[[-2,1]],[[-1,2]],[[2,-1]],[[1,-2]],[[-1,-2]],[[-2,-1]]],'P':[[[0,0]],[[1,1]],[[-1,1]]]}
     squares=[]
+    if boardLayout[opponentMoves[0][0][1]][opponentMoves[0][0][0]][0] == 'W':modifier = 1
+    else: modifier = -1
     for move in opponentMoves:
         if move[1]==[i,j]:
             vectors=VectorsOfPieces[boardLayout[move[0][1]][move[0][0]][1]]
             for direction in vectors:
                 for vector in direction:
-                    if [move[0],[move[0][0]+vector[0],move[0][1]+vector[1]]] in opponentMoves:
-                        squares.append([move[0][0]+vector[0],move[0][1]+vector[1]])
+                    if [move[0],[move[0][0]+modifier*vector[0],move[0][1]+modifier*vector[1]]] in opponentMoves:
+                        squares.append([move[0][0]+modifier*vector[0],move[0][1]+modifier*vector[1]])
     return squares
   
 def isCheckUsingVectors(kingI,kingJ,pieceI,pieceJ,boardLayout):
@@ -207,7 +210,9 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
     
     
     checkList=isCheckList(kingPosition[0], kingPosition[1], boardLayout, opponentMoves)
-    if not checkList==[]:
+    print(len(moves),moves,CheckMovesFlag)
+    if len(moves)<=0 or not checkList==[]:
+        print('checkList',checkList)
         checkMoves=[]
         for move in moves:
             if boardLayout[move[0][0]][move[0][1]][1]=='K':
@@ -216,18 +221,25 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
             else:
                 if move[1] in checkList:    
                         checkMoves.append(move)
-        if len(checkMoves)==0 and CheckMovesFlag==False:
+        if len(checkMoves)<=0 and CheckMovesFlag==False:
+            print('here')
             otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces)]
             otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces,pieces,True)
-            for move in otherMoves:
-                if boardLayout[move[0][0]][move[0][1]][1]=='K':
-                    if not move[1] in checkList:    
-                            checkMoves.append(move)
-                else:
-                    if move[1] in checkList:    
-                            checkMoves.append(move)
+            print(otherMoves,'otherMoves')
+            checkMoves=otherMoves
+            #for move in otherMoves:
+            #    print('sadly here')
+            #    if boardLayout[move[0][0]][move[0][1]][1]=='K':
+            #        if not move[1] in checkList:  
+            #            print('here')  
+            #            checkMoves.append(move)
+            #    else:
+            #        if move[1] in checkList:    
+            #            print('orhere')
+            #            checkMoves.append(move)
         moves=checkMoves
-    return moves
+        print(moves,CheckMovesFlag,'after check')
+    return copy.deepcopy(moves)
 
 def generateBoardLayout(move,layout):
     if len(move)==2:
@@ -244,6 +256,7 @@ def generateBoardLayout(move,layout):
             
 
 def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
+    print('made it')
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:

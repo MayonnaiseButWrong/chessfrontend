@@ -7,6 +7,7 @@ from createBoardLayout import createBoardLayout
 from translations import *
 from concurrent.futures import ThreadPoolExecutor
 import sqlite3
+import copy
 
 ChessDb = sqlite3.connect('api\ChessData')
 cursor = ChessDb.cursor()
@@ -15,6 +16,8 @@ try:
     cursor.execute("SELECT * FROM BestMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
 except:
     cursor.execute('CREATE TABLE BestMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))')
+
+cursor.close()
 
 pool = ThreadPoolExecutor(6)
 
@@ -59,21 +62,27 @@ def enPassantAllowed(previosMovesList,i):
     return False
 
 def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
-    cursor.execute('SELECT BestMoveXenonNumber,Move,Piece FROM BestMoves WHERE XenonNumber = ',to_xenonnumber(boardLayout),' ORDER BY Rating')
-    result = cursor.fetchall()
-    if len(result)>=0:
-        move=to_gamelist(result[0][0])
-        c=result[0][1]
-        coordinates=[c[0:1],c[2:3]]
-        if len(c)>4:
-            coordinates.append(c[4:5])
-        return move, coordinates, result[0][2]
-    else:
-        return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
+    ChessDb = sqlite3.connect('api\ChessData')
+    cursor = ChessDb.cursor()
+    try:
+        cursor.execute('SELECT BestMovesXenonNumber,Move,Piece FROM BestMoves WHERE XenonNumber = "'+str(to_xenonnumber(boardLayout))+'"')
+        result = cursor.fetchall()
+        cursor.close()
+        if len(result)>=0:
+            move=to_gamelist(result[0][0])
+            c=result[0][1]
+            coordinates=[c[0:1],c[2:3]]
+            if len(c)>4:
+                coordinates.append(c[4:5])
+            return move, coordinates, result[0][2]
+    except:
+        print(UseGenericTacticToGenerateMove(copy.deepcopy(boardLayout),previosMovesList))
+        return UseGenericTacticToGenerateMove(copy.deepcopy(boardLayout),previosMovesList)
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
-    wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
-    m=pool.submit(generatePossibleMovesUsingImportantPieces,boardLayout, bImportantPieces1, wImportantPieces1,pieces)
+    print(boardLayout)
+    wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(copy.deepcopy(boardLayout))
+    m=pool.submit(generatePossibleMovesUsingImportantPieces,copy.deepcopy(boardLayout), bImportantPieces1, wImportantPieces1,pieces)
     pValues,moves,coordinates,coordinate,pieces=[],[],[],[],[]
     for o in m.result():
         moves.append(o[0])
@@ -87,6 +96,7 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
                 coordinate.append([toCoOrdinates(o[1][2][0])])
         coordinates.append(coordinate)
         coordinate=[]
+    print('moves',moves)
     for move in moves:
         p,q=rateMoveBasedOnWinProbability(move,0)
         pValues.append(p*100000/q)
