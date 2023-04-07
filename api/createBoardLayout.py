@@ -11,7 +11,6 @@ def createBoardLayout(Layout,previosMovesList):
                     currentPosition=toTuple(move[2][square])
                     Layout[currentPosition[1]][currentPosition[0]]='MT'
             else:
-                print(move,'Create Layout')
                 for square in range(0,len(move[2])):
                     currentPosition=toTuple(move[2][square])
                     Layout[currentPosition[1]][currentPosition[0]]='MT'

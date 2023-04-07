@@ -6,11 +6,10 @@ from NeuralNetwork4 import*
 import time
 NNUE=NeuralNetwork([4*64,64,10])
 
-maxDepth=2
+maxDepth=0
 #pool = Pool(250)
 
 def rateMoveBasedOnWinProbability(boardLayout,depth):
-    print('rate move depth',depth)
     p,q,pchange,qchange=0,0,0,0
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
     wmoves=generateMovesUsingImportantPieces(boardLayout, wImportantPieces1, bImportantPieces1,pieces)
@@ -19,7 +18,6 @@ def rateMoveBasedOnWinProbability(boardLayout,depth):
         bmoves=generateMovesUsingImportantPieces(wmove, bImportantPieces2, wImportantPieces2,pieces)
         if len(bmoves)>0:
             p-=1
-            print(len(wmoves),len(bmoves))
             for bmove in bmoves:
                 wImportantPieces3,bImportantPieces3,pieces=findImportantPieces(bmove)
                 checkMoves=generateMovesUsingImportantPieces(bmove, wImportantPieces3, bImportantPieces3,pieces)

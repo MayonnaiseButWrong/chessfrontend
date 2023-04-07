@@ -98,6 +98,8 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
             cursor.close()
             return move, coordinates, result[0][2]
         else:
-            return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
+            boardLayout=createBoardLayout(StartingLayout, listOfMoves)
+            return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)
     else:
-        return UseGenericTacticToGenerateMove(boardLayout,previosMovesList)
+        boardLayout=createBoardLayout(StartingLayout, listOfMoves)
+        return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)

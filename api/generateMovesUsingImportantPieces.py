@@ -163,10 +163,13 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
     moves=[]
     opponentMoves=generateOpponentMoves(boardLayout,opponentImportantPieces)
     found=False
+    #print(boardLayout,'generateMoves')
+    #print('in generateMoves','team is ',boardLayout[importantPieces[0][1]][importantPieces[0][0]])
     for j in range(8):
         if found==True:
             break
         for i in range(8):
+            #print('boardLayout[j][i]',boardLayout[j][i])
             if boardLayout[j][i]==(boardLayout[importantPieces[0][1]][importantPieces[0][0]][0] + 'K'):
                 kingPosition=[i,j]
                 found=True
@@ -174,8 +177,9 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
         else:
             kingPosition=0
     if kingPosition==0:
+        #print('didnt find a King')
         return []
-            
+    #print('found King')
     for piece in importantPieces:
         if boardLayout[piece[1]][piece[0]][1]=='P':
             moves=moves+pawnMoves(boardLayout,piece[0],piece[1])
@@ -208,11 +212,13 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
                                 else:
                                     break
     
-    
+    if len(moves)<=0 and CheckMovesFlag==False:
+        otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces)]
+        otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces,pieces,True)
+        moves=otherMoves
+        
     checkList=isCheckList(kingPosition[0], kingPosition[1], boardLayout, opponentMoves)
-    print(len(moves),moves,CheckMovesFlag)
-    if len(moves)<=0 or not checkList==[]:
-        print('checkList',checkList)
+    if not checkList==[]:
         checkMoves=[]
         for move in moves:
             if boardLayout[move[0][0]][move[0][1]][1]=='K':
@@ -222,23 +228,16 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
                 if move[1] in checkList:    
                         checkMoves.append(move)
         if len(checkMoves)<=0 and CheckMovesFlag==False:
-            print('here')
             otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces)]
             otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces,pieces,True)
-            print(otherMoves,'otherMoves')
-            checkMoves=otherMoves
-            #for move in otherMoves:
-            #    print('sadly here')
-            #    if boardLayout[move[0][0]][move[0][1]][1]=='K':
-            #        if not move[1] in checkList:  
-            #            print('here')  
-            #            checkMoves.append(move)
-            #    else:
-            #        if move[1] in checkList:    
-            #            print('orhere')
-            #            checkMoves.append(move)
+            for move in otherMoves:
+                if boardLayout[move[0][0]][move[0][1]][1]=='K':
+                    if not move[1] in checkList:  
+                        checkMoves.append(move)
+                else:
+                    if move[1] in checkList:    
+                        checkMoves.append(move)
         moves=checkMoves
-        print(moves,CheckMovesFlag,'after check')
     return copy.deepcopy(moves)
 
 def generateBoardLayout(move,layout):
@@ -256,7 +255,6 @@ def generateBoardLayout(move,layout):
             
 
 def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
-    print('made it')
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:
@@ -267,6 +265,7 @@ def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImport
     return outputList
 
 def generatePossibleMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
+    #print('here lol')
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:

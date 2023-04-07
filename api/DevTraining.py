@@ -19,10 +19,11 @@ def DevTraining():
     Weak=               [toFEN([['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'MT'],['MT', 'MT', 'WP', 'MT', 'MT', 'WP', 'MT', 'MT'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['WN', 'WN', 'WN', 'WN', 'WK', 'WN', 'WN', 'WN']]) + ' w KQ - 0 0'   , [['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'MT'],['MT', 'MT', 'WP', 'MT', 'MT', 'WP', 'MT', 'MT'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['WN', 'WN', 'WN', 'WN', 'WK', 'WN', 'WN', 'WN']],'Weak']
     Layouts=[defaultLayout,LightBregadeLayout,Horde,PeasantsRevolt,UpsideDown,Weak]
 
-    Layout=random.choice(Layouts)
-    while stockfish.is_fen_valid(Layout[0])==False:
-        Layout=random.choice(Layouts)
-    print(Layout[2])
+    #Layout=random.choice(Layouts)
+    #while stockfish.is_fen_valid(Layout[0])==False:
+    #    Layout=random.choice(Layouts)
+    #print(Layout[2])
+    Layout=UpsideDown
     stockfish.set_fen_position(Layout[0])
     board=chess.Board(Layout[0])
     listOfMoves=[]
@@ -30,9 +31,11 @@ def DevTraining():
     count=0
     while board.outcome()==None:
         print(count)
+        print(Layout[2])
         if count%2==0:
             print('stockfish')
-            m=stockfish.get_best_move()
+            moves=stockfish.get_top_moves(10)
+            m=random.choice(moves)['Move']
             stockfish.make_moves_from_current_position([m])
             fen=board.fen()
             previosLayout=fromFENtoBoardLayout(fen)
@@ -51,9 +54,9 @@ def DevTraining():
             print('ai')
             moveLayout,coordinates,piece=generateAMoveToReturnToThePlayer(listOfMoves, StartingLayout)
             move=coordinates[0].lower()+coordinates[1].lower()
-            print(move)
             if stockfish.is_move_correct(move)==False:
-                m=stockfish.get_best_move()
+                moves=stockfish.get_top_moves(10)
+                m=random.choice(moves)['Move']
                 stockfish.make_moves_from_current_position([m])
                 fen=board.fen()
                 previosLayout=fromFENtoBoardLayout(fen)
@@ -73,7 +76,7 @@ def DevTraining():
                 n = chess.Move.from_uci(move)
                 board.push(n)
                 listOfMoves.append(coordinates)
-        count+=1
+        count+=2
     #print(listOfMoves)
     for i in range(1,len(listOfMoves)):
         try:
@@ -94,7 +97,8 @@ def task():
 #t=threading.Thread(None,task)
 
 #if len(input('are you sure you want to start?: '))<=0:
-DevTraining()
+for i in range(10):
+    DevTraining()
     #t.start()
     #input('stop?: ')
     #event.set()

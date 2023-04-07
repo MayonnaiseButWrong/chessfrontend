@@ -22,6 +22,7 @@ class NeuralNetwork():
         self.maxexamples=50
         self.weightchanges=[]
         self.baischanges=[]
+        self.examples=[]
         self.learning_rate = 1
         if len(str(fweights.read()))<1 or len(str(fbaises.read()))<1:
             fweights.truncate(0)
@@ -141,7 +142,7 @@ class NeuralNetwork():
             templist=[]
             for element in ins:
                 templist.append(element[a])
-            out.append((tf.multiply(1/len(ins))*self.__reduce(templist)))
+            out.append(tf.multiply(1/len(ins),self.__reduce(templist)))
         return out
     
     def __testevaluate(self, ins):
@@ -221,21 +222,25 @@ class NeuralNetwork():
         #the change in bais is equal to the error, or E, for each of the layers
         return deltaW[::-1],E[::-1]  
     
-    def train(self,example):
-        activations=self.__testevaluate(example[0])
-        change=self.__backprop(self.weights,self.baises,[self.__encode(example[0])]+activations,example[1])
-        self.weightchanges.append(change[0])
-        self.baischanges.append(change[1])
-        if len(self.weightchanges)>=self.maxexamples:
+    def train(self,ins):
+        print('appending')
+        self.examples.append([ins[0],tf.constant(ins[1], dtype='float64')])
+        print(len(self.examples),'examples length')
+        if len(self.examples)>=self.maxexamples:
             print('training in process.......')
+            for example in self.examples:
+                activations=self.__testevaluate(example[0])
+                change=self.__backprop(self.weights,self.baises,[self.__encode(example[0])]+activations,example[1])
+                self.weightchanges.append(change[0])
+                self.baischanges.append(change[1])
             avrWeightChanges,avrBaisChanges,newweights,newbaises=self.__findAverage(self.weightchanges),self.__findAverage(self.baischanges),[],[]
             for i in range(len(avrWeightChanges)):
-                newweights.append(self.__matrixsub(self.weights[i],avrWeightChanges[i]))
-                newbaises.append(self.__matrixsub(self.baises[i],avrBaisChanges[i]))
+                newweights.append(tf.math.add(tf.multiply(-1,self.weights[i]),avrWeightChanges[i]))
+                newbaises.append(td.math.add(tf.multiply(-1,self.baises[i]),avrBaisChanges[i]))
             self.weights,self.baises=newweights,newbaises
             self.__UpdateWeightsAndBaises(self.weights.numpy(),self.baises.numpy())
             self.weightchanges,self.baischanges=[],[]
-            return
+        return
 
 
 if __name__ =="__main__":

@@ -76,11 +76,9 @@ def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
                 coordinates.append(c[4:5])
             return move, coordinates, result[0][2]
     except:
-        print(UseGenericTacticToGenerateMove(copy.deepcopy(boardLayout),previosMovesList))
         return UseGenericTacticToGenerateMove(copy.deepcopy(boardLayout),previosMovesList)
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
-    print(boardLayout)
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(copy.deepcopy(boardLayout))
     m=pool.submit(generatePossibleMovesUsingImportantPieces,copy.deepcopy(boardLayout), bImportantPieces1, wImportantPieces1,pieces)
     pValues,moves,coordinates,coordinate,pieces=[],[],[],[],[]
@@ -96,7 +94,6 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
                 coordinate.append([toCoOrdinates(o[1][2][0])])
         coordinates.append(coordinate)
         coordinate=[]
-    print('moves',moves)
     for move in moves:
         p,q=rateMoveBasedOnWinProbability(move,0)
         pValues.append(p*100000/q)

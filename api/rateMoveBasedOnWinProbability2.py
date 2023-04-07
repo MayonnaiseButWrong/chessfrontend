@@ -15,7 +15,6 @@ def rateMoveBasedOnWinProbability(boardLayout,depth):
         wImportantPieces2,bImportantPieces2,pieces=findImportantPieces(wmove)
         bmoves=generateMovesUsingImportantPieces(wmove, bImportantPieces2, wImportantPieces2,pieces)
         if len(bmoves)>0:
-            p-=1
             if depth<maxDepth:
                 for bmove in bmoves:
                     wImportantPieces3,bImportantPieces3,pieces=findImportantPieces(bmove)
