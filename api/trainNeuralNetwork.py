@@ -1,5 +1,4 @@
 from createBoardLayout import createBoardLayout
-from stockfish import Stockfish
 from translations import *
 from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from findImportantPieces import findImportantPieces
@@ -10,7 +9,11 @@ import time
 import sys
 
 #finding a way to constantly generate a dataset was out of the scope of this project, so i am just assuming that whatever stockish says is the best possible move and using that to train my own NNUE
+from stockfish import Stockfish
 stockfish=Stockfish('api\stockfish.exe')
+stockfish.set_skill_level(20) #max skill
+stockfish.set_depth(50)
+
 NNUE=NeuralNetwork([4*64,64,10])
 maxDepth=1
 
@@ -18,6 +21,7 @@ def tobinary(ins):
     out=[]
     if ins<1:
         while ins<1:
+            print(ins)
             ins=ins*2
             out.append(0)
         out.append(1)
@@ -89,11 +93,15 @@ def comparingProbabilities(boardLayout,depth):
                     print(toFEN(bmove)+' b - - 0 1',stockfish.is_fen_valid(toFEN(bmove)+' b - - 0 1'))
                     fen=toFEN(bmove)+' b - - 0 1'
                     stockfish.set_fen_position(fen)
+                    print('moved stockfish')
                     evaluation=stockfish.get_top_moves(1)
                     print('eval',evaluation)
-                    evaluation=evaluation[0]['mate']
-                    if evaluation==None:evaluation=0
-                    evaluation=format(1/evaluation)
+                    evaluation=evaluation[0]['Mate']
+                    if evaluation==None:
+                        evaluation=0
+                    else:
+                        evaluation=format(1/evaluation)
+                    print('formatted evaluation',evaluation)
                     print('before')
                     NNUE.train([bmove,evaluation])
                     print('after')

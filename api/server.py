@@ -19,25 +19,26 @@ class Training:
         
 training=Training()
 
-@app.route('/EndGameChessdata')
+@app.route('/EndGameChessdata', methods = ['GET'])
 def get_EndGameChess_startingLayout():
-    startingLayout = [
-        ['MT','WN','WN','WR','WR','WB','WB','WQ'],
-        ['BP','BP','BP','BP','BP','BP','BP','BP'],
-        ['MT','BR','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','BK','MT'],
-        ['BQ','MT','MT','MT','MT','MT','MT','MT'],
-        ['MT','MT','BB','BN','BN','BB','MT','MT'],
-        ['MT','MT','MT','MT','MT','MT','MT','BR'],
-        ['MT','MT','MT','MT','MT','MT','WK','MT']
-        ]
-    startingstring = to_xenonnumber(startingLayout)
-    print(type(startingstring))
-    
-    output=jsonify({
-        'StaringLayoutString': startingLayout
-    })
-    return output
+    if request.method == 'GET':
+        startingLayout = [
+            ['MT','WN','WN','WR','WR','WB','WB','WQ'],
+            ['BP','BP','BP','BP','BP','BP','BP','BP'],
+            ['MT','BR','MT','MT','MT','MT','MT','MT'],
+            ['MT','MT','MT','MT','MT','MT','BK','MT'],
+            ['BQ','MT','MT','MT','MT','MT','MT','MT'],
+            ['MT','MT','BB','BN','BN','BB','MT','MT'],
+            ['MT','MT','MT','MT','MT','MT','MT','BR'],
+            ['MT','MT','MT','MT','MT','MT','WK','MT']
+            ]
+        startingstring = to_xenonnumber(startingLayout)
+        print(type(startingstring))
+
+        output=jsonify({
+            'StaringLayoutString': startingLayout
+        })
+        return output
 
 @app.route('/DailyChessdata', methods = ['GET'])
 def get_DailyChess_startingLayout():
