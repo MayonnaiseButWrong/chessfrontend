@@ -68,20 +68,9 @@ def get_DailyChess_startingLayout():
 @app.route('/moverequest', methods = ['POST'])
 def move_request():
     if request.method == 'POST':
-        StartingLayout = request.args.get('StartingLayout')
-        listOfMoves = request.args.get('listOfMoves')
+        StartingLayout = request.json.get('StartingLayout','alternative')
+        listOfMoves = request.json.get('listofmoves','alternative')
         moveLayout,coordiates,piece=generateAMoveToReturnToThePlayer(listOfMoves, StartingLayout)
-        #startingLayout = [
-        #['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
-        #['BP', 'BP', 'BP', 'MT', 'BP', 'BP', 'BP', 'BP'],
-        #['MT', 'MT', 'MT', 'BP', 'MT', 'MT', 'MT', 'MT'],
-        #['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
-        #['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
-        #['MT', 'MT', 'MT', 'MT', 'MT', 'WP', 'MT', 'MT'],
-        #['WP', 'WP', 'WP', 'WP', 'WP', 'MT', 'WP', 'WP'],
-        #['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
-        #]
-
         output=jsonify({
             'NextLayout': moveLayout,
             'Coordiantes': coordiates,
@@ -93,8 +82,8 @@ def move_request():
 @app.route('/outputgame', methods = ['PUT'])
 def outputgame():
     if request.method == 'PUT':
-        StartingLayout = request.args.get('StartingLayout')
-        listOfMoves = request.args.get('listOfMoves')
+        StartingLayout = request.json.get('StartingLayout')
+        listOfMoves = request.json.get('listOfMoves')
         training.enterTrainingData(StartingLayout, listOfMoves)
         return''
 

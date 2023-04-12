@@ -11,7 +11,9 @@ async function postData( data = {}) {
       referrerPolicy: "no-referrer",
       body: JSON.stringify(data),
     });
-    return response.json()
+    let output = await response.json()
+    console.log(output)
+    return response
 }
 
 function putData(data = {}) {

@@ -3,14 +3,14 @@ import { Text, StyleSheet } from 'react-native';
 import { Chessboard } from "react-chessboard";
 import { toFEN, toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { postData, putData, getData } from './commonInputsAndOutPuts.js'
 import { useEffect } from 'react';
 import './extrapages.css';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import ClipLoader from 'react-spinners/ClipLoader';
 
-
-const startingLayout = [
+var startingLayout = [
     ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
     ['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],
     ['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],
@@ -20,6 +20,13 @@ const startingLayout = [
     ['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],
     ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
 ];
+
+async function getStartingLayout() {
+    let temp = await getData('/DailyChessdata')
+    startingLayout = temp['StaringLayoutString']
+    console.log(startingLayout,temp.toString())
+}
+getStartingLayout()
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
@@ -83,13 +90,6 @@ var currentLayout = clone(startingLayout)
 const setCurrentLayout = (layout) => {currentLayout = layout}
 var previosLayout = clone(startingLayout)
 const setPreviosLayout = (layout) => {previosLayout = layout}
-
-//startingLayout=getData('/DailyChessdata')
-
-//let temp = getData('/DailyChessdata')
-//let temp = postData({startingLayout})
-
-//startingLayout = temp['StaringLayoutString']
 
 console.log(startingLayout[0])
 var originalPieces = FindPieces(startingLayout)
@@ -198,7 +198,43 @@ const DailyChess = () => {
     }
 
     var currentString = toDict(currentLayout);
-    
+
+    const [loading, setLoading] = useState(false)
+    const [recieved, setRecieved] = useState(false)
+    const [moveData, setMoveData] = useState({})
+
+    useEffect(() => {
+        if (loading===true&&recieved===true) {
+            updateScreen()
+            setLoading(false)
+            setRecieved(false)
+        } else if (loading===true) {
+            console.log('here')
+            const fetchData = async () => {
+                console.log('in fetch data')
+                let data = postData({ 'StartingLayout': startingLayout, 'listofmoves': previosMoves })
+                //setMoveData(await data.then(result => result.data))
+                console.log(await data.then(result => result.data))
+                //const timer = setTimeout(()=>{setMoveData(data);console.log('settimer',moveData,data);},500)
+                //return () => clearTimeout(timer)
+            }
+            fetchData()
+            console.log(moveData)
+        }
+    }, [loading,recieved])
+
+    useState(() => {
+        console.log(moveData)
+        if (!(Object.keys(moveData).length === 0)) {
+            console.log('recieved',moveData)
+            currentPiece=moveData['Piece']
+            currentMove.push(moveData['Coordinates'])
+            currentLayout=moveData['NextLayout']
+            setRecieved(true)
+            setMoveData({})
+        }
+    },[moveData])
+
     //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
     //currentPiece=data['Piece']
     //currentMove=data['Coordinates']
@@ -280,6 +316,7 @@ const DailyChess = () => {
             } //add for black pieces
             if (donePromotion === true) {
                 updateScreen()
+                setLoading(true)
             }
         } else {
             alert('Please select a piece to move first ')
@@ -399,7 +436,16 @@ const DailyChess = () => {
                 </div>
             </div>
         )
-    
+
+    } else if (loading===true) {
+        return (
+            <div className='loadingScreen'>
+                <div className = 'buffer2'></div>
+                <h2 className = 'loadingScreenHeader'>Loading....</h2>
+                <ClipLoader color={'#fff'} size ={150} />
+            </div>
+        )
+
     } else if (checkmate===true) {
         putData({ StartingLayout: startingLayout, listofmoves: previosMoves })
         return (
@@ -454,7 +500,7 @@ const DailyChess = () => {
                             <Text style={textStyles.white_pieces_taken_text} className='white_pieces_taken_text' id='white_pieces_taken_text'>{white_pieces_taken_text}</Text>
                         </span>
                         <span className='disclaimer'>
-                            <p className='disclaimer_text'>Data about the chess games, such as what moves were made and in what order, are stored so that the AI can learn and get better at chess. No data about the user is stored.</p>
+                            <p className='disclaimer_text'>If the AI takes more than 1 minute to make a move, please relaod the page. Data about the chess games, such as what moves were made and in what order, are stored so that the AI can learn and get better at chess. No data about the user is stored.</p>
                         </span>
                     </div>
                 </div>

@@ -12,7 +12,7 @@ import sys
 from stockfish import Stockfish
 stockfish=Stockfish('api\stockfish.exe')
 stockfish.set_skill_level(20) #max skill
-stockfish.set_depth(50)
+stockfish.set_depth(10)
 
 NNUE=NeuralNetwork([4*64,64,10])
 maxDepth=1

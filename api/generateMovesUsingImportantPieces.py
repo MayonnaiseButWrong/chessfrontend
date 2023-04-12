@@ -131,6 +131,8 @@ def kingMoves(i,j,opponentMoves):
     return moves
 
 def isCheckList(i,j,boardLayout,opponentMoves):
+    if len(opponentMoves)==0:
+        return []
     VectorsOfPieces={'Q':[[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],],[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'K':[[[0,0]],[[1,0]],[[-1,0]],[[0,1]],[[-0,1]],[[1,1]],[[-1,1]],[[1,-1]],[[-1,-1]]],'B':[[[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'R':[[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],]],'N':[[[0,0]],[[2,1]],[[1,2]],[[-2,1]],[[-1,2]],[[2,-1]],[[1,-2]],[[-1,-2]],[[-2,-1]]],'P':[[[0,0]],[[1,1]],[[-1,1]]]}
     squares=[]
     if boardLayout[opponentMoves[0][0][1]][opponentMoves[0][0][0]][0] == 'W':modifier = 1
@@ -163,6 +165,7 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
     moves=[]
     opponentMoves=generateOpponentMoves(boardLayout,opponentImportantPieces)
     found=False
+    print(importantPieces)
     #print(boardLayout,'generateMoves')
     #print('in generateMoves','team is ',boardLayout[importantPieces[0][1]][importantPieces[0][0]])
     for j in range(8):
@@ -255,6 +258,7 @@ def generateBoardLayout(move,layout):
             
 
 def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
+    print('othere here lol', importantPieces)
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:
@@ -265,7 +269,7 @@ def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImport
     return outputList
 
 def generatePossibleMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
-    #print('here lol')
+    print('here lol',importantPieces)
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:

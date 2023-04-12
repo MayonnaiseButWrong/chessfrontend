@@ -30,7 +30,7 @@ def DevTraining():
     StartingLayout=Layout[1]
     count=0
     while board.outcome()==None:
-        print(count)
+        print(count,'in game loop')
         print(Layout[2])
         if count%2==0:
             print('stockfish')

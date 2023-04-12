@@ -47,6 +47,10 @@
    top:60vh;
 }
 
+.buffer2 {
+   height: 30vh;
+}
+
 @media only screen and (max-width: 500px) {
    .CheckMateHeader {
       font-size: 30pt;
