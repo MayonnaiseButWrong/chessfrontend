@@ -1,13 +1,14 @@
 import './TwoPlayerEndGameChess.css'
 import { Text, StyleSheet } from 'react-native';
 import { Chessboard } from "react-chessboard";
-import { toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
+import { toTuple, toDict, toUnicode } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
-import React, { useState, useCallback } from "react";
-import { postData, putData, getData } from './commonInputsAndOutPuts.js'
+import React, { useState } from "react";
+import {  putData, getData } from './commonInputsAndOutPuts.js'
 import { useEffect } from 'react';
 import './extrapages.css';
 import { Link } from 'react-router-dom'
+import ClipLoader from 'react-spinners/ClipLoader';
 
 
 var startingLayout = [
@@ -64,9 +65,8 @@ function clone(ins) {//clones a board layout using the ability to turn an array 
     return out
 }
 
-var unloading = false	//initialising the variables
-var turn = 'W';
-var team = 'White'; //change to white
+var turn = 'W';//initialising the variables
+var team = 'Black'; //change to white
 var donePromotion = true
 var previosMoves = [];
 var previosMove = []
@@ -76,6 +76,7 @@ var whitePiecesTakenText = ''
 var whitePiecesTakenList = []
 var blackPiecesTakenText = ''
 var blackPiecesTakenList = []
+var checkmateText = '¡¡ '+team + ' Wins !!'
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
@@ -167,6 +168,26 @@ const TwoPlayerEndGameChess = () => {
         donePromotion=true
     }
 
+    const [loading, setLoading] = useState(true)   //when loading is tri=ue, a loading page is shown on screen.
+    const [startup,setStartUp] = useState(true)
+
+    useEffect(() => {
+        if (loading===true) {
+            if (startup===true) {
+                async function getStartingLayout() {    //loading in the starting layout from the server
+                    let temp = await getData('/EndGameChessdata')
+                    startingLayout = temp['StaringLayoutString']
+                    setCurrentLayout(startingLayout)
+                    setPreviosLayout(startingLayout)
+                    currentString = toDict(currentLayout);
+                    setStartUp(false)
+                    setLoading(false)
+                }
+                getStartingLayout()
+            }
+        }
+    }, [loading,startup]) //runs whenever the loading or startup values are changed
+
     var currentString = toDict(currentLayout);// initialising the currentString varibles which updates the onscreen chessboard
 
     function updateScreen () {// updates the text information available to the user, such as the pieces taken by each user and the last move made
@@ -174,7 +195,6 @@ const TwoPlayerEndGameChess = () => {
         let currentBlackPieces = []
         let currentWhitePieces = []
         let temp = []
-        let checkmate = false
 
         whitePiecesTakenList = []
         blackPiecesTakenList = []
@@ -232,16 +252,22 @@ const TwoPlayerEndGameChess = () => {
 
         setPreviosLayout(clone(currentLayout))    //updating the previosLayout
 
-        setCheckmate(isCheckmate(currentLayout, turn, previosMoves))
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves) //if its checkmate, the checkmate page is shown on screen
+        checkmateText = '¡¡ '+team + ' Wins !!'
+        setCheckmate(checkMateCheck)
+        if (checkMateCheck==='Stalemate') {
+            checkmateText = '¡¡ Draw !!'
+            setCheckmate(true)
+        }
     }
 
     function selectMove() {    //runs whenever the SelectMove button is pressed.
         if (moveDone === true) {
-            if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
+            if (currentPiece.toUpperCase()==='WP'&& toTuple(currentMove[1])[1]<=0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
                 setPromotedPosition(toTuple(currentMove[1]))
                 setppShow(true)
                 donePromotion = false
-            } else if (currentPiece.toUpperCase()=='BP'&& toTuple(currentMove[1])[1]>=7) {
+            } else if (currentPiece.toUpperCase()==='BP'&& toTuple(currentMove[1])[1]>=7) {
                 setPromotedPosition(toTuple(currentMove[1]))
                 setppShow(true)
                 donePromotion = false
@@ -372,11 +398,20 @@ const TwoPlayerEndGameChess = () => {
             </div>
         )
     
+    } else if (loading===true) {
+        return (
+            <div className='loadingScreen'>
+                <div className = 'buffer2'></div>
+                <h2 className = 'loadingScreenHeader'>Loading....</h2>
+                <ClipLoader color={'#fff'} size ={150} />
+            </div>
+        )
+
     } else if (checkmate===true) {  //checkmate options menu
         putData({ StartingLayout: startingLayout, listofmoves: previosMoves })  //sending data to the server so that it can be used to train the AI and also update the moves in the database
         return (
             <div className='checkmateScreen' onClick={unCheckMate}>
-                <h2 className='CheckMateHeader'>¡¡ {team} Wins !!</h2>
+                <h2 className='CheckMateHeader'>{checkmateText}</h2>
                 <div className='return'><Link to="*"> <button className='returnButton'>Return Back To Options Page</button></Link></div>
                 <div className='explanation'><p className='disclaimer_text'>Press the button to return back to the Options Page or Press Anywhere To return to the Chess screen</p></div>
             </div>
@@ -385,7 +420,7 @@ const TwoPlayerEndGameChess = () => {
     } else {    // normal interactive layout with chessboard
         return (
             <div className="ChessFrontEnd">
-                <h1>End Game Chess</h1>
+                <h1>End-Game Chess</h1>
                 <div className="grid-container1">
                     <div className='chessboard'>
                         <Chessboard //using an api to display the chessboard on screen.It isn't feesable for me to make this part from sctach in the time period given for this project

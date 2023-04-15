@@ -1,10 +1,10 @@
 import './TwoPlayerHorde.css'
 import { Text, StyleSheet } from 'react-native';
 import { Chessboard } from "react-chessboard";
-import { toTuple, toDict, toUnicode, toBoardLayout } from './translations.js'
+import { toTuple, toDict, toUnicode } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
-import React, { useState, useCallback } from "react";
-import { postData, putData, getData } from './commonInputsAndOutPuts.js'
+import React, { useState } from "react";
+import { putData } from './commonInputsAndOutPuts.js'
 import { useEffect } from 'react';
 import './extrapages.css';
 import { Link } from 'react-router-dom'
@@ -64,9 +64,8 @@ function clone(ins) {//clones a board layout using the ability to turn an array 
     return out
 }
 
-var unloading = false	//initialising the variables
-var turn = 'W';
-var team = 'White'; //change to white
+var turn = 'W';//initialising the variables
+var team = 'Black';
 var donePromotion = true
 var previosMoves = [];
 var previosMove = []
@@ -76,6 +75,7 @@ var whitePiecesTakenText = ''
 var whitePiecesTakenList = []
 var blackPiecesTakenText = ''
 var blackPiecesTakenList = []
+var checkmateText = '¡¡ '+team + ' Wins !!'
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
@@ -174,7 +174,6 @@ const TwoPlayerHorde = () => {
         let currentBlackPieces = []
         let currentWhitePieces = []
         let temp = []
-        let checkmate = false
 
         whitePiecesTakenList = []
         blackPiecesTakenList = []
@@ -232,16 +231,22 @@ const TwoPlayerHorde = () => {
 
         setPreviosLayout(clone(currentLayout))    //updating the previosLayout
 
-        setCheckmate(isCheckmate(currentLayout, turn, previosMoves))
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves) //if its checkmate, the checkmate page is shown on screen
+        checkmateText = '¡¡ '+team + ' Wins !!'
+        setCheckmate(checkMateCheck)
+        if (checkMateCheck==='Stalemate') {
+            checkmateText = '¡¡ Draw !!'
+            setCheckmate(true)
+        }
     }
 
     function selectMove() {    //runs whenever the SelectMove button is pressed.
         if (moveDone === true) {
-            if (currentPiece.toUpperCase()=='WP'&& toTuple(currentMove[1])[1]<=0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
+            if (currentPiece.toUpperCase()==='WP'&& toTuple(currentMove[1])[1]<=0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
                 setPromotedPosition(toTuple(currentMove[1]))
                 setppShow(true)
                 donePromotion = false
-            } else if (currentPiece.toUpperCase()=='BP'&& toTuple(currentMove[1])[1]>=7) {
+            } else if (currentPiece.toUpperCase()==='BP'&& toTuple(currentMove[1])[1]>=7) {
                 setPromotedPosition(toTuple(currentMove[1]))
                 setppShow(true)
                 donePromotion = false
@@ -376,7 +381,7 @@ const TwoPlayerHorde = () => {
         putData({ StartingLayout: startingLayout, listofmoves: previosMoves })  //sending data to the server so that it can be used to train the AI and also update the moves in the database
         return (
             <div className='checkmateScreen' onClick={unCheckMate}>
-                <h2 className='CheckMateHeader'>¡¡ {team} Wins !!</h2>
+                <h2 className='CheckMateHeader'>{checkmateText}</h2>
                 <div className='return'><Link to="*"> <button className='returnButton'>Return Back To Options Page</button></Link></div>
                 <div className='explanation'><p className='disclaimer_text'>Press the button to return back to the Options Page or Press Anywhere To return to the Chess screen</p></div>
             </div>

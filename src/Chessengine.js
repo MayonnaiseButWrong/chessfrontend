@@ -583,7 +583,7 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPo
         for (let Move = 0; Move < moves.length; Move++) {
             if (moves === undefined) { moves.splice(Move, 1) }
         }
-        return moves;
+        return [moves,true]
     } else {
         Line = findLine(KingPosition, check['piece'], check['position'])
         for (let Move = 0; Move < moves.length; Move++) {
@@ -600,12 +600,13 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPo
         for (let Move = 0; Move < CheckMoves.length; Move++) {
             if (CheckMoves === undefined) { CheckMoves.splice(Move, 1) }
         }
-        return CheckMoves
+        return [CheckMoves,false]
     };
 };
 
 function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, castlingPossible) {
-    let moves = generateMoves(currentLayout, turn, previosMoves, castlingPossible);
+    let buffer = generateMoves(currentLayout, turn, previosMoves, castlingPossible);
+    let moves = buffer[0]
     for (let Move = 0; Move < moves.length; Move++) {
         if (moves[Move][0] === fromSquare && moves[Move][1] === toSquare) {
             return [true, moves[Move]];
@@ -615,10 +616,16 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves,
 };
 
 function isCheckmate(currentLayout, turn, previosMoves) {
-    let moves = generateMoves(currentLayout, turn, previosMoves);
+    let buffer = generateMoves(currentLayout, turn, previosMoves);
+    let moves = buffer[0]
+    let isCheck = buffer[1]
     if (moves.length < 1) {
-        return true
-    }
+        if (isCheck===true){
+            return true
+        } else {
+            return 'Stalemate'
+        }
+    } 
     return false
 }
 
