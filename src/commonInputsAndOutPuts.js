@@ -12,8 +12,7 @@ async function postData( data = {}) {
       body: JSON.stringify(data),
     });
     let output = await response.json()
-    console.log(output)
-    return response
+    return output
 }
 
 function putData(data = {}) {
@@ -44,8 +43,7 @@ async function getData(url = "") {
     //referrerPolicy: "no-referrer",
   })
   const abc = await response.json()
-  console.log(abc)
-  return response
+  return abc
 }
 
 

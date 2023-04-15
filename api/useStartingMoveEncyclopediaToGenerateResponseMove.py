@@ -6,10 +6,9 @@ import sqlite3
 ChessDb = sqlite3.connect('api\ChessData')
 cursor = ChessDb.cursor()
 
-#try:
+#try:   #initialising the database
 #    cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
 #    res=cursor.fetchall()
-#    print(res)
 #    if len(res)<=0:
 #        raise ValueError('No Data')
 #except:
@@ -76,7 +75,6 @@ cursor = ChessDb.cursor()
 #                previosLayout=currentLayout
 #    #cursor.execute("SELECT * FROM StartingMoves WHERE XenonNumber = '0x2ab3d08eeb5884825a2fc6594f9764d52bedae177a6bff2054eb124de618a3a8f0ac36e6c260c955da8c51954194fc8e89ad439b93d217376a89a95a7ef3d359947dc646e6d8d23fe21faec302013ea2b6a04534a5a7ed810feb47c787470ddd699473a9ce29d6e49494b2f603a413f2b4459779996183dc06d4a224776a53ec69fb5589eb59611b295673e0603ee5273ec11f6c2a0bf6628026f20080'")
 #    #res=cursor.fetchall()
-#    #print(res)
 #cursor.close()
 #    #*********************************************************************************************************************************************************************************************************************# <
 
@@ -86,7 +84,6 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
     defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
     boardLayout=createBoardLayout(StartingLayout, listOfMoves)
     if StartingLayout == defaultLayout:
-        boardLayout=createBoardLayout(StartingLayout, listOfMoves)
         #cursor.execute('SELECT BestMoveXenonNumber,Move,Piece,TimesUsed FROM StartingMoves WHERE XenonNumber = "'+to_xenonnumber(boardLayout)+'" ORDER BY Rating')
         result = cursor.fetchall()
         cursor.close()
@@ -98,9 +95,7 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
                 coordinates.append(c[4:5])
             return move, coordinates, result[0][2]
         else:
-            boardLayout=createBoardLayout(StartingLayout, listOfMoves)
             return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)
     else:
         cursor.close()
-        boardLayout=createBoardLayout(StartingLayout, listOfMoves)
         return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)

@@ -16,6 +16,5 @@ def generateAMoveToReturnToThePlayer(listOfMoves,StartingLayout):
         if count<=7:
             return useEndingTacticsToGenerateMove(boardLayout)
         else:
-            boardLayout=createBoardLayout(StartingLayout, listOfMoves)
             moveLayout,coordiates,piece=useMidgameTacticToGenerateMove(boardLayout, listOfMoves)
             return moveLayout,coordiates,piece

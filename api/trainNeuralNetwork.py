@@ -21,7 +21,6 @@ def tobinary(ins):
     out=[]
     if ins<1:
         while ins<1:
-            print(ins)
             ins=ins*2
             out.append(0)
         out.append(1)
@@ -77,7 +76,6 @@ def format(ins):
     return out
 
 def comparingProbabilities(boardLayout,depth):
-    print('depth',depth)
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
     wmoves=generateMovesUsingImportantPieces(boardLayout, wImportantPieces1, bImportantPieces1,pieces)
     for wmove in wmoves:
@@ -89,22 +87,15 @@ def comparingProbabilities(boardLayout,depth):
             prevmove=[]
             for bmove in bmoves:
                 if bmove!=prevmove:
-                    print('here 2 electric boogaloo',depth)
-                    print(toFEN(bmove)+' b - - 0 1',stockfish.is_fen_valid(toFEN(bmove)+' b - - 0 1'))
                     fen=toFEN(bmove)+' b - - 0 1'
                     stockfish.set_fen_position(fen)
-                    print('moved stockfish')
                     evaluation=stockfish.get_top_moves(1)
-                    print('eval',evaluation)
                     evaluation=evaluation[0]['Mate']
                     if evaluation==None:
                         evaluation=0
                     else:
                         evaluation=format(1/evaluation)
-                    print('formatted evaluation',evaluation)
-                    print('before')
                     NNUE.train([bmove,evaluation])
-                    print('after')
                     if depth<maxDepth:
                         depth+=1
                         comparingProbabilities(bmove, depth)
@@ -112,12 +103,9 @@ def comparingProbabilities(boardLayout,depth):
                     
 def trainNeuralNetwork(StartingLayout,listOfMoves):
     for count in range(len(listOfMoves)):
-        #print(count,listOfMoves[0:count+1])
         move=createBoardLayout(StartingLayout, listOfMoves[0:count+1])
-        #print(move)
         comparingProbabilities(move, 0)
     count,previosMove=0,[]
-    #print('')
     for count in range(len(listOfMoves)):
         if count>0:
             move=createBoardLayout(move, listOfMoves[0:count+1])

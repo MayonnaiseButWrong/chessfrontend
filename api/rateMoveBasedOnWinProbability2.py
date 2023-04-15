@@ -1,7 +1,6 @@
 from findImportantPieces import findImportantPieces
 from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
 from multiprocessing import Pool
-#from ratingBasedOnNeuralNetwork import ratingBasedOnNeuralNetwork
 from NeuralNetwork4 import*
 NNUE=NeuralNetwork([4*64,64,10])
 

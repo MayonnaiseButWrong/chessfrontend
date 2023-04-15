@@ -223,11 +223,8 @@ class NeuralNetwork():
         return deltaW[::-1],E[::-1]  
     
     def train(self,ins):
-        print('appending')
         self.examples.append([ins[0],tf.constant(ins[1], dtype='float64')])
-        print(len(self.examples),'examples length')
         if len(self.examples)>=self.maxexamples:
-            print('training in process.......')
             for example in self.examples:
                 activations=self.__testevaluate(example[0])
                 change=self.__backprop(self.weights,self.baises,[self.__encode(example[0])]+activations,example[1])

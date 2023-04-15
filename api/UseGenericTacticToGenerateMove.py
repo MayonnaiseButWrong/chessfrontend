@@ -1,6 +1,6 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
-from findImportantPieces import findImportantPieces,bubbleSort
+from findImportantPieces import findImportantPieces
 from generateMovesUsingImportantPieces import generatePossibleMovesUsingImportantPieces
 from rateMoveBasedOnWinProbability import rateMoveBasedOnWinProbability
 from createBoardLayout import createBoardLayout
@@ -23,6 +23,29 @@ except:
 cursor.close()
 
 pool = ThreadPoolExecutor(6)
+
+def multiListBubbleSort(l1,l2,l3,b):    #base list=>b dependant lists=>l1,l2,l3
+    flag=True
+    while flag==True:
+        flag=False
+        for i in range(1,len(b)):
+            if b[i-1]>b[i]:
+                flag=True
+                temp=b[i-1]
+                b[i-1]=b[i]
+                b[i]=b[i-1]
+                temp=l1[i-1]
+                l1[i-1]=l1[i]
+                l1[i]=l1[i-1]
+                temp=l2[i-1]
+                l2[i-1]=l2[i]
+                l2[i]=l2[i-1]
+                temp=l3[i-1]
+                l3[i-1]=l3[i]
+                l3[i]=l3[i-1]
+    return l1,l2,l3
+            
+    
 
 def typeOfMove(layout1,layout2):    #0 is a mormal move, 1 is castling, 2 is enpassant
     if layout1[0][4]=='K' and layout2[0][4]=='MT':
@@ -100,7 +123,7 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     for move in moves:
         p,q=rateMoveBasedOnWinProbability(move,0)
         pValues.append(p*100000/q)
-    moves=bubbleSort(moves,pValues)
+    coordinates,pieces,moves=multiListBubbleSort(coordinates,pieces,moves,pValues)
     flag=True
     count=0
     for count in range(len(moves)):
@@ -109,12 +132,12 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
             if castlingAllowed(previosMovesList)==True:
                 return moves[count],coordinates[count],pieces[count]
             else:
-                count+=1
+                continue
         elif moveType==2:
             if enPassantAllowed(previosMovesList,i)==True:
                 return moves[count],coordinates[count],pieces[count]
             else:
-                count+=1
+                continue
         else:
             return moves[count],coordinates[count],pieces[count]
 

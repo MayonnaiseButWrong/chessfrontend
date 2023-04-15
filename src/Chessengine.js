@@ -322,6 +322,9 @@ function checkVectors(currentLayout, turn, KingPosition,isOpponentMoves) {
                                             } else if (currentLayout[j - vector[1]][i + vector[0]] === 'MT') {
                                                 moves.push([toCoOrdinates([i, j]), toCoOrdinates([i + vector[0], j - vector[1]])]);
                                             } else {
+                                                if (isOpponentMoves===true) {
+                                                    moves.push([toCoOrdinates([i, j]), toCoOrdinates([i + vector[0], j - vector[1]])]);
+                                                }
                                                 break;
                                             };
                                         };
@@ -613,7 +616,6 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves,
 
 function isCheckmate(currentLayout, turn, previosMoves) {
     let moves = generateMoves(currentLayout, turn, previosMoves);
-    console.log(moves)
     if (moves.length < 1) {
         return true
     }

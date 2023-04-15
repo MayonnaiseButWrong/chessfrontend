@@ -1,5 +1,3 @@
-from createBoardLayout import *
-
 defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
 currentLayout=defaultLayout
 
@@ -10,7 +8,7 @@ def staticWeight(boardLayout,specificPiece):
         'B':3,
         'R':5,
         'Q':9,
-        'K':12
+        'K':100000
     }
     piece=boardLayout[specificPiece[1]][specificPiece[0]][1]
     return weights[piece]

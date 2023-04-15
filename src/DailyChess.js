@@ -21,12 +21,9 @@ var startingLayout = [
     ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
 ];
 
-async function getStartingLayout() {
-    let temp = await getData('/DailyChessdata')
-    startingLayout = temp['StaringLayoutString']
-    console.log(startingLayout,temp.toString())
-}
-getStartingLayout()
+//var startingLayout = []
+
+
 
 //each move is a list that has 3 components, from, to, and a tuple containing information about if its an enpassant, promotion or nothing. if the thid component is empt then its a normal move.
 
@@ -73,7 +70,7 @@ function clone(ins) {
 
 var unloading = false
 var turn = 'W';
-var team = 'The Player'; //change to white
+var team = 'The AI'; //change to white
 var donePromotion = true
 var previosMoves = [];
 var previosMove = []
@@ -86,10 +83,20 @@ var blackPiecesTakenList = []
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
+
 var currentLayout = clone(startingLayout)
 const setCurrentLayout = (layout) => {currentLayout = layout}
 var previosLayout = clone(startingLayout)
 const setPreviosLayout = (layout) => {previosLayout = layout}
+var currentString = toDict(currentLayout);
+
+//async function getStartingLayout() {
+//    let temp = await getData('/DailyChessdata')
+//    startingLayout = temp['StaringLayoutString']
+//    setCurrentLayout(startingLayout)
+//    setPreviosLayout(startingLayout)
+//}
+//getStartingLayout()
 
 console.log(startingLayout[0])
 var originalPieces = FindPieces(startingLayout)
@@ -197,11 +204,8 @@ const DailyChess = () => {
         donePromotion=true
     }
 
-    var currentString = toDict(currentLayout);
-
     const [loading, setLoading] = useState(false)
     const [recieved, setRecieved] = useState(false)
-    const [moveData, setMoveData] = useState({})
 
     useEffect(() => {
         if (loading===true&&recieved===true) {
@@ -209,31 +213,19 @@ const DailyChess = () => {
             setLoading(false)
             setRecieved(false)
         } else if (loading===true) {
-            console.log('here')
             const fetchData = async () => {
-                console.log('in fetch data')
-                let data = postData({ 'StartingLayout': startingLayout, 'listofmoves': previosMoves })
-                //setMoveData(await data.then(result => result.data))
-                console.log(await data.then(result => result.data))
-                //const timer = setTimeout(()=>{setMoveData(data);console.log('settimer',moveData,data);},500)
-                //return () => clearTimeout(timer)
+                console.log('in fetch data',{ 'StartingLayout': startingLayout, 'listofmoves': previosMoves.toString() })
+                let data =  await postData({ 'StartingLayout': startingLayout, 'listofmoves': previosMoves })
+                currentPiece=data['Piece']
+                currentMove=data['Coordiantes']
+                currentLayout=data['NextLayout']
+                console.log(currentPiece,currentMove.toString(),currentLayout)
+                currentString = toDict(currentLayout)
+                setRecieved(true)
             }
             fetchData()
-            console.log(moveData)
         }
     }, [loading,recieved])
-
-    useState(() => {
-        console.log(moveData)
-        if (!(Object.keys(moveData).length === 0)) {
-            console.log('recieved',moveData)
-            currentPiece=moveData['Piece']
-            currentMove.push(moveData['Coordinates'])
-            currentLayout=moveData['NextLayout']
-            setRecieved(true)
-            setMoveData({})
-        }
-    },[moveData])
 
     //data=postData({ StartingLayout: startingLayout, listofmoves: previosMoves })
     //currentPiece=data['Piece']
@@ -245,7 +237,6 @@ const DailyChess = () => {
         let currentBlackPieces = []
         let currentWhitePieces = []
         let temp = []
-        let checkmate = false
 
         whitePiecesTakenList = []
         blackPiecesTakenList = []
@@ -302,9 +293,16 @@ const DailyChess = () => {
         moveDone = false
 
         setPreviosLayout(clone(currentLayout))
+        
+        console.log('in updateScreen')
+        console.log(currentLayout)
+        console.log(previosMoves)
 
-        setCheckmate(isCheckmate(currentLayout, turn, previosMoves))
-        console.log('checkmate is',checkmate)
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves)
+        setCheckmate(checkMateCheck)
+        if (checkMateCheck===false) {
+            setLoading(true)
+        }
     }
 
     function selectMove() {
@@ -316,7 +314,6 @@ const DailyChess = () => {
             } //add for black pieces
             if (donePromotion === true) {
                 updateScreen()
-                setLoading(true)
             }
         } else {
             alert('Please select a piece to move first ')
