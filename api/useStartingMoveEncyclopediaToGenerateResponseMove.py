@@ -2,7 +2,6 @@ from UseGenericTacticToGenerateMove import UseGenericTacticToGenerateMove
 from createBoardLayout import createBoardLayout
 from translations import *
 import sqlite3
-import copy
 
 ChessDb = sqlite3.connect('api\ChessData')
 cursor = ChessDb.cursor()
@@ -83,12 +82,12 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
     ChessDb = sqlite3.connect('api\ChessData')
     cursor = ChessDb.cursor()
     defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
-    boardLayout=createBoardLayout(copy.deepcopy(StartingLayout), copy.deepcopy(listOfMoves))
+    boardLayout=createBoardLayout(StartingLayout, listOfMoves)
     if StartingLayout == defaultLayout:
         #cursor.execute('SELECT BestMoveXenonNumber,Move,Piece,TimesUsed FROM StartingMoves WHERE XenonNumber = "'+to_xenonnumber(boardLayout)+'" ORDER BY Rating')
         result = cursor.fetchall()
         cursor.close()
-        if len(result)>0:
+        if len(result)>=0:
             move=to_gamelist(result[0][0])
             c=result[0][1]
             coordinates=[c[0:1],c[2:3]]
