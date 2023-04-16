@@ -111,8 +111,8 @@ def get_EndGameChess_startingLayout():
 @app.route('/DailyChessdata', methods = ['GET'])
 def get_DailyChess_startingLayout():
     if request.method == 'GET':
-        startingLayout=[['MT', 'MT', 'WK', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WQ', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'BB', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WP', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'BP', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'WP', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'BK', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT']]
-        #startingLayout = dailyLayout.generateLayout()
+        #startingLayout=[['MT', 'MT', 'WK', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WQ', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'BB', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WP', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'BP', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'WP', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'BK', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT']]
+        startingLayout = dailyLayout.generateLayout()
         output=jsonify({'StaringLayoutString': startingLayout})
         return output
 
