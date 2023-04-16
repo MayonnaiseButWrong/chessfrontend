@@ -275,9 +275,11 @@ const DailyChess = () => {
             checkmateText = '¡¡ Draw !!'
             setCheckmate(true)
         }
+        console.log(previosMoves)
     }
 
     function selectMove() { //runs whenever the SelectMove button is pressed.
+        console.log(startingLayout)
         if (moveDone === true) {
             if (currentPiece.toUpperCase()==='WP'&& toTuple(currentMove[1])[1]<=0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
                 setPromotedPosition(toTuple(currentMove[1]))

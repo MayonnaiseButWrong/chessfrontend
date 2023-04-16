@@ -1,11 +1,12 @@
 from createBoardLayout import createBoardLayout
 from translations import *
 import urllib3
+import copy
 
 http = urllib3.PoolManager()
 
 def useEndingTacticsToGenerateMove(StartingLayout, listOfMoves):
-    boardLayout=createBoardLayout(StartingLayout, listOfMoves)
+    boardLayout=createBoardLayout(copy.deepcopy(StartingLayout), copy.deepcopy(listOfMoves))
     request=http.request('GET','http://tablebase.lichess.ovh/standard' + formatrequest(toFEN(boardLayout)))
     reply=request.data.decode('utf-8')
     try:

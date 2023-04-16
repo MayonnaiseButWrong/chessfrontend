@@ -3,7 +3,7 @@ from generateMovesUsingImportantPieces import generateMovesUsingImportantPieces
 from NeuralNetwork4 import*
 NNUE=NeuralNetwork([4*64,64,10])
 
-maxDepth=0
+maxDepth=1
 
 def rateMoveBasedOnWinProbability(boardLayout,depth):
     p,q,pchange,qchange=0,0,0,0
