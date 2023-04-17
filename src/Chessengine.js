@@ -682,7 +682,6 @@ function generateOpponenMoves(currentLayout, turn) {
 }
 
 function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPossible) {
-    castlingPossible = true
     let moves = [];
     let PawnSpecialMoves = [];
     let check = {};
