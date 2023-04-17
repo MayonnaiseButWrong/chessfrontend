@@ -1,4 +1,5 @@
 from createBoardLayout import createBoardLayout
+from UseGenericTacticToGenerateMove import UseGenericTacticToGenerateMove
 from translations import *
 import urllib3
 import copy
@@ -11,11 +12,10 @@ def useEndingTacticsToGenerateMove(StartingLayout, listOfMoves):
     reply=request.data.decode('utf-8')
     try:
         output=formatoutput(reply)
-    except:
-        move,coordinates,piece=UseGenericTacticToGenerateMove(boardLayout, previosMovesList)
-    else:
         uci=output['moves'][0]['uci']
         coordinates=[uci[0:2].upper(),uci[2:5].upper()]
         piece=boardLayout[toTuple(coordinates[0])[1]][toTuple(coordinates[0])[0]]
         move=createBoardLayout(StartingLayout.append(coordinates), listOfMoves)
+    except:
+        move,coordinates,piece=UseGenericTacticToGenerateMove(boardLayout, previosMovesList)
     return move,coordinates,piece

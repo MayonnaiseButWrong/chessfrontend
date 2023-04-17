@@ -89,6 +89,11 @@ const originalBlackPieces = originalPieces[0]
 const originalWhitePieces = originalPieces[1]
 var currentMove = [];
 
+var startup = true
+const setStartUp = (value) => {startup = value}
+var wasStartup = false
+const setWasStartUp = (value) => { wasStartup = value }
+
 //initialising the custom styles for the on screen text
 const textStyles = StyleSheet.create({
     last_moves_text: {
@@ -169,20 +174,22 @@ const TwoPlayerEndGameChess = () => {
     }
 
     const [loading, setLoading] = useState(true)   //when loading is tri=ue, a loading page is shown on screen.
-    const [startup,setStartUp] = useState(true)
 
     useEffect(() => {
         if (loading===true) {
-            if (startup===true) {
+            if (wasStartup===true){
+                setWasStartUp(false)
+            } else if (startup===true) {
                 async function getStartingLayout() {    //loading in the starting layout from the server
                     let temp = await getData('/EndGameChessdata')
                     startingLayout = temp['StaringLayoutString']
                     setCurrentLayout(startingLayout)
                     setPreviosLayout(startingLayout)
                     currentString = toDict(currentLayout);
-                    setStartUp(false)
                     setLoading(false)
                 }
+                setStartUp(false)
+                setWasStartUp(true)
                 getStartingLayout()
             }
         }
@@ -252,7 +259,7 @@ const TwoPlayerEndGameChess = () => {
 
         setPreviosLayout(clone(currentLayout))    //updating the previosLayout
 
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves) //if its checkmate, the checkmate page is shown on screen
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves, false) //if its checkmate, the checkmate page is shown on screen
         checkmateText = '¡¡ '+team + ' Wins !!'
         setCheckmate(checkMateCheck)
         if (checkMateCheck==='Stalemate') {
@@ -317,7 +324,7 @@ const TwoPlayerEndGameChess = () => {
             };
 
             if (moveDone === false) {   //when a move is moved
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);    //checks if the move made is a valid move
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);    //checks if the move made is a valid move
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1] //updating moves

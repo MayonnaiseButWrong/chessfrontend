@@ -232,7 +232,7 @@ const TwoPlayerPeasantsRevoltChess = () => {
 
         setPreviosLayout(clone(currentLayout))    //updating the previosLayout
 
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves) //if its checkmate, the checkmate page is shown on screen
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves, false) //if its checkmate, the checkmate page is shown on screen
         checkmateText = '¡¡ '+team + ' Wins !!'
         setCheckmate(checkMateCheck)
         if (checkMateCheck==='Stalemate') {
@@ -297,7 +297,7 @@ const TwoPlayerPeasantsRevoltChess = () => {
             };
 
             if (moveDone === false) {   //when a move is moved
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);    //checks if the move made is a valid move
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);    //checks if the move made is a valid move
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1] //updating moves

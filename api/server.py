@@ -64,7 +64,7 @@ def generateStartingLayout():
     white=['WK']
     black=['BK']
     isValid=False
-    for i in range(random.randint(0,4)):
+    for i in range(random.randint(1,4)):
         white.append('W'+random.choice(pieces))
     for j in range(random.randint(0, 4)):
         black.append('B'+random.choice(pieces))
@@ -93,7 +93,10 @@ class DailyLayout:
             self.createdDuringSetTime=False
             return self.lastLayout
         if self.createdDuringSetTime==False:
+            self.createdDuringSetTime=True
             self.lastLayout=generateStartingLayout()
+            return self.lastLayout
+        elif self.createdDuringSetTime==True:
             return self.lastLayout
 
 training=Training()

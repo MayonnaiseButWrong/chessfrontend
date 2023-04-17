@@ -252,7 +252,7 @@ const OnePlayerUpsideDownChess = () => {
 
         setPreviosLayout(clone(currentLayout))  //updating the previosLayout
 
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves) //if its checkmate, the checkmate page is shown on screen
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves, true) //if its checkmate, the checkmate page is shown on screen
         checkmateText = '¡¡ '+team + ' Wins !!'
         setCheckmate(checkMateCheck)
         if (checkMateCheck===false) {

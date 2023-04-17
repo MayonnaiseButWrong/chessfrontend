@@ -1,7 +1,7 @@
 import './OnePlayerEndGameChess.css'
 import { Text, StyleSheet } from 'react-native';
 import { Chessboard } from "react-chessboard";
-import {  toTuple, toDict, toUnicode } from './translations.js'
+import { toTuple, toDict, toUnicode } from './translations.js'
 import { MoveSuccessful, isCheckmate } from './Chessengine';
 import React, { useState } from "react";
 import { postData, putData, getData } from './commonInputsAndOutPuts.js'
@@ -41,22 +41,22 @@ function FindPieces(currentLayout) {
 }
 
 function clone(ins) { //clones a board layout using the ability to turn an array into a string. This is necessary to create seperate objects in memory when assigning a new object, rather than the default behavior to create a new pointer to the same object in memory.
-    let string=ins.toString()
+    let string = ins.toString()
     let word = ''
     let letter = ''
-    let out=[]
+    let out = []
     let temp = []
-    for (let i = 0; i < string.length; i++){
-        letter=string[i]
-        if (letter === ','){
+    for (let i = 0; i < string.length; i++) {
+        letter = string[i]
+        if (letter === ',') {
             temp.push(word)
-            word=''
-            if (temp.length>=8) {
+            word = ''
+            if (temp.length >= 8) {
                 out.push(temp)
-                temp=[]
+                temp = []
             }
         } else {
-            word+=letter
+            word += letter
         }
     }
     temp.push(word)
@@ -75,21 +75,26 @@ var whitePiecesTakenText = ''
 var whitePiecesTakenList = []
 var blackPiecesTakenText = ''
 var blackPiecesTakenList = []
-var checkmateText = '¡¡ '+team + ' Wins !!'
+var checkmateText = '¡¡ ' + team + ' Wins !!'
 var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
 
 var currentLayout = clone(startingLayout)//same reasoning as previosLayout
-const setCurrentLayout = (layout) => {currentLayout = layout}
+const setCurrentLayout = (layout) => { currentLayout = layout }
 var previosLayout = clone(startingLayout) //the previosLayout uses a variable rather than an object beause variables are updated immidiately as the are put directly in the call stack, rather than objects which are put through the eventLoop and is updated after the Callstack clears, which is often after a render - which breaks the functionality which the previos moves List attempts to solve.
-const setPreviosLayout = (layout) => {previosLayout = layout}
+const setPreviosLayout = (layout) => { previosLayout = layout }
 var currentString = toDict(currentLayout);
 
 var originalPieces = FindPieces(startingLayout)
 const originalBlackPieces = originalPieces[0]
 const originalWhitePieces = originalPieces[1]
 var currentMove = [];
+
+var startup = true
+const setStartUp = (value) => { startup = value }
+var wasStartup = false
+const setWasStartUp = (value) => { wasStartup = value }
 
 const textStyles = StyleSheet.create({//initialising the custom styles for the on screen text
     last_moves_text: {
@@ -127,7 +132,7 @@ const OnePlayerEndGameChess = () => {
 
     const [white_pieces_taken_text, setwhite_pieces_taken_text] = useState("--");
     const changewhite_pieces_taken_text = (text) => { setwhite_pieces_taken_text(text); }
-    
+
     const [checkmate, setCheckmate] = useState(false)
 
     function unCheckMate() {
@@ -141,7 +146,7 @@ const OnePlayerEndGameChess = () => {
     useEffect(() => {
         let boardLayout = clone(currentLayout)
         setppShow(false)
-        if (promotedPosition.length>0) {
+        if (promotedPosition.length > 0) {
             boardLayout[promotedPosition[1]][promotedPosition[0]] = turn + promotedPiece
             setCurrentLayout(clone(boardLayout))
             currentMove.push([turn + promotedPiece])
@@ -150,61 +155,63 @@ const OnePlayerEndGameChess = () => {
             updateScreen()
         }
     }, [promotedPiece])//runs whenever the promotedPiece object is updated
-    
+
     function changePieceQ() {//updates the state whenever the queen button is pressed
         setPromotedPiece('Q')
-        donePromotion=true
+        donePromotion = true
     }
     function changePieceB() {//updates the state whenever the bishop button is pressed
         setPromotedPiece('B')
-        donePromotion=true
+        donePromotion = true
 
     }
     function changePieceR() {//updates the state whenever the rook button is pressed
         setPromotedPiece('R')
-        donePromotion=true
+        donePromotion = true
     }
     function changePieceN() {//updates the state whenever the knight button is pressed
         setPromotedPiece('N')
-        donePromotion=true
+        donePromotion = true
     }
 
     const [loading, setLoading] = useState(true)   //when loading is tri=ue, a loading page is shown on screen. it becomes false again when the data is recieved
     const [recieved, setRecieved] = useState(false) //is true when data is recieved
-    const [startup,setStartUp] = useState(true)
 
     useEffect(() => {
-        if (loading===true) {
-            if (startup===true) {
+        if (loading === true) {
+            if (wasStartup === true) {
+                setWasStartUp(false)
+            } else if (startup === true) {
                 async function getStartingLayout() {    //loading in the starting layout from the server
                     let temp = await getData('/EndGameChessdata')
                     startingLayout = temp['StaringLayoutString']
                     setCurrentLayout(startingLayout)
                     setPreviosLayout(startingLayout)
                     currentString = toDict(currentLayout);
-                    setStartUp(false)
                     setLoading(false)
                 }
+                setWasStartUp(true)
+                setStartUp(false)
                 getStartingLayout()
-            } else if (recieved===true) {
+            } else if (recieved === true) {
                 updateScreen()
                 setLoading(false)
                 setRecieved(false)
-            } else if (recieved===false) {
+            } else if (recieved === false) {
                 const fetchData = async () => {
-                    let data =  await postData({ 'StartingLayout': startingLayout, 'listofmoves': previosMoves })
-                    currentPiece=data['Piece']
-                    currentMove=data['Coordiantes']
-                    currentLayout=data['NextLayout']
+                    let data = await postData({ 'StartingLayout': startingLayout, 'listofmoves': previosMoves })
+                    currentPiece = data['Piece']
+                    currentMove = data['Coordiantes']
+                    currentLayout = data['NextLayout']
                     currentString = toDict(currentLayout)
                     setRecieved(true)
                 }
                 fetchData()
             }
         }
-    }, [loading,recieved,startup]) //runs whenever the loading, startup or recieved values are changed
+    }, [loading, recieved, startup]) //runs whenever the loading, startup or recieved values are changed
 
-    function updateScreen () { // updates the text information available to the user, such as the pieces taken by each user and the last move made
+    function updateScreen() { // updates the text information available to the user, such as the pieces taken by each user and the last move made
         let currentPieces = []
         let currentBlackPieces = []
         let currentWhitePieces = []
@@ -266,12 +273,12 @@ const OnePlayerEndGameChess = () => {
 
         setPreviosLayout(clone(currentLayout))  //updating the previosLayout
 
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves) //if its checkmate, the checkmate page is shown on screen
-        checkmateText = '¡¡ '+team + ' Wins !!'
+        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves, false) //if its checkmate, the checkmate page is shown on screen
+        checkmateText = '¡¡ ' + team + ' Wins !!'
         setCheckmate(checkMateCheck)
-        if (checkMateCheck===false) {
+        if (checkMateCheck === false) {
             setLoading(true)
-        } else if (checkMateCheck==='Stalemate') {
+        } else if (checkMateCheck === 'Stalemate') {
             checkmateText = '¡¡ Draw !!'
             setCheckmate(true)
         }
@@ -279,7 +286,7 @@ const OnePlayerEndGameChess = () => {
 
     function selectMove() { //runs whenever the SelectMove button is pressed.
         if (moveDone === true) {
-            if (currentPiece.toUpperCase()==='WP'&& toTuple(currentMove[1])[1]<=0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
+            if (currentPiece.toUpperCase() === 'WP' && toTuple(currentMove[1])[1] <= 0) {//checks if a preomotion is needed and calls the onscreen promotions options menu
                 setPromotedPosition(toTuple(currentMove[1]))
                 setppShow(true)
                 donePromotion = false
@@ -328,7 +335,7 @@ const OnePlayerEndGameChess = () => {
                 }
             };
             if (moveDone === false) {   //when a piece is moved
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, true);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1] //updating moves
@@ -359,24 +366,24 @@ const OnePlayerEndGameChess = () => {
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
                 boardCopy[toTuple(currentMove[2][0])[1]][toTuple(currentMove[2][0])[0]] = 'MT'
             }
-        } else if (boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1]==='K') {    //dealing with the different types of promotion
-            if (fromSquare==='E8'&&toSquare==='G8') {
-                boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+        } else if (boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][1] === 'K') {    //dealing with the different types of promotion
+            if (fromSquare === 'E8' && toSquare === 'G8') {
+                boardCopy[toTuple('F8')[1]][toTuple('F8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] + 'R'
                 boardCopy[toTuple('H8')[1]][toTuple('H8')[0]] = 'MT'
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-            } else if (fromSquare==='E8'&&toSquare==='C8') {
-                boardCopy[toTuple('D8')[1]][toTuple('D8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+            } else if (fromSquare === 'E8' && toSquare === 'C8') {
+                boardCopy[toTuple('D8')[1]][toTuple('D8')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] + 'R'
                 boardCopy[toTuple('A8')[1]][toTuple('A8')[0]] = 'MT'
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-            } else if (fromSquare==='E1'&&toSquare==='G1') {
-                boardCopy[toTuple('F1')[1]][toTuple('F1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+            } else if (fromSquare === 'E1' && toSquare === 'G1') {
+                boardCopy[toTuple('F1')[1]][toTuple('F1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] + 'R'
                 boardCopy[toTuple('H1')[1]][toTuple('H1')[0]] = 'MT'
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
-            } else if (fromSquare==='E1'&&toSquare==='C1') {
-                boardCopy[toTuple('D1')[1]][toTuple('D1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0]+'R'
+            } else if (fromSquare === 'E1' && toSquare === 'C1') {
+                boardCopy[toTuple('D1')[1]][toTuple('D1')[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]][0] + 'R'
                 boardCopy[toTuple('A1')[1]][toTuple('A1')[0]] = 'MT'
                 boardCopy[toTuple(toSquare)[1]][toTuple(toSquare)[0]] = boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]]
                 boardCopy[toTuple(fromSquare)[1]][toTuple(fromSquare)[0]] = 'MT'
@@ -394,10 +401,10 @@ const OnePlayerEndGameChess = () => {
     }
 
 
-    if (showpp===true) {//promotion option menu
+    if (showpp === true) {//promotion option menu
         return (
             <div className='pp'>
-            <h2 className='ppheader'>Pick a piece to promote your pawn to</h2>
+                <h2 className='ppheader'>Pick a piece to promote your pawn to</h2>
                 <div className='promotionOptionsGrid'>
                     <div className='buffer'></div>
                     <div className='buffer'></div>
@@ -409,16 +416,16 @@ const OnePlayerEndGameChess = () => {
             </div>
         )
 
-    } else if (loading===true) {
+    } else if (loading === true) {
         return (
             <div className='loadingScreen'>
-                <div className = 'buffer2'></div>
-                <h2 className = 'loadingScreenHeader'>Loading....</h2>
-                <ClipLoader color={'#fff'} size ={150} />
+                <div className='buffer2'></div>
+                <h2 className='loadingScreenHeader'>Loading....</h2>
+                <ClipLoader color={'#fff'} size={150} />
             </div>
         )
 
-    } else if (checkmate===true) {  //checkmate options menu
+    } else if (checkmate === true) {  //checkmate options menu
         putData({ StartingLayout: startingLayout, listofmoves: previosMoves })  //sending data to the server so that it can be used to train the AI and also update the moves in the database
         return (
             <div className='checkmateScreen' onClick={unCheckMate}>

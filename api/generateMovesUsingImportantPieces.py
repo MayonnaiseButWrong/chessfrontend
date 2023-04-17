@@ -226,11 +226,19 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
     moves=[]
     opponentMoves=generateOpponentMoves(boardLayout,opponentImportantPieces)
     found=False
+    if len(importantPieces)>0:
+        modifier = boardLayout[importantPieces[0][1]][importantPieces[0][0]][0]
+    else:
+        if boardLayout[opponentImportantPieces[0][1]][opponentImportantPieces[0][0]][0]=='B':
+            modifier = 'W'
+        else:
+            modifier = 'B'
+    
     for j in range(8):
         if found==True:
             break
         for i in range(8):
-            if boardLayout[j][i]==(boardLayout[importantPieces[0][1]][importantPieces[0][0]][0] + 'K'):
+            if boardLayout[j][i]==(modifier + 'K'):
                 kingPosition=copy.deepcopy([i,j])
                 found=True
                 break
