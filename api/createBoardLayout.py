@@ -1,6 +1,6 @@
 from translations import *
 
-def createBoardLayout(Layout,previosMovesList):
+def createBoardLayout(Layout,previosMovesList): #takes the starting layout and list of previos moves as an input and returns the current board layout
     for move in previosMovesList:
         if len(move)==3:
             if move[2][0][1]=='Q' or move[2][0][1]=='R'or move[2][0][1]=='N'or move[2][0][1]=='B':

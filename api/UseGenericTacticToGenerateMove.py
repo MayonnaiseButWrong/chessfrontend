@@ -84,7 +84,7 @@ def enPassantAllowed(previosMovesList,i):
             return True
     return False
 
-def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
+def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):   #checks if the layout can be found in the database, otherwise it uses the generic method to find the best move
     ChessDb = sqlite3.connect('api\ChessData')
     cursor = ChessDb.cursor()
     try:
@@ -103,7 +103,7 @@ def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
 
 def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(copy.deepcopy(boardLayout))
-    m=pool.submit(generatePossibleMovesUsingImportantPieces,copy.deepcopy(boardLayout), bImportantPieces1, wImportantPieces1,pieces)
+    m=pool.submit(generatePossibleMovesUsingImportantPieces,copy.deepcopy(boardLayout), bImportantPieces1, wImportantPieces1,pieces)    #uses multiprocessing to paralellise the processing for the moves
     pValues,moves,coordinates,coordinate,pieces=[],[],[],[],[]
     for o in m.result():
         moves.append(o[0])
@@ -118,12 +118,12 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
         coordinates.append(coordinate)
         coordinate=[]
     for move in moves:
-        p,q=rateMoveBasedOnWinProbability(move,0)
+        p,q=rateMoveBasedOnWinProbability(move,0)#rates each move
         pValues.append(p*100000/q)
     coordinates,pieces,moves=multiListBubbleSort(coordinates,pieces,moves,pValues)
     flag=True
     count=0
-    for count in range(len(moves)):
+    for count in range(len(moves)): #checks if the move is valid, and then returns it to the player, if not it tries the nest move genetated
         moveType,i=typeOfMove(boardLayout,moves[count])
         if moveType==1:
             if castlingAllowed(previosMovesList)==True:
@@ -138,7 +138,7 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
         else:
             return moves[count],coordinates[count],pieces[count]
 
-if __name__=='__main__':
+if __name__=='__main__':    #used for testing
     defaultLayout=[
         ['MT','WN','WN','WR','WR','WB','WB','WQ'],
         ['BP','BP','BP','BP','BP','BP','BP','BP'],

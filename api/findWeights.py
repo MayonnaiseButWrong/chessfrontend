@@ -1,7 +1,7 @@
 defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
 currentLayout=defaultLayout
 
-def staticWeight(boardLayout,specificPiece):
+def staticWeight(boardLayout,specificPiece):    #returns the static weight of pieces
     weights={
         'P':1,
         'N':3,
@@ -13,7 +13,7 @@ def staticWeight(boardLayout,specificPiece):
     piece=boardLayout[specificPiece[1]][specificPiece[0]][1]
     return weights[piece]
 
-def enPassantMoves(boardLayout,i,j):
+def enPassantMoves(boardLayout,i,j):    #the pieces being threatened by enapssant
     threatening=[]
     if boardLayout[j][i][0]=='W':
         if j==3:
@@ -29,7 +29,7 @@ def enPassantMoves(boardLayout,i,j):
                 threatening.append([i-1,4])
     return threatening
 
-def sort(ins):
+def sort(ins):  #sorting a list using bubble sort
     flag=True
     while flag:
         flag=False
@@ -47,17 +47,17 @@ def sort(ins):
                     falg=True
     return ins
 
-def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
+def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):   #finding what pieces are being threatened recursively using vectors
     VectorsOfPieces={'Q':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],],[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'K':[[[1,0]],[[-1,0]],[[0,1]],[[-0,1]],[[1,1]],[[-1,1]],[[1,-1]],[[-1,-1]]],'B':[[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'R':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],]],'N':[[[2,1]],[[1,2]],[[-2,1]],[[-1,2]],[[2,-1]],[[1,-2]],[[-1,-2]],[[-2,-1]]]}
     threatening=[]
     piece=boardLayout[SpecificPiecePosition[1]][SpecificPiecePosition[0]]
-    if piece[1]=='P':
+    if piece[1]=='P':   #pawns only
         if piece[0]=='W':
             if SpecificPiecePosition[0]<7 and SpecificPiecePosition[1]>1 and boardLayout[SpecificPiecePosition[1]-1][SpecificPiecePosition[0]+1][0]=='B':
                 threatening.append([SpecificPiecePosition[0]+1,SpecificPiecePosition[1]-1])
                 if SpecificPiecePosition[1]==1:
                     temp=boardLayout
-                    temp[1][SpecificPiecePosition[0]]='MT'
+                    temp[1][SpecificPiecePosition[0]]='MT'  #accounting for promotion
                     temp[0][SpecificPiecePosition[0]]='WQ'
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
                     temp[0][SpecificPiecePosition[0]]='WR'
@@ -70,7 +70,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 threatening.append([SpecificPiecePosition[0]-1,SpecificPiecePosition[1]-1])
                 if SpecificPiecePosition[1]==1:
                     temp=boardLayout
-                    temp[1][SpecificPiecePosition[0]]='MT'
+                    temp[1][SpecificPiecePosition[0]]='MT'  #accounting for promotion
                     temp[0][SpecificPiecePosition[0]]='WQ'
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
                     temp[0][SpecificPiecePosition[0]]='WR'
@@ -81,7 +81,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
             if SpecificPiecePosition[1]==1:
                 temp=boardLayout
-                temp[1][SpecificPiecePosition[0]]='MT'
+                temp[1][SpecificPiecePosition[0]]='MT'  #accounting for promotion
                 temp[0][SpecificPiecePosition[0]]='WQ'
                 threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],0])
                 temp[0][SpecificPiecePosition[0]]='WR'
@@ -95,7 +95,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 threatening.append([SpecificPiecePosition[0]+1,SpecificPiecePosition[1]+1])
                 if SpecificPiecePosition[1]==6:
                     temp=boardLayout
-                    temp[6][SpecificPiecePosition[0]]='MT'
+                    temp[6][SpecificPiecePosition[0]]='MT'  #accounting for promotion
                     temp[7][SpecificPiecePosition[0]]='BQ'
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
                     temp[7][SpecificPiecePosition[0]]='BR'
@@ -108,7 +108,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                 threatening.append([SpecificPiecePosition[0]-1,SpecificPiecePosition[1]+1])
                 if SpecificPiecePosition[1]==6:
                     temp=boardLayout
-                    temp[6][SpecificPiecePosition[0]]='MT'
+                    temp[6][SpecificPiecePosition[0]]='MT'  #accounting for promotion
                     temp[7][SpecificPiecePosition[0]]='BQ'
                     threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
                     temp[7][SpecificPiecePosition[0]]='BR'
@@ -120,7 +120,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
             if SpecificPiecePosition[1]==6:
                 temp=boardLayout
                 temp[6][SpecificPiecePosition[0]]='MT'
-                temp[7][SpecificPiecePosition[0]]='BQ'
+                temp[7][SpecificPiecePosition[0]]='BQ'  #accounting for promotion
                 threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
                 temp[7][SpecificPiecePosition[0]]='BR'
                 threatening=threatening+whatPieceIsThisOneThreatening(temp,[SpecificPiecePosition[0],7])
@@ -137,7 +137,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
                     del threatening[index]
                 index+=1
     else:
-        moves=VectorsOfPieces[piece[1]]
+        moves=VectorsOfPieces[piece[1]] #other pieces
         for direction in moves:
             flag=False
             for vector in direction:
@@ -155,7 +155,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
     if boardLayout[SpecificPiecePosition[1]][SpecificPiecePosition[0]]=='WR' and (SpecificPiecePosition==[0,7] or SpecificPiecePosition==[7,7]) and boardLayout[7][5]=='WK':
         temp=boardLayout
         temp[SpecificPiecePosition[1]][SpecificPiecePosition[0]]='MT'
-        if SpecificPiecePosition[0]>5:
+        if SpecificPiecePosition[0]>5:  #accounting for castling
             temp[7][6]='WR'
             threatening= threatening + whatPieceIsThisOneThreatening(temp, [6,7])
         else:
@@ -165,7 +165,7 @@ def whatPieceIsThisOneThreatening(boardLayout,SpecificPiecePosition):
         temp=boardLayout
         temp[SpecificPiecePosition[1]][SpecificPiecePosition[0]]='MT'
         if SpecificPiecePosition[0]>5:
-            temp[0][6]='BR'
+            temp[0][6]='BR'  #accounting for castling
             threatening= threatening + whatPieceIsThisOneThreatening(temp, [6,0])
         else:
             temp[0][4]='BR'
@@ -181,7 +181,7 @@ def findWeights(boardLayout,specificPiece,weights):
     else:
         weightofPiece=weights[specificPiece[1]][specificPiece[0]]
     threatening=whatPieceIsThisOneThreatening(boardLayout,specificPiece)
-    for piece in threatening:
+    for piece in threatening: #checks if all the pieces have weights
         if len(piece)<2:
             piece=piece[0]
         if weights[piece[1]][piece[0]]=='MT':
@@ -190,4 +190,4 @@ def findWeights(boardLayout,specificPiece,weights):
         else:
             weightofPiece+=weights[piece[1]][piece[0]]
     weights[specificPiece[1]][specificPiece[0]]=weightofPiece
-    return weights
+    return weights  #returns a 2d array og all the weights on the board

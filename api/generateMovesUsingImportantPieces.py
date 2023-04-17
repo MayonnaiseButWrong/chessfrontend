@@ -2,7 +2,7 @@ from createBoardLayout import *
 import copy
 VectorsOfPieces={'Q':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],],[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'K':[[[1,0]],[[-1,0]],[[0,1]],[[-0,1]],[[1,1]],[[-1,1]],[[1,-1]],[[-1,-1]]],'B':[[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'R':[[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],]],'N':[[[2,1]],[[1,2]],[[-2,1]],[[-1,2]],[[2,-1]],[[1,-2]],[[-1,-2]],[[-2,-1]]]}
 
-def removeDuplicates(l):
+def removeDuplicates(l):    #looks through a list and removes the duplicate elemets. requres the input list to be sorted
     if len(l)<=1:
         return l
     temp=[]
@@ -18,7 +18,7 @@ def removeDuplicates(l):
         flag=False
     return temp
 
-def generateOpponentMoves(boardLayout,importantPieces):
+def generateOpponentMoves(boardLayout,importantPieces): #generates squares that the opponent's pieces are threatening
     moves=[]
     for piece in importantPieces:
         if boardLayout[piece[1]][piece[0]][1]=='K':
@@ -41,7 +41,7 @@ def generateOpponentMoves(boardLayout,importantPieces):
                                 break
     return moves
 
-def enPassantMoves(boardLayout,i,j):
+def enPassantMoves(boardLayout,i,j):    #the moves from en passant
     moves=[]
     if boardLayout[j][i][0]=='W':
         if j==3:
@@ -73,7 +73,7 @@ def enPassantMoves(boardLayout,i,j):
                 moves.append([startSquare,endSquare,positionList])
     return moves
 
-def castling(boardLayout,i,j,opponentMoves):
+def castling(boardLayout,i,j,opponentMoves):    #moves from castling
     l,r=True,True
     moves=[]
     if boardLayout[j][i][0]=='W':
@@ -113,7 +113,7 @@ def castling(boardLayout,i,j,opponentMoves):
     return moves
             
     
-def pawnMoves(boardLayout,i,j):
+def pawnMoves(boardLayout,i,j): #the moves generated from pawns
     moves=[]
     if boardLayout[j][i][0]=='B':
         if i>0 and i<6:
@@ -144,7 +144,7 @@ def pawnMoves(boardLayout,i,j):
     moves=moves+enPassantMoves(boardLayout,i,j)
     return moves
 
-def isCheckAfterMoveingKing(kingposition,layout):
+def isCheckAfterMoveingKing(kingposition,layout):   #checks if the king is in check after it has been moved
     if layout[kingposition[1]][kingposition[0]][0]=='B':
         modifier='W'
     else:
@@ -187,7 +187,7 @@ def kingMoves(i,j,opponentMoves,boardLayout):
                 moves.append([[i,j],[i+vector[0],j+vector[1]]])
     return moves
 
-def isCheckList(i,j,boardLayout,opponentMoves):
+def isCheckList(i,j,boardLayout,opponentMoves): #generates a list of coordinates that would block a check. the length of the list is 0 when not in check
     if len(opponentMoves)==0:
         return []
     VectorsOfPieces={'Q':[[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[0,0],[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,0],[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],],[[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],],[[0,0],[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9],],[[0,0],[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9],],[[0,0],[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9]]],'K':[[[0,0],[1,0]],[[0,0],[-1,0]],[[0,0],[0,1]],[[0,0],[-0,1]],[[0,0],[1,1]],[[0,0],[-1,1]],[[0,0],[1,-1]],[[0,0],[-1,-1]]],'B':[[[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9]],[[0,0],[-1,1],[-2,2],[-3,3],[-4,4],[-5,5],[-6,6],[-7,7],[-8,8],[-9,9]],[[0,0],[1,-1],[2,-2],[3,-3],[4,-4],[5,-5],[6,-6],[7,-7],[8,-8],[9,-9]],[[0,0],[-1,-1],[-2,-2],[-3,-3],[-4,-4],[-5,-5],[-6,-6],[-7,-7],[-8,-8],[-9,-9],]],'R':[[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],[[0,0],[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],],[[0,0],[0,-1],[0,-2],[0,-3],[0,-4],[0,-5],[0,-6],[0,-7],[0,-8],[0,-9],]],'N':[[[0,0],[2,1]],[[0,0],[1,2]],[[0,0],[-2,1]],[[0,0],[-1,2]],[[0,0],[2,-1]],[[0,0],[1,-2]],[[0,0],[-1,-2]],[[0,0],[-2,-1]]],'P':[[[0,0],[1,1]],[[0,0],[-1,1]]]}
@@ -207,7 +207,7 @@ def isCheckList(i,j,boardLayout,opponentMoves):
                             squares.append([move[0][0]+modifier*vector[0],move[0][1]+modifier*vector[1]])
     return squares
   
-def isCheckUsingVectors(kingI,kingJ,pieceI,pieceJ,boardLayout):
+def isCheckUsingVectors(kingI,kingJ,pieceI,pieceJ,boardLayout): #uses vectors to check if the king is in check
     vector=[pieceI-kingI,pieceJ-kingJ]
     if vector[0]==vector[1] or vector[0]==-vector[1] or vector[0]==0 or vector[1]==0:
         if vector[0]==0:
@@ -232,13 +232,13 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
         if boardLayout[opponentImportantPieces[0][1]][opponentImportantPieces[0][0]][0]=='B':
             modifier = 'W'
         else:
-            modifier = 'B'
+            modifier = 'B'  #when there are no important pieces, then the easy way to find which turn it is can't be used and a convoluted way of finding the turn utilising the opponent moves must be used.
     
     for j in range(8):
         if found==True:
             break
         for i in range(8):
-            if boardLayout[j][i]==(modifier + 'K'):
+            if boardLayout[j][i]==(modifier + 'K'): #turn used to find the position of the king
                 kingPosition=copy.deepcopy([i,j])
                 found=True
                 break
@@ -259,7 +259,7 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
                     if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
                         if not (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
                             if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
-                                if isCheckUsingVectors(copy.deepcopy(kingPosition)[0],copy.deepcopy(kingPosition)[1],piece[0],piece[1],boardLayout)==False:
+                                if isCheckUsingVectors(copy.deepcopy(kingPosition)[0],copy.deepcopy(kingPosition)[1],piece[0],piece[1],boardLayout)==False:#find the moves for normal pieces, accounting for castling
                                     moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
                                     break  
                             else:
@@ -274,7 +274,7 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
                         if (piece[0]+vector[0])>=0 and (piece[0]+vector[0])<8 and (piece[1]+vector[1])>=0 and (piece[1]+vector[1])<8:
                             if not (boardLayout[piece[1]+vector[1]][piece[0]+vector[0]]=='MT'):
                                 if not (boardLayout[piece[1]][piece[0]][0]==boardLayout[piece[1]+vector[1]][piece[0]+vector[0]][0]):
-                                    if isCheckUsingVectors(copy.deepcopy(kingPosition)[0],copy.deepcopy(kingPosition)[1],piece[0],piece[1],boardLayout)==False:
+                                    if isCheckUsingVectors(copy.deepcopy(kingPosition)[0],copy.deepcopy(kingPosition)[1],piece[0],piece[1],boardLayout)==False:#find the moves for normal pieces
                                         moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
                                         break  
                                 else:
@@ -283,13 +283,13 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
                                 moves.append([piece,[piece[0]+vector[0],piece[1]+vector[1]]])
                            
     if len(moves)<=0 and CheckMovesFlag==False:
-        otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces or boardLayout[o[1]][o[0]][0]==boardLayout[opponentImportantPieces[0][1]][opponentImportantPieces[0][0]][0])]
+        otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces or boardLayout[o[1]][o[0]][0]==boardLayout[opponentImportantPieces[0][1]][opponentImportantPieces[0][0]][0])]   #if the opponent moves yield no moves, try using the rest of the pieces
         if len(otherPieces)>0:
             otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces,pieces,True)
             moves=otherMoves
     
     checkList=isCheckList(copy.deepcopy(kingPosition)[0], copy.deepcopy(kingPosition)[1], copy.deepcopy(boardLayout), opponentMoves)
-    if not checkList==[]:
+    if not checkList==[]:#if the king is in check
         checkMoves=[]
         for move in moves:
             if boardLayout[move[0][1]][move[0][0]][1]=='K':
@@ -298,7 +298,7 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
             else:
                 if move[1] in checkList:    
                         checkMoves.append(move)
-        if len(checkMoves)<=0 and CheckMovesFlag==False:
+        if len(checkMoves)<=0 and CheckMovesFlag==False:#if the king is and check, but the current important pieces don't have any valid moves
             otherPieces=[o for o in pieces if not (o in importantPieces or o in opponentImportantPieces or boardLayout[o[1]][o[0]][0]==boardLayout[opponentImportantPieces[0][1]][opponentImportantPieces[0][0]][0])]
             if len(otherPieces)>0:
                 otherMoves=generateMoves(boardLayout,otherPieces,opponentImportantPieces,pieces,True)
@@ -312,11 +312,11 @@ def generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,Che
             else:
                 checkmoves=[]
         moves=checkMoves
-    moves=sorted(moves)
-    m=removeDuplicates(moves)
+    moves=sorted(moves)#sorting the moves
+    m=removeDuplicates(moves)#remove duplicate moves so they aren't searched through, which would waste time
     return copy.deepcopy(m)
 
-def generateBoardLayout(move,layout):
+def generateBoardLayout(move,layout):   #generating a board layout from a move
     if len(move)==2:
         layout[move[1][1]][move[1][0]]=layout[move[0][1]][move[0][0]]
         layout[move[0][1]][move[0][0]]='MT'
@@ -330,7 +330,7 @@ def generateBoardLayout(move,layout):
     return layout
             
 
-def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
+def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):  #returns only board layout
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:
@@ -340,7 +340,7 @@ def generateMovesUsingImportantPieces(boardLayout,importantPieces,opponentImport
             newLayout=[]
     return outputList
 
-def generatePossibleMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):
+def generatePossibleMovesUsingImportantPieces(boardLayout,importantPieces,opponentImportantPieces,pieces):  #returns both board layout and the move
     moves=generateMoves(boardLayout,importantPieces,opponentImportantPieces,pieces,False)
     outputList,newLayout=[],[]
     if len(moves)>0:
@@ -351,7 +351,7 @@ def generatePossibleMovesUsingImportantPieces(boardLayout,importantPieces,oppone
     return outputList
 
 
-if __name__=='__main__':
+if __name__=='__main__':    #used module testing
     import time
     defaultLayout=[
         ['BR','BN','BB','BQ','BK','BB','BN','BR'],

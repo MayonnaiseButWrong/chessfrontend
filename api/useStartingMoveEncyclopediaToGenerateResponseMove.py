@@ -14,7 +14,7 @@ try:   #initialising the database
         raise ValueError('No Data')
 except:
     cursor.execute('DROP TABLE StartingMoves')
-    cursor.execute('CREATE TABLE StartingMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))')
+    cursor.execute('CREATE TABLE StartingMoves (XenonNumber VARCHAR(80), BestMovesXenonNumber VARCHAR(80), Piece CHAR(2), Move VARCHAR(6), Rating FLOAT, PRIMARY KEY(XenonNumber, BestMovesXenonNumber))') ##regenrating database from text file
     
     
     
@@ -79,7 +79,7 @@ except:
 cursor.close()
     #*********************************************************************************************************************************************************************************************************************# <
 
-def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout):
+def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout): 
     ChessDb = sqlite3.connect('api\ChessData')
     cursor = ChessDb.cursor()
     defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
@@ -96,7 +96,7 @@ def useStartingMoveEncyclopediaToGenerateResponseMove(listOfMoves,StartingLayout
                 coordinates.append(c[4:5])
             return move, coordinates, result[0][2]
         else:
-            return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)
+            return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)  #if the layout is in the database it uses that, otherwise it uses the midgame tactics
     else:
         cursor.close()
         return UseGenericTacticToGenerateMove(boardLayout,listOfMoves)

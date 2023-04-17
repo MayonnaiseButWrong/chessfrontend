@@ -8,7 +8,7 @@ http = urllib3.PoolManager()
 
 def useEndingTacticsToGenerateMove(StartingLayout, listOfMoves):
     boardLayout=createBoardLayout(copy.deepcopy(StartingLayout), copy.deepcopy(listOfMoves))
-    request=http.request('GET','http://tablebase.lichess.ovh/standard' + formatrequest(toFEN(boardLayout)))
+    request=http.request('GET','http://tablebase.lichess.ovh/standard' + formatrequest(toFEN(boardLayout))) # reuests from the table base from lichess
     reply=request.data.decode('utf-8')
     try:
         output=formatoutput(reply)

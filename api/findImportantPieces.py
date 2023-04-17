@@ -2,7 +2,7 @@ from findWeights import findWeights
 from translations import *
 import copy
 
-def bubbleSort(seconadaryList,baseList):
+def bubbleSort(seconadaryList,baseList):    #sorting the sedondary list based on the base list
     flag=True
     while flag==True:
         flag=False
@@ -17,7 +17,7 @@ def bubbleSort(seconadaryList,baseList):
                 flag=True
     return seconadaryList
 
-def findImportantPieces(boardLayout):
+def findImportantPieces(boardLayout):   #finds the important pieces and ranks them based on the board layout. returns the white and black important pieces seperately, along side the total number of pieces on the board
     #print(boardLayout,'findImportantPieces')
     weights=[['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT']]
     for j in range(8):
@@ -52,10 +52,5 @@ def findImportantPieces(boardLayout):
             pieces+=1
         else:
             break
-    #for a in boardLayout:
-    #    print(a)
-    #for b in range(len(listOfPieces)):
-    #    print(boardLayout[sortedList[b][1]][sortedList[b][0]],toCoOrdinates(sortedList[b]),listOfWeights[b])
-    #print(len(wImportantPieces),len(bImportantPieces))
     return wImportantPieces,bImportantPieces,sortedList
                     
