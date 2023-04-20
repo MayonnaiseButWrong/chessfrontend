@@ -1,4 +1,4 @@
-async function postData( data = {}) { //posting data and expecting a response based on the data given
+async function postData( data = {}) {
     const response = await fetch("/moverequest", {
       method: "POST",
       mode: "cors",
@@ -15,7 +15,7 @@ async function postData( data = {}) { //posting data and expecting a response ba
     return output
 }
 
-function putData(data = {}) { //putting data and expecting a message recieved respone
+function putData(data = {}) {
     const response = fetch("/outputgame", {
       method: "PUT",
       mode: "cors",
@@ -30,9 +30,17 @@ function putData(data = {}) { //putting data and expecting a message recieved re
     });
 }
 
-async function getData(url = "") {  //requesting data from a url
+async function getData(url = "") {
   const response = await fetch(url, {
     method: "GET",
+    //mode: "cors",
+    //cache: "no-cache",
+    //credentials: "same-origin",
+    //headers : { 
+    //  Accept: 'application/json'
+    // },
+    //redirect: "follow",
+    //referrerPolicy: "no-referrer",
   })
   const abc = await response.json()
   return abc

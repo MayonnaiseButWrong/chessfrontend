@@ -9,8 +9,6 @@ import threading
 
 stockfish=Stockfish('api\stockfish.exe')
 
-# allows the developer to train the NNUE and database
-
 def DevTraining():
     print('here')
     defaultLayout=      [toFEN([['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']]) + ' w KQkq - 0 0' , [['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']],'defaultLayout']
@@ -95,13 +93,13 @@ def task():
         DevTraining()
 
 
-event=threading.Event()
-t=threading.Thread(None,task)
+#event=threading.Event()
+#t=threading.Thread(None,task)
 
-if len(input('are you sure you want to start?: '))<=0:
-    for i in range(10):
-        DevTraining()
-        #t.start()
-        #input('stop?: ')
-        #event.set()
-        #t.join()
+#if len(input('are you sure you want to start?: '))<=0:
+for i in range(10):
+    DevTraining()
+    #t.start()
+    #input('stop?: ')
+    #event.set()
+    #t.join()

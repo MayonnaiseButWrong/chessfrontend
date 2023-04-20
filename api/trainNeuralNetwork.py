@@ -17,7 +17,7 @@ stockfish.set_depth(10)
 NNUE=NeuralNetwork([4*64,64,10])
 maxDepth=1
 
-def tobinary(ins):  #turns the output from stockfish into a binray respose, similar to the output from the ai
+def tobinary(ins):
     out=[]
     if ins<1:
         while ins<1:
@@ -64,8 +64,9 @@ def tomantissa(ins):
             return exponent+ins[-7:-1]   
     else:
         return [0,0,0,0]+ins
+    #fix this pls
     
-def format(ins):    #formats the stockfish output into a one that the nnue can be trained from
+def format(ins):
     out=[]
     if ins==0:
         return[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]
@@ -74,7 +75,7 @@ def format(ins):    #formats the stockfish output into a one that the nnue can b
         out.append([b])
     return out
 
-def comparingProbabilities(boardLayout,depth):  #generating board layouts for the nnue and databases to e trained on
+def comparingProbabilities(boardLayout,depth):
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(boardLayout)
     wmoves=generateMovesUsingImportantPieces(boardLayout, wImportantPieces1, bImportantPieces1,pieces)
     for wmove in wmoves:
@@ -94,7 +95,7 @@ def comparingProbabilities(boardLayout,depth):  #generating board layouts for th
                         evaluation=0
                     else:
                         evaluation=format(1/evaluation)
-                    NNUE.train([bmove,evaluation])#trains the nnue
+                    NNUE.train([bmove,evaluation])
                     if depth<maxDepth:
                         depth+=1
                         comparingProbabilities(bmove, depth)
@@ -113,12 +114,12 @@ def trainNeuralNetwork(StartingLayout,listOfMoves):
                 for i in range(8):
                     if not move[j][i]=='MT':
                         count+=1
-            updateDatabase(to_xenonnumber(previosMove),to_xenonnumber(move),rateMoveBasedOnWinProbability(move, 0),count,previosMove[toTuple(listOfMoves[count][0])[1]][toTuple(listOfMoves[count][0])[0]],listOfMoves[count]) #updates the database
+            #updateDatabase(to_xenonnumber(previosMove),to_xenonnumber(move),rateMoveBasedOnWinProbability(move, 0),count,previosMove[toTuple(listOfMoves[count][0])[1]][toTuple(listOfMoves[count][0])[0]],listOfMoves[count])
             previosMove=move
         else:
             previosMove=createBoardLayout(StartingLayout, listOfMoves[0:count+1])
     
-if __name__=="__main__":    #used for module testing
+if __name__=="__main__":
     #defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
     #isvalid=stockfish.is_fen_valid(toFEN(defaultLayout) + ' b - - 0 1')
     #if isvalid is True:

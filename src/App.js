@@ -19,7 +19,7 @@ import {TwoPlayerEndGameChess} from './TwoPlayerEndGameChess.js';
 import {OnePlayerEndGameChess} from './OnePlayerEndGameChess.js';
 import OptionsPage from './OptionsPage.js';
 
-class App extends Component { //calls all the components and links all the buttons together
+class App extends Component {
   render (){
     return (
       <BrowserRouter>

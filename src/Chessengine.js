@@ -2,6 +2,9 @@ import { toTuple, toCoOrdinates } from './translations.js'
 
 var AllMoves = [];
 
+//https://www.geeksforgeeks.org/how-to-connect-reactjs-with-flask-api/
+//https://acloudguru.com/blog/engineering/create-a-serverless-python-api-with-aws-amplify-and-flask
+
 function clone(ins) { //clones a board layout using the ability to turn an array into a string. This is necessary to create seperate objects in memory when assigning a new object, rather than the default behavior to create a new pointer to the same object in memory.
     let string = ins.toString()
     let word = ''
@@ -26,7 +29,7 @@ function clone(ins) { //clones a board layout using the ability to turn an array
     return out
 }
 
-function generateQMoves() { //generates moves for the queen
+function generateQMoves() {
     let moves = [];
     let direction = [];
     for (let i = 1; i < 10; i++) { direction.push([Number(i), Number(0)]); };
@@ -55,7 +58,7 @@ function generateQMoves() { //generates moves for the queen
     return moves
 }
 
-function generateBMoves() { //generates moves for the bishop
+function generateBMoves() {
     let moves = [];
     let direction = [];
     for (let i = 1; i < 10; i++) { direction.push([i, i]); }
@@ -72,7 +75,7 @@ function generateBMoves() { //generates moves for the bishop
     return moves
 };
 
-function generateRMoves() { //generates moves for the rook
+function generateRMoves() {
     let moves = [];
     let direction = [];
     for (let i = 1; i < 10; i++) { direction.push([i, 0]); }
@@ -89,7 +92,7 @@ function generateRMoves() { //generates moves for the rook
     return moves
 }
 
-function findKing(currentLayout, turn) {    //finds the king
+function findKing(currentLayout, turn) {
     for (let j = 0; j < 8; j++) {
         for (let i = 0; i < 8; i++) {
             if (turn === 'W') {
@@ -106,7 +109,7 @@ function findKing(currentLayout, turn) {    //finds the king
     };
 };
 
-function checkPawnSpecialMove(currentLayout, turn, previosMovesList) {  //check the moves for a pawn
+function checkPawnSpecialMove(currentLayout, turn, previosMovesList) {
     let moves = [];
     let pawnNormalMoves = [];
     let enPassantMoves = [];
@@ -140,7 +143,7 @@ function checkPawnSpecialMove(currentLayout, turn, previosMovesList) {  //check 
     return moves
 };
 
-function pawnNormal(currentLayout, turn, isOpponentMoves) { //checks the normal moves for a pawm. it can move forward one square, unless bloacked. it can take diagonally forwards.
+function pawnNormal(currentLayout, turn, isOpponentMoves) {
     let moves = []
     let currentPiece = ''
     for (let j = 0; j < 8; j++) {
@@ -185,7 +188,7 @@ function pawnNormal(currentLayout, turn, isOpponentMoves) { //checks the normal 
     return moves
 }
 
-function enPassant(currentLayout, turn, previosMovesList) { //checks if enapssant is possible and adds it to the moves
+function enPassant(currentLayout, turn, previosMovesList) {
     let positionList = [];
     let enPassantMoves = [];
     let startSquare = '';
@@ -244,7 +247,7 @@ function enPassant(currentLayout, turn, previosMovesList) { //checks if enapssan
     return enPassantMoves
 };
 
-function opponentKingMoves(KingPosition) {  //check the moves for the opponent's king
+function opponentKingMoves(KingPosition) {
     let moves = []
     let i = 0
     let j = 0
@@ -260,7 +263,7 @@ function opponentKingMoves(KingPosition) {  //check the moves for the opponent's
     return moves
 }
 
-function isCheckAfterMoveingKing(kingposition, layout) {    //after a piece moves, it checks if the king is safe
+function isCheckAfterMoveingKing(kingposition, layout) {
     let modifier = (layout[kingposition[1]][kingposition[0]][0] === 'W') ? 'B' : 'W'
     let m = (modifier === 'B') ? 1 : -1
     if (kingposition[0] - 1 >= 0 && kingposition[1] + m * 1 < 8 && kingposition[1] + m * 1 >= 0 && layout[kingposition[1] + m * 1][kingposition[0] - 1] === 'WP') { return true }
@@ -284,7 +287,7 @@ function isCheckAfterMoveingKing(kingposition, layout) {    //after a piece move
     return false
 }
 
-function kingMoves(KingPosition, opponentMoves, boardLayout) {  //checks the king moves for the player who's turn it is
+function kingMoves(KingPosition, opponentMoves, boardLayout) {
     let moves = []
     let i = 0
     let j = 0
@@ -319,7 +322,7 @@ function kingMoves(KingPosition, opponentMoves, boardLayout) {  //checks the kin
     return moves
 }
 
-function checkVectors(currentLayout, turn, KingPosition, isOpponentMoves) { //checks the moves for the queen, rooks, bishops and knights using vectors.
+function checkVectors(currentLayout, turn, KingPosition, isOpponentMoves) {
     let Qmoves = generateQMoves();
     let Bmoves = generateBMoves();
     let Rmoves = generateRMoves();
@@ -399,7 +402,7 @@ function checkVectors(currentLayout, turn, KingPosition, isOpponentMoves) { //ch
     return moves
 };
 
-function castling(previosMovesList, turn, currentLayout) {  //checks if castling is possible
+function castling(previosMovesList, turn, currentLayout) {
     let l = true;
     let r = true;
     let currentSquare = [];
@@ -535,7 +538,7 @@ function castling(previosMovesList, turn, currentLayout) {  //checks if castling
     return []
 };
 
-function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare) { //it checks if the king is in check after a piece is being moved
+function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare) {
     let vector = [pieceI - kingI, pieceJ - kingJ]
     let modulus = 0
     let unitVector = []
@@ -570,7 +573,7 @@ function isCheckUsingVector(kingI, kingJ, pieceI, pieceJ, boardLayout, endSquare
     return false
 }
 
-function findLine(position1, piece, position2) {    //generates a line of points between two different pieces
+function findLine(position1, piece, position2) {
     let vector = [];
     let Qmoves = generateQMoves();
     let Bmoves = generateBMoves();
@@ -618,7 +621,7 @@ function findLine(position1, piece, position2) {    //generates a line of points
     return Line
 };
 
-function isCheck(boardLayout, KingPosition, opponentMoves) {    // finds if it is check
+function isCheck(boardLayout, KingPosition, opponentMoves) {
     let i = toTuple(KingPosition)[0]
     let j = toTuple(KingPosition)[1]
     if (opponentMoves.length === 0) { return [] }
@@ -663,7 +666,7 @@ function isCheck(boardLayout, KingPosition, opponentMoves) {    // finds if it i
 
 }
 
-function generateOpponenMoves(currentLayout, turn) {    //generates all the opponent's moves
+function generateOpponenMoves(currentLayout, turn) {
     turn = (turn === 'W') ? 'B' : 'W'
     let opponentMoves = [];
     let PawnMoves = [];
@@ -678,7 +681,7 @@ function generateOpponenMoves(currentLayout, turn) {    //generates all the oppo
     return opponentMoves
 }
 
-function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPossible) {   //generates all the possible moves for the player who's currently playing
+function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPossible) {
     let moves = [];
     let PawnSpecialMoves = [];
     let check = {};
@@ -733,7 +736,7 @@ function generatePossibleMoves(currentLayout, turn, previosMovesList, castlingPo
     };
 };
 
-function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, castlingPossible) {    //checks if the move was successful by looking through all of the possible moves
+function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, castlingPossible) {
     let buffer = generateMoves(currentLayout, turn, previosMoves, castlingPossible);
     let moves = buffer[0]
     for (let Move = 0; Move < moves.length; Move++) {
@@ -744,7 +747,7 @@ function MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves,
     return [false, ['nope']];
 };
 
-function isCheckmate(currentLayout, turn, previosMoves, castlingPossible) { //checks if it is checkmate
+function isCheckmate(currentLayout, turn, previosMoves, castlingPossible) {
     let buffer = generateMoves(currentLayout, turn, previosMoves, castlingPossible);
     let moves = buffer[0]
     let isCheck = buffer[1]
@@ -758,7 +761,7 @@ function isCheckmate(currentLayout, turn, previosMoves, castlingPossible) { //ch
     return false
 }
 
-function generateMoves(currentLayout, turn, previosMoves) { //generates moves
+function generateMoves(currentLayout, turn, previosMoves) {
     AllMoves = generatePossibleMoves(currentLayout, turn, previosMoves);
     return AllMoves
 }
