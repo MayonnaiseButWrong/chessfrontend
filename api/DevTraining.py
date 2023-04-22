@@ -125,9 +125,6 @@ def trainOnGames():
                 previosLayout=currentLayout
                 listOfMoves.append(move)
             trainNeuralNetwork(StartingLayout, listOfMoves)
-
-trainOnGames()
-
 #event=threading.Event()
 #t=threading.Thread(None,task)
 
