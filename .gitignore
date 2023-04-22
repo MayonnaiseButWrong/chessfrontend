@@ -10,6 +10,7 @@
 
 #pychace
 /api/__pycache__/
+/api/DevTraining.py
 
 # production
 /build
