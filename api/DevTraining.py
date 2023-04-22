@@ -4,8 +4,10 @@ from trainNeuralNetwork import trainNeuralNetwork
 from translations import *
 from createBoardLayout import createBoardLayout
 import random
+import chess.pgn
 import chess
 import threading
+import os
 
 stockfish=Stockfish('api\stockfish.exe')
 
@@ -83,7 +85,7 @@ def DevTraining():
             createBoardLayout(StartingLayout, listOfMoves[0:i])
         except:
             raise  ValueError('move is ',listOfMoves[i-1:i+1],' and i is ',i,' and list of moves is ',listOfMoves)
-            
+    print(StartingLayout,listOfMoves)  
     trainNeuralNetwork(StartingLayout,listOfMoves)
 
 def task():
@@ -92,13 +94,46 @@ def task():
             break
         DevTraining()
 
+def trainOnGames():
+    print('here')
+    StartingLayout = [['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']]
+    directory = 'games'
+    for filename in os.listdir(directory):
+        pgn = open(os.path.join(directory, filename))
+        while True:
+            listOfMoves = []
+            game = chess.pgn.read_game(pgn)
+            board=game.board()
+            print('here')
+            previosLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]
+            previosxenonnumber=to_xenonnumber(previosLayout)
+            for n in game.mainline_moves():
+                board.push(n)    #moveing the move ont the board
+                m=n.uci()
+                fen=board.fen()
+                currentLayout=fromFENtoBoardLayout(fen)
+                currentxenonnumber=to_xenonnumber(currentLayout)
+                move=[m[0].upper()+m[1],m[2].upper()+m[3]]
+                if len(m)>4:
+                    move.append(['B'+m[4].upper()])
+                elif previosLayout[toTuple(move[0])[1]][toTuple(move[0])[0]][1]=='P' and toTuple(move[0])[1]==3:
+                    if toTuple(move[1])[0]-toTuple(move[0])[0]>0 and previosLayout[toTuple(move[0])[1]][toTuple(move[0])[0]+1][1]=='P':
+                        move.append([toCoOrdinates([toTuple(move[0])[0]+1,toTuple(move[0])[1]])])
+                    elif toTuple(move[1])[0]-toTuple(move[0])[0]<0 and previosLayout[toTuple(move[0])[1]][toTuple(move[0])[0]-1][1]=='P':
+                        move.append([toCoOrdinates([toTuple(move[0])[0]-1,toTuple(move[0])[1]])])
+                previosxenonnumber=currentxenonnumber
+                previosLayout=currentLayout
+                listOfMoves.append(move)
+            trainNeuralNetwork(StartingLayout, listOfMoves)
+
+trainOnGames()
 
 #event=threading.Event()
 #t=threading.Thread(None,task)
 
 #if len(input('are you sure you want to start?: '))<=0:
-for i in range(10):
-    DevTraining()
+#for i in range(10):
+    #DevTraining()
     #t.start()
     #input('stop?: ')
     #event.set()

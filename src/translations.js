@@ -175,4 +175,55 @@ function stringToList(InputString) {
     return outputlist
 }
 
-export { toFEN, toDict, toTuple, toCoOrdinates, toBoardLayout, toXenonnumber, toUnicode, listToString, stringToList };
+function fromFENtoBoardLayout(ins) {
+    let chars=['r','R','b','B','n','N','q','Q','k','K','p','P','1','2','3','4','5','6','7','8']
+    let output = []
+    let direction = []
+    let letter = ''
+    let includes = false
+    ins+=' '
+    for (let count = 0; count < ins.length; count++) {
+        letter = ins[count]
+        if (letter === ' ') {
+            break
+        } else if (letter === '/') {
+            output.push(direction)
+            direction = []
+        }
+        includes = false
+        for (let a = 0; a < chars.length; a++) {if (chars[a]===letter) {includes = true}}
+        if (includes === true) {
+            if (letter === 'r') {
+                direction.push('WR')
+            } else if (letter === 'b') {
+                direction.push('WB')
+            } else if (letter === 'q') {
+                direction.push('WQ')
+            } else if (letter === 'k') {
+                direction.push('WK')
+            } else if (letter === 'n') {
+                direction.push('WN')
+            } else if (letter === 'p') {
+                direction.push('WP')
+            } else if (letter === 'R') {
+                direction.push('BR')
+            } else if (letter === 'b') {
+                direction.push('BB')
+            } else if (letter === 'Q') {
+                direction.push('BQ')
+            } else if (letter === 'K') {
+                direction.push('BK')
+            } else if (letter === 'N') {
+                direction.push('BN')
+            } else if (letter === 'P') {
+                direction.push('BP')
+            } else {
+                for (let a = 0; a < Number(letter); a++) {direction.push('MT')}
+            }
+        }
+    }
+    output.push(direction)
+    return output.reverse()
+}
+
+export { toFEN, toDict, toTuple, toCoOrdinates, toBoardLayout, toXenonnumber, toUnicode, listToString, stringToList, fromFENtoBoardLayout };

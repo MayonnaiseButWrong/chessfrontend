@@ -7,6 +7,7 @@ from updateDatabase import updateDatabase
 from NeuralNetwork4 import*
 import time
 import sys
+import copy
 
 #finding a way to constantly generate a dataset was out of the scope of this project, so i am just assuming that whatever stockish says is the best possible move and using that to train my own NNUE
 from stockfish import Stockfish
@@ -89,13 +90,16 @@ def comparingProbabilities(boardLayout,depth):
                 if bmove!=prevmove:
                     fen=toFEN(bmove)+' b - - 0 1'
                     stockfish.set_fen_position(fen)
-                    evaluation=stockfish.get_top_moves(1)
-                    evaluation=evaluation[0]['Mate']
-                    if evaluation==None:
-                        evaluation=0
+                    if stockfish.is_fen_valid(fen):
+                        evaluation=stockfish.get_top_moves(1)
+                        evaluation=evaluation[0]['Mate']
+                        if evaluation==None:
+                            evaluation=0
+                        else:
+                            evaluation=format(1/evaluation)
+                        NNUE.train([bmove,evaluation])
                     else:
-                        evaluation=format(1/evaluation)
-                    NNUE.train([bmove,evaluation])
+                        print('crashed')
                     if depth<maxDepth:
                         depth+=1
                         comparingProbabilities(bmove, depth)
@@ -103,21 +107,35 @@ def comparingProbabilities(boardLayout,depth):
                     
 def trainNeuralNetwork(StartingLayout,listOfMoves):
     for count in range(len(listOfMoves)):
-        move=createBoardLayout(StartingLayout, listOfMoves[0:count+1])
+        move=createBoardLayout(copy.deepcopy(StartingLayout), listOfMoves[0:count+1])
         comparingProbabilities(move, 0)
-    count,previosMove=0,[]
-    for count in range(len(listOfMoves)):
-        if count>0:
-            move=createBoardLayout(move, listOfMoves[0:count+1])
-            count=0
-            for j in range(8):
-                for i in range(8):
-                    if not move[j][i]=='MT':
-                        count+=1
-            #updateDatabase(to_xenonnumber(previosMove),to_xenonnumber(move),rateMoveBasedOnWinProbability(move, 0),count,previosMove[toTuple(listOfMoves[count][0])[1]][toTuple(listOfMoves[count][0])[0]],listOfMoves[count])
-            previosMove=move
-        else:
-            previosMove=createBoardLayout(StartingLayout, listOfMoves[0:count+1])
+        #fen=toFEN(move)+' b - - 0 1'
+        #for a in move:
+        #    print(a)
+        #stockfish.set_fen_position(fen)
+        #print('here',fen)
+        #print(stockfish.is_fen_valid(fen))
+        #evaluation=stockfish.get_top_moves(1)
+        #evaluation=evaluation[0]['Mate']
+        #if evaluation==None:
+        #    evaluation=0
+        #else:
+        #    evaluation=format(1/evaluation)
+        #NNUE.train([move,evaluation])
+        #print(count*100/len(listOfMoves))
+    #count,previosMove=0,[]
+    #for count in range(len(listOfMoves)):
+    #    if count>0:
+    #        move=createBoardLayout(move, listOfMoves[0:count+1])
+    #        count=0
+    #        for j in range(8):
+    #            for i in range(8):
+    #                if not move[j][i]=='MT':
+    #                    count+=1
+    #        #updateDatabase(to_xenonnumber(previosMove),to_xenonnumber(move),rateMoveBasedOnWinProbability(move, 0),count,previosMove[toTuple(listOfMoves[count][0])[1]][toTuple(listOfMoves[count][0])[0]],listOfMoves[count])
+    #        previosMove=move
+    #    else:
+    #        previosMove=createBoardLayout(StartingLayout, listOfMoves[0:count+1])
     
 if __name__=="__main__":
     #defaultLayout=[['BR','BN','BB','BQ','BK','BB','BN','BR'],['BP','BP','BP','BP','BP','BP','BP','BP'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['MT','MT','MT','MT','MT','MT','MT','MT'],['WP','WP','WP','WP','WP','WP','WP','WP'],['WR','WN','WB','WQ','WK','WB','WN','WR']]

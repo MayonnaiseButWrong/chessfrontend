@@ -60,27 +60,7 @@ function FindPieces(currentLayout) {
 }
 
 function clone(ins) { //clones a board layout using the ability to turn an array into a string. This is necessary to create seperate objects in memory when assigning a new object, rather than the default behavior to create a new pointer to the same object in memory.
-    let string=ins.toString()
-    let word = ''
-    let letter = ''
-    let out=[]
-    let temp = []
-    for (let i = 0; i < string.length; i++){
-        letter=string[i]
-        if (letter === ','){
-            temp.push(word)
-            word=''
-            if (temp.length>=8) {
-                out.push(temp)
-                temp=[]
-            }
-        } else {
-            word+=letter
-        }
-    }
-    temp.push(word)
-    out.push(temp)
-    return out
+    return JSON.parse(JSON.stringify(ins))
 }
 
 var turn = 'W'; //initialising the variables
@@ -271,7 +251,7 @@ const OnePlayerTranscendentalChess = () => {
 
         setPreviosLayout(clone(currentLayout))  //updating the previosLayout
 
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves, false) //if its checkmate, the checkmate page is shown on screen
+        let checkMateCheck = isCheckmate(clone(startingLayout), previosMoves)
         checkmateText = '¡¡ '+team + ' Wins !!'
         setCheckmate(checkMateCheck)
         if (checkMateCheck===false) {
@@ -333,7 +313,7 @@ const OnePlayerTranscendentalChess = () => {
                 }
             };
             if (moveDone === false) {   //when a piece is moved
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, clone(startingLayout), previosMoves)
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1] //updating moves

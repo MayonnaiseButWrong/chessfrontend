@@ -9,6 +9,11 @@ from concurrent.futures import ThreadPoolExecutor
 import sqlite3
 import copy
 
+from stockfish import Stockfish
+stockfish=Stockfish('api\stockfish.exe')
+stockfish.set_skill_level(20) #max skill
+stockfish.set_depth(10)
+
 ChessDb = sqlite3.connect('api\ChessData')
 cursor = ChessDb.cursor()
 
@@ -45,7 +50,24 @@ def multiListBubbleSort(l1,l2,l3,b):    #base list=>b dependant lists=>l1,l2,l3
                 l3[i]=l3[i-1]
     return l1,l2,l3
             
-    
+def moveAllowed(startingLayout, layout, coordinate, previosMoves):
+    move = coordinate[0].lower()+coordinate[1].lower()
+    if startingLayout==[['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']] or startingLayout==[['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR'],['WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP', 'WP'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT', 'MT'],['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR']] and castlingAllowed(previosMoves)==True:
+        allowed,c = enPassantAllowed(previosMoves)
+        if allowed == True:
+            stockfish.set_fen_position(toFEN(layout)+' b KQkq '+c.lower()+' '+str(len(previosMoves))+' '+str(1+len(previosMoves)//2))
+        else:
+            stockfish.set_fen_position(toFEN(layout)+' b KQkq - '+str(1+len(previosMoves)//2))
+    else:
+        allowed,c = enPassantAllowed(previosMoves)
+        if allowed == True:
+            stockfish.set_fen_position(toFEN(layout)+' b - '+c.lower()+' '+str(len(previosMoves))+' '+str(1+len(previosMoves)//2))
+        else:
+            stockfish.set_fen_position(toFEN(layout)+' b - - '+str(1+len(previosMoves)//2))
+    if stockfish.is_move_correct(move):
+        return True
+    else:
+        return False
 
 def typeOfMove(layout1,layout2):    #0 is a mormal move, 1 is castling, 2 is enpassant
     if layout1[0][4]=='K' and layout2[0][4]=='MT':
@@ -79,32 +101,33 @@ def castlingAllowed(previosMovesList):
             return False
     return True
 
-def enPassantAllowed(previosMovesList,i):
-    for move in previosMovesList:
-        if i<7 and move[0]==[i+1,6] and move[1]==[i+1,4]:
-            return True
-        if i>0 and move[0]==[i-1,6] and move[1]==[i-1,4]:
-            return True
-    return False
+def enPassantAllowed(previosMovesList):
+    for i in range(8):
+        for move in previosMovesList:
+            if i<7 and move[0]==[i+1,6] and move[1]==[i+1,4]:
+                return True,move[1]
+            if i>0 and move[0]==[i-1,6] and move[1]==[i-1,4]:
+                return True,move[1]
+    return False,'no'
 
-def useMidgameTacticToGenerateMove(boardLayout,previosMovesList):
-    ChessDb = sqlite3.connect('api\ChessData')
-    cursor = ChessDb.cursor()
-    try:
-        cursor.execute('SELECT BestMovesXenonNumber,Move,Piece FROM BestMoves WHERE XenonNumber = "'+str(to_xenonnumber(boardLayout))+'"')
-        result = cursor.fetchall()
-        cursor.close()
-        if len(result)>=0:
-            move=to_gamelist(result[0][0])
-            c=result[0][1]
-            coordinates=[c[0:1],c[2:3]]
-            if len(c)>4:
-                coordinates.append(c[4:5])
-            return move, coordinates, result[0][2]
-    except:
-        return UseGenericTacticToGenerateMove(copy.deepcopy(boardLayout),previosMovesList)
+def useMidgameTacticToGenerateMove(startingLayout,boardLayout,previosMovesList):
+    #ChessDb = sqlite3.connect('api\ChessData')
+    #cursor = ChessDb.cursor()
+    #try:
+    #    cursor.execute('SELECT BestMovesXenonNumber,Move,Piece FROM BestMoves WHERE XenonNumber = "'+str(to_xenonnumber(boardLayout))+'"')
+    #    result = cursor.fetchall()
+    #    cursor.close()
+    #    if len(result)>=0:
+    #        move=to_gamelist(result[0][0])
+    #        c=result[0][1]
+    #        coordinates=[c[0:1],c[2:3]]
+    #        if len(c)>4:
+    #            coordinates.append(c[4:5])
+    #        return move, coordinates, result[0][2]
+    #except:
+    return UseGenericTacticToGenerateMove(startingLayout,copy.deepcopy(boardLayout),previosMovesList)
 
-def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
+def UseGenericTacticToGenerateMove(startingLayout,boardLayout,previosMovesList):
     wImportantPieces1,bImportantPieces1,pieces=findImportantPieces(copy.deepcopy(boardLayout))
     m=pool.submit(generatePossibleMovesUsingImportantPieces,copy.deepcopy(boardLayout), bImportantPieces1, wImportantPieces1,pieces)
     pValues,moves,coordinates,coordinate,pieces=[],[],[],[],[]
@@ -127,19 +150,22 @@ def UseGenericTacticToGenerateMove(boardLayout,previosMovesList):
     flag=True
     count=0
     for count in range(len(moves)):
-        moveType,i=typeOfMove(boardLayout,moves[count])
-        if moveType==1:
-            if castlingAllowed(previosMovesList)==True:
-                return moves[count],coordinates[count],pieces[count]
-            else:
-                continue
-        elif moveType==2:
-            if enPassantAllowed(previosMovesList,i)==True:
-                return moves[count],coordinates[count],pieces[count]
-            else:
-                continue
-        else:
+        #moveType,i=typeOfMove(boardLayout,moves[count])
+        #if moveType==1:
+        #    if castlingAllowed(previosMovesList)==True:
+        #        return moves[count],coordinates[count],pieces[count]
+        #    else:
+        #        continue
+        #elif moveType==2:
+        #    if enPassantAllowed(previosMovesList,i)==True:
+        #        return moves[count],coordinates[count],pieces[count]
+        #    else:
+        #        continue
+        #else:
+        #    return moves[count],coordinates[count],pieces[count]
+        if moveAllowed(startingLayout, boardLayout, coordinates[count], previosMovesList):
             return moves[count],coordinates[count],pieces[count]
+        
 
 if __name__=='__main__':
     defaultLayout=[

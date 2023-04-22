@@ -233,9 +233,9 @@ class NeuralNetwork():
             avrWeightChanges,avrBaisChanges,newweights,newbaises=self.__findAverage(self.weightchanges),self.__findAverage(self.baischanges),[],[]
             for i in range(len(avrWeightChanges)):
                 newweights.append(tf.math.add(tf.multiply(-1,self.weights[i]),avrWeightChanges[i]))
-                newbaises.append(td.math.add(tf.multiply(-1,self.baises[i]),avrBaisChanges[i]))
+                newbaises.append(tf.math.add(tf.multiply(-1,self.baises[i]),avrBaisChanges[i]))
             self.weights,self.baises=newweights,newbaises
-            self.__UpdateWeightsAndBaises(self.weights.numpy(),self.baises.numpy())
+            self.__UpdateWeightsAndBaises(self.weights,self.baises)
             self.weightchanges,self.baischanges=[],[]
         return
 

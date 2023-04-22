@@ -40,28 +40,8 @@ function FindPieces(currentLayout) { //finds all the pieces that are on the boar
     return [blackPieces, whitePieces]
 }
 
-function clone(ins) {//clones a board layout using the ability to turn an array into a string. This is necessary to create seperate objects in memory when assigning a new object, rather than the default behavior to create a new pointer to the same object in memory.
-    let string=ins.toString()
-    let word = ''
-    let letter = ''
-    let out=[]
-    let temp = []
-    for (let i = 0; i < string.length; i++){
-        letter=string[i]
-        if (letter === ','){
-            temp.push(word)
-            word=''
-            if (temp.length>=8) {
-                out.push(temp)
-                temp=[]
-            }
-        } else {
-            word+=letter
-        }
-    }
-    temp.push(word)
-    out.push(temp)
-    return out
+function clone(ins) { //clones a board layout using the ability to turn an array into a string. This is necessary to create seperate objects in memory when assigning a new object, rather than the default behavior to create a new pointer to the same object in memory.
+    return JSON.parse(JSON.stringify(ins))
 }
 
 var turn = 'W';//initialising the variables
@@ -231,7 +211,7 @@ const TwoPlayerHorde = () => {
 
         setPreviosLayout(clone(currentLayout))    //updating the previosLayout
 
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves,false) //if its checkmate, the checkmate page is shown on screen
+        let checkMateCheck = isCheckmate(clone(startingLayout), previosMoves)
         checkmateText = '¡¡ '+team + ' Wins !!'
         setCheckmate(checkMateCheck)
         if (checkMateCheck==='Stalemate') {
@@ -296,7 +276,7 @@ const TwoPlayerHorde = () => {
             };
 
             if (moveDone === false) {   //when a move is moved
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);    //checks if the move made is a valid move
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, clone(startingLayout), previosMoves)
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1] //updating moves

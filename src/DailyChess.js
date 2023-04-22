@@ -41,27 +41,7 @@ function FindPieces(currentLayout) {
 }
 
 function clone(ins) { //clones a board layout using the ability to turn an array into a string. This is necessary to create seperate objects in memory when assigning a new object, rather than the default behavior to create a new pointer to the same object in memory.
-    let string = ins.toString()
-    let word = ''
-    let letter = ''
-    let out = []
-    let temp = []
-    for (let i = 0; i < string.length; i++) {
-        letter = string[i]
-        if (letter === ',') {
-            temp.push(word)
-            word = ''
-            if (temp.length >= 8) {
-                out.push(temp)
-                temp = []
-            }
-        } else {
-            word += letter
-        }
-    }
-    temp.push(word)
-    out.push(temp)
-    return out
+    return JSON.parse(JSON.stringify(ins))
 }
 
 var turn = 'W'; //initialising the variables
@@ -80,9 +60,11 @@ var currentPiece = ''
 var moveDone = false
 var buttonpressed = true
 
-var currentLayout = clone(startingLayout)//same reasoning as previosLayout
+var currentLayout = new Array()
+var previosLayout = new Array()
+currentLayout = clone(startingLayout)//same reasoning as previosLayout
 const setCurrentLayout = (layout) => { currentLayout = layout }
-var previosLayout = clone(startingLayout) //the previosLayout uses a variable rather than an object beause variables are updated immidiately as the are put directly in the call stack, rather than objects which are put through the eventLoop and is updated after the Callstack clears, which is often after a render - which breaks the functionality which the previos moves List attempts to solve.
+previosLayout = clone(startingLayout) //the previosLayout uses a variable rather than an object beause variables are updated immidiately as the are put directly in the call stack, rather than objects which are put through the eventLoop and is updated after the Callstack clears, which is often after a render - which breaks the functionality which the previos moves List attempts to solve.
 const setPreviosLayout = (layout) => { previosLayout = layout }
 var currentString = toDict(currentLayout);
 
@@ -273,8 +255,7 @@ const DailyChess = () => {
         moveDone = false
 
         setPreviosLayout(clone(currentLayout))  //updating the previosLayout
-
-        let checkMateCheck = isCheckmate(currentLayout, turn, previosMoves, false) //if its checkmate, the checkmate page is shown on screen
+        let checkMateCheck = isCheckmate(clone(startingLayout), previosMoves) //if its checkmate, the checkmate page is shown on screen
         checkmateText = '¡¡ ' + team + ' Wins !!'
         setCheckmate(checkMateCheck)
         if (checkMateCheck === false) {
@@ -336,7 +317,7 @@ const DailyChess = () => {
                 }
             };
             if (moveDone === false) {   //when a piece is moved
-                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, currentLayout, turn, previosMoves, false);
+                MoveSuccesfulTuple = MoveSuccessful(fromSquare, toSquare, clone(startingLayout), previosMoves)
                 if (MoveSuccesfulTuple[0] === true) {
                     currentPiece = piece
                     currentMove = MoveSuccesfulTuple[1] //updating moves
